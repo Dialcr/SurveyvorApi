@@ -4,15 +4,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BePrácticasLaborales.DataAcces;
 
-public class EntityDbContext  : IdentityDbContext<User,IdentityRole<int>, int > //IdentityDbContext 
+public class EntityDbContext  : IdentityDbContext<IdentityUser<int>,IdentityRole<int>, int > //IdentityDbContext 
 {
 public EntityDbContext(DbContextOptions<EntityDbContext> options) : base(options)
 {
         
 }
     
-public DbSet<User> User { get; set; }
-     
+public DbSet<IdentityUser> User { get; set; }
+public DbSet<IdentityRole> IdentityRole { get; set; }
 protected override void OnModelCreating(ModelBuilder modelBuilder)
 {
     
@@ -25,14 +25,14 @@ protected override void OnModelCreating(ModelBuilder modelBuilder)
              new IdentityRole<int>
              {
                  Id = 1,
-                 Name = RoleNames.Support,
-                 NormalizedName = RoleNames.Support.Trim().ToLower().Replace(" ", ""),
+                 Name = RoleNames.Admin,
+                 NormalizedName = RoleNames.Admin.Trim().ToUpper().Replace(" ", ""),
              },
              new IdentityRole<int>
              {
                  Id = 2,
                  Name = RoleNames.Customer,
-                 NormalizedName = RoleNames.Customer.Trim().ToLower().Replace(" ", ""),
+                 NormalizedName = RoleNames.Customer.Trim().ToUpper().Replace(" ", ""),
              }
          });
         

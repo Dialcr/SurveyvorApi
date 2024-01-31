@@ -2,8 +2,8 @@
 
 public static class RoleNames
 {
-    public static string Support = "support";
+        public static string Admin = "admin";
 
-    public static string Customer = "customer";
+        public static string Customer = "customer";
 }
 

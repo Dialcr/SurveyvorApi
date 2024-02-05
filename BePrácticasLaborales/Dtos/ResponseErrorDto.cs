@@ -1,6 +1,6 @@
 ﻿namespace BePrácticasLaborales.Dtos;
 
-public class ResponceErrorDto
+public class ResponseErrorDto
 {
     public string ErrorCode { get; set; }
     public string ErrorMessage { get; set; }

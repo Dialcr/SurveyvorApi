@@ -79,7 +79,7 @@ public static class ServiceCollectionExtention
 
     public static IServiceCollection SetServices(
         this IServiceCollection services,
-        IConfiguration configuration)
+        IConfiguration configuration)   
     {
         services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
 

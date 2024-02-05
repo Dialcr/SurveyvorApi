@@ -27,7 +27,7 @@ public class TokenUtil
 
         var userRoles = await _userManager.GetRolesAsync(user) ?? new List<string>();
 
-        //todo: cambiar los roles 
+    
         if (userRoles.ToList().Count == 0)
             role = RoleNames.Customer;
         else

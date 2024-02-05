@@ -7,12 +7,18 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 var conectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var loggingLevel = builder.Configuration.GetSection("Logging");
+
 
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();   
 builder.Services.AddEndpointsApiExplorer();
 
-builder.Services.AddDbContext<EntityDbContext>(options => options.UseNpgsql(conectionString));
+//todo: add logging at database?
+builder.Services.AddDbContext<EntityDbContext>(options => 
+    options.UseNpgsql(conectionString)
+        .EnableDetailedErrors()
+        .EnableSensitiveDataLogging());
 builder.Services.SetAuthentication(builder.Configuration);
 builder.Services.SetServices(builder.Configuration);
 

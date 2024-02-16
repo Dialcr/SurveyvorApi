@@ -1,11 +1,13 @@
 ﻿using System.Security.Claims;
 using System.Text;
 using BePrácticasLaborales.DataAcces;
-using BePrácticasLaborales.Services;
+using BePrácticasLaborales.Services.EmailServices;
+using BePrácticasLaborales.Services.UserServices;
 using BePrácticasLaborales.Settings;
 using BePrácticasLaborales.Utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
 namespace BePrácticasLaborales;
@@ -17,7 +19,7 @@ public static class ServiceCollectionExtention
     IConfiguration configuration)
 {
     var a  = configuration.GetSection("Authentication").GetSection("Password").GetValue<int>("RequiredLength");
-    services.AddIdentity<IdentityUser<int>, IdentityRole<int>>(options =>
+    services.AddIdentity<User, IdentityRole<int>>(options =>
     { 
         
         options.Password.RequiredLength =
@@ -38,7 +40,7 @@ public static class ServiceCollectionExtention
             UserIdClaimType = ClaimTypes.NameIdentifier,
             UserNameClaimType = ClaimTypes.Name 
         };
-        // options.SignIn.RequireConfirmedEmail = true;
+        options.SignIn.RequireConfirmedEmail = true;
     })
         .AddEntityFrameworkStores<EntityDbContext>()
         .AddDefaultTokenProviders()
@@ -85,6 +87,8 @@ public static class ServiceCollectionExtention
 
         services.AddScoped<TokenUtil>();
         services.AddScoped<UserServicers>();
+        services.AddScoped<EmailService>();
+        services.Configure<MailSettings>(configuration.GetSection("MailSettings"));
         return services;
     }
 }

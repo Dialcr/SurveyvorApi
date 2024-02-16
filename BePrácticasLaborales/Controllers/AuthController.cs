@@ -1,12 +1,11 @@
 ﻿using BePrácticasLaborales.DataAcces;
 using BePrácticasLaborales.Dtos;
 using BePrácticasLaborales.Services;
+using BePrácticasLaborales.Services.UserServices;
 using BePrácticasLaborales.Utils;
-using IdentityServer4.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace BePrácticasLaborales.Controllers;
 [ApiController]
@@ -14,13 +13,13 @@ namespace BePrácticasLaborales.Controllers;
 
 public class AuthController : ControllerBase
 {
-    private readonly UserManager<IdentityUser<int>> _userManager;
-    private readonly SignInManager<IdentityUser<int>> _signInManager;
+    private readonly UserManager<User> _userManager;
+    private readonly SignInManager<User> _signInManager;
     private readonly TokenUtil _tokenUtil;
     private readonly UserServicers _userServicers;
 
-    public AuthController(UserManager<IdentityUser<int>> userManager, 
-        SignInManager<IdentityUser<int>> signInManager, TokenUtil tokenUtil
+    public AuthController(UserManager<User> userManager, 
+        SignInManager<User> signInManager, TokenUtil tokenUtil
         ,UserServicers userServicers)
     {
         _userManager = userManager;
@@ -116,12 +115,30 @@ public class AuthController : ControllerBase
         
         return BadRequest("error registering");
         */
-        var result = await _userServicers.CreateUserAsync(userIntputDto);
+        var result = await _userServicers.CreateUserAsync(userIntputDto,Url);
         if (result.TryPickT0(out var error, out var response))
         {
+            
             return BadRequest(error);
         }
         return Ok(response) ;
     }
+    
+    [HttpPost]
+    [Route("recovery/assword")]
+    [AllowAnonymous]
+    public async Task<IActionResult> RecoveryPassword(
+        string email, string newPassword)
+    {
+        var result = await _userServicers.RecoveryPassword(email,newPassword,Url);
+        if (result.TryPickT0(out var error, out var response))
+        {
+            
+            return BadRequest(error);
+        }
+        return Ok(response) ;
+    }
+    
+    
 }
 

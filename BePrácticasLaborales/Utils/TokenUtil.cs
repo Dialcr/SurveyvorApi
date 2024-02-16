@@ -12,16 +12,16 @@ namespace BePrácticasLaborales.Utils;
 public class TokenUtil
 {
 
-    readonly UserManager<IdentityUser<int>> _userManager;
+    readonly UserManager<User> _userManager;
     readonly JwtSettings _jwtSettings;
 
-    public TokenUtil(UserManager<IdentityUser<int>> userManager, IOptions<JwtSettings> jwtsettings)
+    public TokenUtil(UserManager<User> userManager, IOptions<JwtSettings> jwtsettings)
     {
         _userManager = userManager;
         _jwtSettings = jwtsettings.Value;
     }
 
-    public async Task<string> GenerateTokenAsync(IdentityUser<int> user)
+    public async Task<string> GenerateTokenAsync(User user)
     {
         string? role = null;
 
@@ -29,7 +29,7 @@ public class TokenUtil
 
     
         if (userRoles.ToList().Count == 0)
-            role = RoleNames.Customer;
+            role = RoleNames.Organization;
         else
             role = userRoles.ToList().First().ToUpper();
         
@@ -41,7 +41,7 @@ public class TokenUtil
             new Claim(ClaimTypes.Sid, $"{user.Id}"),
             new Claim(ClaimTypes.MobilePhone, user.PhoneNumber ?? string.Empty),
             new Claim(ClaimTypes.Email, user.Email ?? string.Empty),
-            new Claim(ClaimTypes.Role, role ?? RoleNames.Customer),
+            new Claim(ClaimTypes.Role, role ?? RoleNames.Organization),
         };
 
 

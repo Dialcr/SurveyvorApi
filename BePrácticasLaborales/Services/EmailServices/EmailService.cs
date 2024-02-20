@@ -23,8 +23,6 @@ public class EmailService
     
     public void SendEmail(MailMessage mailMessage, string userToken)
     {
-
         _smtpClient.SendAsync(mailMessage, userToken);
-        
-    }   
+    }
 }

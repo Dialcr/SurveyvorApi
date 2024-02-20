@@ -18,5 +18,6 @@ public class MailSettings
     public string Password { get; set; }
     
     public string UrlWEB { get; set; }
+    public string UrlWEBFront { get; set; }
     
 }

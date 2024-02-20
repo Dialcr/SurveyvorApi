@@ -31,10 +31,10 @@ public class AccountController : Controller
     [HttpGet]
     [Route("acount/reset/password")]
     [AllowAnonymous]
-    public async Task<IActionResult> ResetPassword(string userEmail, string token, string newPassword)
+    public async Task<IActionResult> ResetPassword(string userEmail, string newPassword, string token)
     { 
         //return _userServices.ConfirmEmailToken(token, userName) ? Ok("confirmation success") : BadRequest("confirmation failed");
-        var result = await _userServices.ResetPassword(userEmail, token, newPassword) ;
+        var result = await _userServices.ResetPassword(userEmail,  newPassword, token ) ;
         if (result.TryPickT0(out var error, out var response))
         {
             return BadRequest(error);

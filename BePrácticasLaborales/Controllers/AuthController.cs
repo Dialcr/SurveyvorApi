@@ -128,12 +128,11 @@ public class AuthController : ControllerBase
     [Route("recovery/assword")]
     [AllowAnonymous]
     public async Task<IActionResult> RecoveryPassword(
-        string email, string newPassword)
+        string email)
     {
-        var result = await _userServicers.RecoveryPassword(email,newPassword,Url);
+        var result = await _userServicers.RecoveryPassword(email);
         if (result.TryPickT0(out var error, out var response))
         {
-            
             return BadRequest(error);
         }
         return Ok(response) ;

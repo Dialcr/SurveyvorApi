@@ -265,12 +265,11 @@ public class UserServicers
         return response;
     }
 
-    public async Task<OneOf<ResponseErrorDto, User>> ResetPassword(string userEmail, string token, string newPassword)
+    public async Task<OneOf<ResponseErrorDto, User>> ResetPassword(string userEmail,  string newPassword, string token )
     {
         var user = await _userManager.FindByEmailAsync(userEmail);
         if (user is not null)
         {
-            //var newToken = await _userManager.GenerateUserTokenAsync(user.Result, TokenOptions.DefaultProvider, "recovery_password");
             var result = await _userManager.ResetPasswordAsync(user, token, newPassword);
             if (!result.Succeeded)
             {
@@ -291,7 +290,7 @@ public class UserServicers
             
         };
     }
-    public async Task<OneOf<ResponseErrorDto, string>> RecoveryPassword( string email, string newPassword, IUrlHelper urlHelper)
+    public async Task<OneOf<ResponseErrorDto, string>> RecoveryPassword( string email)
     {
         //todo: no se si esto funciona
         try
@@ -310,18 +309,29 @@ public class UserServicers
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
             var mailMessage = new MailMessage(_mailSettings.From, user.Email!);
             mailMessage.Subject = "Reset Password";
-            var httpContext = new HttpContextAccessor().HttpContext;
-            if (httpContext is not null)
-            {
-                var confirmationLink = urlHelper.Action(nameof(AccountController.ResetPassword), 
-                    "Account", 
-                    new { userEmail=email,token,newPassword },
-                    httpContext.Request.Scheme, _mailSettings.UrlWEB);
-                mailMessage.Body = $"Para confirmar el cambnio de contraseña, haga click en el siguiente enlace:\n\n{confirmationLink}\n\naqui deberia de haber un link";
-            
-                _emailServices.SendEmail(mailMessage,token);
-            }
+            //todo: arreglar la url
+            /*
+            var confirmationLink = urlHelper.Action(nameof(AccountController.ResetPassword),
+                "Account",
+                new { userEmail=email,token,newPassword },
+                httpContext.Request.Scheme, _mailSettings.UrlWEB);
+            */
+                
+            string urlConToken = $"{_mailSettings.UrlWEBFront}?token={token}";
 
+#if DEBUG   
+            var templatePath = "./../BePrácticasLaborales/Services/Template/RecoveryPasswordTemplate.html";
+#else
+            templatePath = Path.Combine(Directory.GetCurrentDirectory(), "./RecoveryPasswordTemplate.html");
+#endif
+            
+            var content = File.ReadAllText(templatePath);
+            var urlFront = content.Replace("{{SupportEmailAddress}}",urlConToken);
+
+            
+            mailMessage.Body = urlFront;
+            mailMessage.IsBodyHtml = true;
+            _emailServices.SendEmail(mailMessage,token);
             return token;
         }
         catch (Exception e)
@@ -385,7 +395,6 @@ public class UserServicers
             
             _emailServices.SendEmail(mailMessage,token);
         }
-
         return true;
     }
 }

@@ -57,6 +57,8 @@ public class AuthController : ControllerBase
     
     [HttpPost]
     [Route("signin")]
+    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ResponseErrorDto), StatusCodes.Status400BadRequest)]
     [AllowAnonymous]
     public async Task<IActionResult> Signin(
       string username, string userPassword)
@@ -72,6 +74,8 @@ public class AuthController : ControllerBase
     
     [HttpPost]
     [Route("registrer")]
+    [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ResponseErrorDto), StatusCodes.Status400BadRequest)]
     [AllowAnonymous]
     public async Task<IActionResult> UserRegistrer(
         [FromBody] UserIntputDto userIntputDto)
@@ -126,6 +130,8 @@ public class AuthController : ControllerBase
     
     [HttpPost]
     [Route("recovery/assword")]
+    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ResponseErrorDto), StatusCodes.Status400BadRequest)]
     [AllowAnonymous]
     public async Task<IActionResult> RecoveryPassword(
         string email)

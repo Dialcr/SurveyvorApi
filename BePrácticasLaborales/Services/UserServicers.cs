@@ -11,18 +11,16 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using OneOf;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Routing;
 
 
 namespace BePrácticasLaborales.Services.UserServices;
 
-public class UserServicers 
+public class UserServicers : CustomServiceBase
 {
     
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
     private readonly TokenUtil _tokenUtil;
-    private readonly EntityDbContext _context;
     private readonly MailSettings _mailSettings;
     private readonly EmailService _emailServices;
     
@@ -32,12 +30,11 @@ public class UserServicers
         SignInManager<User> signInManager, TokenUtil tokenUtil,
         EntityDbContext context,
         IOptions <MailSettings> mailSettings,
-        EmailService emailServices)
+        EmailService emailServices) : base(context)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _tokenUtil = tokenUtil;
-        _context = context;
         _mailSettings = mailSettings.Value;
         _emailServices = emailServices;
     }
@@ -309,7 +306,7 @@ public class UserServicers
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
             var mailMessage = new MailMessage(_mailSettings.From, user.Email!);
             mailMessage.Subject = "Reset Password";
-            //todo: arreglar la url
+            
             /*
             var confirmationLink = urlHelper.Action(nameof(AccountController.ResetPassword),
                 "Account",

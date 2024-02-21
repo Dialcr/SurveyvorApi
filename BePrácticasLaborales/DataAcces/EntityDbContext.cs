@@ -18,6 +18,12 @@ public class EntityDbContext  : IdentityDbContext<User,IdentityRole<int>, int > 
 */
     public DbSet<University> University { get; set; }
     public DbSet<Ministery> Ministery { get; set; }
+    
+    public DbSet<Survey> Surveys { get; set; }
+    public DbSet<SurveyAsk>  SurveyAsks{ get; set; }
+    public DbSet<SurveyResponse> SurveyResponses { get; set; }
+    public DbSet<ResponsePosibility> ResponsePosibilities { get; set; }
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
     
@@ -49,7 +55,29 @@ public class EntityDbContext  : IdentityDbContext<User,IdentityRole<int>, int > 
         modelBuilder.Entity<Ministery>()
             .HasMany(x => x.Universities)
             .WithOne(x => x.Ministery);
-            
+        
+        modelBuilder.Entity<Survey>()
+            .HasOne(x=>x.Organization)
+            .WithMany(x=>x.Surveys);
+        modelBuilder.Entity<Survey>()
+            .HasMany(x=>x.SurveyAsks)
+            .WithOne(x=>x.Survey);
+        modelBuilder.Entity<SurveyAsk>()
+            .HasMany(x=>x.ResponsePosibilities)
+            .WithOne(x=>x.SurveyAsk);
+        
+        modelBuilder.Entity<SurveyResponse>()
+            .HasOne(sr => sr.ResponsePosibility)
+            .WithMany(rp => rp.SurveyResponses)
+            .HasForeignKey(sr => new { sr.ResponsePosibilityId, sr.SuveryAskId})
+            .HasPrincipalKey(rp => new { rp.Id, rp.SuveryAskId });
+
+        modelBuilder.Entity<SurveyAsk>()
+            .HasIndex(x=> x.SurveyId);
+        modelBuilder.Entity<ResponsePosibility>()
+            .HasKey(x=>new {x.Id, x.SuveryAskId});
+        modelBuilder.Entity<ResponsePosibility>()
+            .HasIndex(x=>new {x.Id, x.SuveryAskId});
 
     }
 }

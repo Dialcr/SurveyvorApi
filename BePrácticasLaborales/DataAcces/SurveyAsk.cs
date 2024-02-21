@@ -8,10 +8,15 @@ public class SurveyAsk
     [Key]
     public int Id { get; set; }
     
-    [Key]
     public int SurveyId { get; set; }
+    
     [ForeignKey(nameof(SurveyId))]
     public Survey Survey { get; set; }
+
+    [Required]
+    [MaxLength(150)]
+    public string Description { get; set; }
     
-    // todo: posibles respuestas para las preguntas  
+    public ICollection<ResponsePosibility>? ResponsePosibilities { get; set; }
+    
 }

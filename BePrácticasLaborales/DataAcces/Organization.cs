@@ -11,5 +11,7 @@ public class Organization
     public string Name { get; set; }
 
     public bool Enable { get; set; }
-    public List<User>? Users { get; set; }
+    public ICollection<User>? Users { get; set; }
+
+    public ICollection<Survey> Surveys { get; set; }
 }

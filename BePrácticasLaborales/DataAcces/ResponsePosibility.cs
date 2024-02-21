@@ -3,22 +3,25 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BePrácticasLaborales.DataAcces;
 
-public class SurveyResponse
+public class ResponsePosibility
 {
-        //[Column(Order = 0)]
+    
     [Key]
+    [Column(Order = 0)]
     public int Id { get; set; }
-    /*
     [Key]
     [Column(Order = 1)]
     public int SuveryAskId { get; set; }
 
     [ForeignKey(nameof(SuveryAskId))]
     public SurveyAsk? SurveyAsk { get; set; }
-    */
+
+    [Required]
+    [MaxLength(50)]
+    public string ResponseValue{ get; set; }
+
+    public ICollection<SurveyResponse>? SurveyResponses { get; set; }
     
-    public int ResponsePosibilityId { get; set; }
-    public int SuveryAskId { get; set; }
     
-    public ResponsePosibility? ResponsePosibility { get; set; }
+    
 }

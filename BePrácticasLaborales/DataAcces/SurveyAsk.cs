@@ -19,4 +19,6 @@ public class SurveyAsk
     
     public ICollection<ResponsePosibility>? ResponsePosibilities { get; set; }
     
+    public ICollection<SurveyResponse>? SurveyResponses { get; set; }
+    
 }

@@ -76,8 +76,11 @@ public class EntityDbContext  : IdentityDbContext<User,IdentityRole<int>, int > 
             .HasIndex(x=> x.SurveyId);
         modelBuilder.Entity<ResponsePosibility>()
             .HasKey(x=>new {x.Id, x.SuveryAskId});
+        //todo: 
         modelBuilder.Entity<ResponsePosibility>()
-            .HasIndex(x=>new {x.Id, x.SuveryAskId});
+            .HasIndex(x=>new {x.Id, x.SuveryAskId})
+            .HasMethod("hash");
+           
 
     }
 }

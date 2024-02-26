@@ -113,4 +113,56 @@ public class OrganizationServices : CustomServiceBase
 
         return ministery;
     }
+
+    public OneOf<ResponseErrorDto, ICollection<Organization>> OrganizatinoWithMoreSurvey()
+    {
+        var organizations = _context.Organization.Include(x=>x.Surveys)
+            .OrderByDescending(x => x.Surveys.Count);
+        if (!organizations.Any())
+        {
+            return new ResponseErrorDto()
+            {
+                ErrorCode = 404,
+                ErrorMessage = "Organization list not found"
+            };
+        }
+
+        var cant =organizations.First().Surveys.Count();
+        var organizationsMax = organizations.Where(x=>x.Surveys.Count() == cant).ToList();
+        
+        return organizationsMax;
+    }
+    public OneOf<ResponseErrorDto, ICollection<Organization>> OrganizatinoWithFewerSurvey()
+    {
+        var organizations = _context.Organization.Include(x=>x.Surveys)
+            .OrderBy(x => x.Surveys.Count);
+        if (!organizations.Any())
+        {
+            return new ResponseErrorDto()
+            {
+                ErrorCode = 404,
+                ErrorMessage = "Organization list not found"
+            };
+        }
+
+        var cant =organizations.First().Surveys.Count();
+        var organizationsMax = organizations.Where(x=>x.Surveys.Count() == cant).ToList();
+        
+        return organizationsMax;
+    }
+    public OneOf<ResponseErrorDto, ICollection<Organization>> AllOrganizatino()
+    {
+        var organizations = _context.Organization.ToList();
+        if (!organizations.Any())
+        {
+            return new ResponseErrorDto()
+            {
+                ErrorCode = 404,
+                ErrorMessage = "Organization list not found"
+            };
+        }
+        return organizations;
+    }
+    
+    
 }

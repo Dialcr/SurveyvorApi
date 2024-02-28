@@ -1,9 +1,10 @@
 ﻿using BePrácticasLaborales.DataAcces;
-using BePrácticasLaborales.Services.UserServices;
+using DataAcces.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Services.Services;
 
 namespace BePrácticasLaborales.Controllers;
 

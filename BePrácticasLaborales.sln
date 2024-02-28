@@ -2,6 +2,10 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BePrácticasLaborales", "BePrácticasLaborales\BePrácticasLaborales.csproj", "{5602F639-77B1-4E21-81D6-10FA6B478257}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAcces", "DataAcces\DataAcces.csproj", "{CBD86CFA-1030-41C2-AB01-A78164822D05}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services", "Services\Services.csproj", "{B308C324-35B1-49E3-86C7-EFEDB3C0A7E1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +16,13 @@ Global
 		{5602F639-77B1-4E21-81D6-10FA6B478257}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5602F639-77B1-4E21-81D6-10FA6B478257}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5602F639-77B1-4E21-81D6-10FA6B478257}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CBD86CFA-1030-41C2-AB01-A78164822D05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBD86CFA-1030-41C2-AB01-A78164822D05}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBD86CFA-1030-41C2-AB01-A78164822D05}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBD86CFA-1030-41C2-AB01-A78164822D05}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B308C324-35B1-49E3-86C7-EFEDB3C0A7E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B308C324-35B1-49E3-86C7-EFEDB3C0A7E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B308C324-35B1-49E3-86C7-EFEDB3C0A7E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B308C324-35B1-49E3-86C7-EFEDB3C0A7E1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

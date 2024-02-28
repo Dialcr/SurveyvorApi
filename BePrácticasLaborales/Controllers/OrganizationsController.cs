@@ -1,8 +1,9 @@
-﻿using BePrácticasLaborales.DataAcces;
-using BePrácticasLaborales.Dtos;
-using BePrácticasLaborales.Services;
+﻿
+using DataAcces.Entities;
 using Microsoft.AspNetCore.Mvc;
 using OneOf;
+using Services.Dtos;
+using Services.Services;
 
 namespace BePrácticasLaborales.Controllers;
 

@@ -1,11 +1,10 @@
-﻿using BePrácticasLaborales.DataAcces;
-using BePrácticasLaborales.Dtos;
-using BePrácticasLaborales.Services;
-using BePrácticasLaborales.Services.UserServices;
-using BePrácticasLaborales.Utils;
+﻿using DataAcces.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Services.Dtos;
+using Services.Services;
+using Services.Utils;
 
 namespace BePrácticasLaborales.Controllers;
 [ApiController]
@@ -119,7 +118,9 @@ public class AuthController : ControllerBase
         
         return BadRequest("error registering");
         */
-        var result = await _userServicers.CreateUserAsync(userIntputDto,Url);
+        var accountController = nameof(AccountController.ConfirmEmailToken);
+        
+        var result = await _userServicers.CreateUserAsync(userIntputDto,Url, accountController);
         if (result.TryPickT0(out var error, out var response))
         {
             

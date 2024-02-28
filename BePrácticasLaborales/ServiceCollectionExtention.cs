@@ -1,14 +1,15 @@
 ﻿using System.Security.Claims;
 using System.Text;
 using BePrácticasLaborales.DataAcces;
-using BePrácticasLaborales.Services.EmailServices;
-using BePrácticasLaborales.Services.UserServices;
-using BePrácticasLaborales.Settings;
-using BePrácticasLaborales.Utils;
+using DataAcces.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Services.Services;
+using Services.Services.EmailServices;
+using Services.Settings;
+using Services.Utils;
 
 namespace BePrácticasLaborales;
 

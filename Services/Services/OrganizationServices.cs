@@ -71,6 +71,27 @@ public class OrganizationServices : CustomServiceBase
         
         return newUniversity;
     }
+    public async Task<OneOf<ResponseErrorDto, Ministery>> AddMinnistery(UniversitiIntputDto newMinistery)
+    {
+        var request = await _context.Ministery.SingleOrDefaultAsync(x=>x.Name == newMinistery.Name);
+        if (request is not null)
+        {
+            return new ResponseErrorDto()
+            {
+                ErrorCode = 400,
+                ErrorMessage = "ministery already exists"
+            };
+        }
+        var ministery = new Ministery()
+        {
+            Name = newMinistery.Name,
+            Enable = newMinistery.Enable,
+        };
+        _context.Ministery.Add(ministery);
+        await _context.SaveChangesAsync();
+        
+        return ministery;
+    }
 
     public async Task<OneOf<ResponseErrorDto, University>> GetUniversity(int universityId)
     {

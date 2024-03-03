@@ -1,6 +1,7 @@
 
 using BePrácticasLaborales;
 using BePrácticasLaborales.DataAcces;
+using HibernatingRhinos.Profiler.Appender.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 
 //using Microsoft.EntityFrameworkCore;
@@ -23,7 +24,7 @@ builder.Services.SetAuthentication(builder.Configuration);
 builder.Services.SetServices(builder.Configuration);
 
 var app = builder.Build();
-
+EntityFrameworkProfiler.Initialize();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

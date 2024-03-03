@@ -87,8 +87,11 @@ public static class ServiceCollectionExtention
         services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
 
         services.AddScoped<TokenUtil>();
-        services.AddScoped<UserServicers>();
         services.AddScoped<EmailService>();
+        services.AddScoped<ImportDbServices>();
+        services.AddScoped<OrganizationServices>();
+        services.AddScoped<SurveyServices>();
+        services.AddScoped<UserServicers>();
         services.Configure<MailSettings>(configuration.GetSection("MailSettings"));
         return services;
     }

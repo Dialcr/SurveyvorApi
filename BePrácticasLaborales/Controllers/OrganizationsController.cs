@@ -1,5 +1,6 @@
 ﻿
 using DataAcces.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OneOf;
 using Services.Dtos;
@@ -20,6 +21,7 @@ public class OrganizationsController : ControllerBase
     [ProducesResponseType(typeof(Ministery), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResponseErrorDto), StatusCodes.Status404NotFound)]
     [Route("getMinisteryById")]
+    [Authorize(Roles = "ORGANIZATION")]
     public async Task<IActionResult> GetMinisteryById(int ministeryId)
     {
         var result = await _organizationServices.GetMinistery(ministeryId);
@@ -33,9 +35,11 @@ public class OrganizationsController : ControllerBase
     [ProducesResponseType(typeof(University), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResponseErrorDto), StatusCodes.Status404NotFound)]
     [Route("GetUniversityById")]
-    public async Task<IActionResult> GetUniversityById(int miinsteryId)
+    [Authorize(Roles = "ORGANIZATION")]
+    public async Task<IActionResult> GetUniversityById(int universityId)
     {
-        var result = await _organizationServices.GetUniversity(miinsteryId);
+        
+        var result = await _organizationServices.GetUniversity(universityId);
         if (result.TryPickT0(out var error, out var response))
         {
             return NotFound(error);
@@ -46,6 +50,7 @@ public class OrganizationsController : ControllerBase
     [ProducesResponseType(typeof(ICollection<University>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResponseErrorDto), StatusCodes.Status404NotFound)]
     [Route("getAllUniversiti")]
+    [Authorize(Roles = "ORGANIZATION")]
     public IActionResult GetAllUniversity(int miinsteryId)
     {
         var result = _organizationServices.GetAllUniversity(miinsteryId);
@@ -59,9 +64,24 @@ public class OrganizationsController : ControllerBase
     [ProducesResponseType(typeof(University), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResponseErrorDto), StatusCodes.Status400BadRequest)]
     [Route("addUniversity")]
+    [Authorize(Roles = "ORGANIZATION")]
     public async Task<IActionResult> AddUniversity(UniversitiIntputDto universitiIntputDto)
     {
         var result = await _organizationServices.Adduniversity(universitiIntputDto);
+        if (result.TryPickT0(out var error, out var response))
+        {
+            return BadRequest(error);
+        }
+        return Ok(response);
+    }
+    [HttpPost]
+    [ProducesResponseType(typeof(Ministery), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ResponseErrorDto), StatusCodes.Status400BadRequest)]
+    [Route("addMinistery")]
+    [Authorize(Roles = "ORGANIZATION")]
+    public async Task<IActionResult> AddMinistery(UniversitiIntputDto ministery)
+    {
+        var result = await _organizationServices.AddMinnistery(ministery);
         if (result.TryPickT0(out var error, out var response))
         {
             return BadRequest(error);
@@ -72,6 +92,7 @@ public class OrganizationsController : ControllerBase
     [ProducesResponseType(typeof(Organization), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResponseErrorDto), StatusCodes.Status400BadRequest)]
     [Route("editOrganization")]
+    [Authorize(Roles = "ORGANIZATION")] 
     public async Task<IActionResult> EditOrganization(OrganizatinosIntupDto organizatinosIntupDto, int organizationId)
     {
         var result = await _organizationServices.EditOrganization(organizationId,organizatinosIntupDto);

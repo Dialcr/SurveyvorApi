@@ -27,7 +27,7 @@ public class SurveyServices : CustomServiceBase
         }
         return surveys;
     }
-    public async Task<OneOf<ResponseErrorDto, ICollection<Survey>>> SurveyByOrganizatino(int organizationId)
+    public async Task<OneOf<ResponseErrorDto, ICollection<Survey>>> SurveyByUniversity(int organizationId)
     {
         var organization = await _context.Organization.SingleOrDefaultAsync(x=>x.Id == organizationId);
         if (organization is null)
@@ -42,7 +42,9 @@ public class SurveyServices : CustomServiceBase
         var surveys = new List<Survey>();
         if (organization is Ministery)
         {
-            surveys = _context.Surveys.ToList();
+            surveys = _context.Surveys.Where(x=>_context.Organization.
+                    FirstOrDefault(y=>y.Id == x.Id)!.Id == organizationId )
+                .ToList();
             if (!surveys.Any())
             {
                 return new ResponseErrorDto()
@@ -69,10 +71,9 @@ public class SurveyServices : CustomServiceBase
         
         return surveys;
     }
-    public OneOf<ResponseErrorDto, ICollection<SurveyAsk>> SurveyAskBysurvey(int surveyId)
+    public OneOf<ResponseErrorDto, ICollection<SurveyAsk>> SurveyAskBySurveyId(int surveyId)
     {
-        var surveys = new List<SurveyAsk>();
-        surveys = _context.SurveyAsks.Where(x => x.SurveyId == surveyId).ToList();
+        var surveys = _context.SurveyAsks.Where(x => x.SurveyId == surveyId).ToList();
         if (!surveys.Any())
         {
             return new ResponseErrorDto()
@@ -86,8 +87,8 @@ public class SurveyServices : CustomServiceBase
     }
     public OneOf<ResponseErrorDto, ICollection<ResponsePosibility>> SurveyResponsePosibilityBysurvey(int surveyAskId)
     {
-        var responsePosibilities = new List<ResponsePosibility>();
-        responsePosibilities = _context.ResponsePosibilities.Where(x => x.SuveryAskId == surveyAskId).ToList();
+        var responsePosibilities = _context.ResponsePosibilities
+            .Where(x => x.SuveryAskId == surveyAskId).ToList();
         if (!responsePosibilities.Any())
         {
             return new ResponseErrorDto()
@@ -99,7 +100,7 @@ public class SurveyServices : CustomServiceBase
         }
         return responsePosibilities;
     }
-    public OneOf<ResponseErrorDto, int> SurveyResponseBysurveyask(int surveyAskId, int reponse)
+    public OneOf<ResponseErrorDto, int> CountSurveyResponsesBysurveyask(int surveyAskId, int reponse)
     {
         var cant =
             _context.SurveyResponses.Count(x => x.SuveryAskId == surveyAskId && x.ResponsePosibilityId == reponse);
@@ -113,6 +114,23 @@ public class SurveyServices : CustomServiceBase
                 
         }
         return cant;
+    }  
+    public OneOf<ResponseErrorDto, double> PorcentSurveyResponsesBysurveyask(int surveyAskId, int reponse)
+    {
+        var cant =
+            _context.SurveyResponses.Count(x => x.SuveryAskId == surveyAskId && x.ResponsePosibilityId == reponse);
+        var total = _context.SurveyResponses.Count();
+        if (cant ==0)
+        {
+            return new ResponseErrorDto()
+            {
+                ErrorCode = 404,
+                ErrorMessage = $"not one response with reponse {reponse} for survey ask with id {surveyAskId}"
+            };
+                
+        }
+
+        return (cant* 100.0) / total;
     }  
     
     

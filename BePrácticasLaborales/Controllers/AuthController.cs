@@ -1,4 +1,5 @@
-﻿using DataAcces.Entities;
+﻿using System.Security.Claims;
+using DataAcces.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -16,16 +17,17 @@ public class AuthController : ControllerBase
     private readonly SignInManager<User> _signInManager;
     private readonly TokenUtil _tokenUtil;
     private readonly UserServicers _userServicers;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
     public AuthController(UserManager<User> userManager, 
         SignInManager<User> signInManager, TokenUtil tokenUtil
-        ,UserServicers userServicers)
+        ,UserServicers userServicers, IHttpContextAccessor httpContextAccessor)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _tokenUtil = tokenUtil;
         _userServicers = userServicers;
-        
+        _httpContextAccessor = httpContextAccessor;
     }
    
 
@@ -75,49 +77,10 @@ public class AuthController : ControllerBase
     [Route("registrer")]
     [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResponseErrorDto), StatusCodes.Status400BadRequest)]
-    [AllowAnonymous]
+    [Authorize(Roles = "ADMIN")]
     public async Task<IActionResult> UserRegistrer(
         [FromBody] UserIntputDto userIntputDto)
     {
-        /*
-         var result = await _userManager!.CreateAsync(new IdentityUser<int>
-        {
-            UserName = userIntputDto.Username,
-            Email = userIntputDto.Email
-        }, userIntputDto.Password);
-        
-        if (!result.Succeeded)
-        {
-            
-            foreach (var error in result.Errors)
-            {
-                throw new Exception("Register failed");
-            }
-        }
-        var user =  _userManager.FindByNameAsync(userIntputDto.Username);
-        if (user.Result is not null)
-        {
-            try
-            {
-                if (userIntputDto.Role.ToLower() == RoleNames.Admin.ToLower())
-                {
-                    await _userManager.AddToRoleAsync(user.Result, RoleNames.Admin.ToUpper());
-                }
-                else
-                {
-                    await _userManager.AddToRoleAsync(user.Result, RoleNames.Customer.ToUpper());
-                }
-                return Ok("registered");
-            }
-            catch (Exception e)
-            {
-                await _userManager.DeleteAsync(user.Result);
-                BadRequest("cant add role, user not added");
-            }
-        }
-        
-        return BadRequest("error registering");
-        */
         var accountController = nameof(AccountController.ConfirmEmailToken);
         
         var result = await _userServicers.CreateUserAsync(userIntputDto,Url, accountController);
@@ -145,6 +108,16 @@ public class AuthController : ControllerBase
         return Ok(response) ;
     }
     
-    
+    [HttpGet("obtener-id-usuario")]
+    public IActionResult ObtenerIdUsuario()
+    {
+        // Obtiene el ClaimsPrincipal actual
+        ClaimsPrincipal user = _httpContextAccessor.HttpContext.User;
+
+        // Obtiene el ID del usuario del Claim "sub" (sujeto)
+        string userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        return Ok(new { UserId = userId });
+    }
 }
 

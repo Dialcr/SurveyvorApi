@@ -66,22 +66,19 @@ public class EntityDbContext  : IdentityDbContext<User,IdentityRole<int>, int > 
         modelBuilder.Entity<SurveyAsk>()
             .HasMany(x=>x.ResponsePosibilities)
             .WithOne(x=>x.SurveyAsk);
-        
+
         modelBuilder.Entity<SurveyResponse>()
             .HasOne(sr => sr.ResponsePosibility)
-            .WithMany(rp => rp.SurveyResponses)
-            .HasForeignKey(sr => new { sr.ResponsePosibilityId, sr.SuveryAskId})
-            .HasPrincipalKey(rp => new { rp.Id, rp.SuveryAskId });
+            .WithMany(rp => rp.SurveyResponses);
 
         modelBuilder.Entity<SurveyAsk>()
-            .HasIndex(x=> x.SurveyId);
-        modelBuilder.Entity<ResponsePosibility>()
-            .HasKey(x=>new {x.Id, x.SuveryAskId});
+            .HasIndex(x => x.SurveyId)
+            .HasMethod("hash");
         //todo: 
         modelBuilder.Entity<ResponsePosibility>()
-            .HasIndex(x=>new {x.Id, x.SuveryAskId})
+            .HasIndex(x => x.SuveryAskId)
             .HasMethod("hash");
-           
+
 
     }
 }

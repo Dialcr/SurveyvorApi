@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using BePrácticasLaborales.DataAcces;
 using DataAcces.Entities;
 using IdentityServer4.Extensions;
+using Microsoft.EntityFrameworkCore;
 using OneOf;
 using Services.Dtos;
 
@@ -358,7 +359,7 @@ public class ImportDbServices : CustomServiceBase
                     {
                         SurveyAsk = newSurveyAsk,
                         ResponseValue = response,
-                        Id = count
+                        //Id = count
                     });
                     count++;
                 }
@@ -402,12 +403,27 @@ public class ImportDbServices : CustomServiceBase
                 if (match.Groups[3].Value.Trim().ToLower().Equals("sí"))
                 {
                     suerveyAskResponse = match.Groups[2].Value.Trim();
-                    var ask = newSurvey.SurveyAsks.FirstOrDefault(x => x.Description == surveyAsk);
+                    var findSurvey = _context.Surveys
+                        .Include(x=>x.SurveyAsks)
+                        .ThenInclude(x=>x.ResponsePosibilities)
+                        .OrderBy(x=>x.Id).LastOrDefault();
+                    if (findSurvey is null)
+                    {
+                        return new ResponseErrorDto()
+                        {
+                            ErrorCode = 404,
+                            ErrorMessage = "Survey is not found"
+                        };
+                        
+                    }
+                    //var ask = newSurvey.SurveyAsks.FirstOrDefault(x => x.Description == surveyAsk);
+                    var ask = findSurvey.SurveyAsks.FirstOrDefault(x => x.Description == surveyAsk);
+                    var responseValue = ask.ResponsePosibilities
+                        .FirstOrDefault(x => x.ResponseValue.Equals(suerveyAskResponse));
                     var response = new SurveyResponse()
                     {
                         SurveyAsk = ask,
-                        ResponsePosibility = ask.ResponsePosibilities
-                            .FirstOrDefault(x=>x.ResponseValue.Equals(suerveyAskResponse))
+                        ResponsePosibility = responseValue
                     };
                     _context.SurveyResponses.Add(response);
                 }
@@ -415,7 +431,20 @@ public class ImportDbServices : CustomServiceBase
         }
 
         #endregion
-        await _context.SaveChangesAsync();
-        return "Import sussed";
+
+        try
+        {
+
+            await _context.SaveChangesAsync();
+            return "Import sussed";
+        }
+        catch (Exception e)
+        {
+            return new ResponseErrorDto()
+            {
+                ErrorCode = 500,
+                ErrorMessage = e.Message
+            };
+        }
     }
 }

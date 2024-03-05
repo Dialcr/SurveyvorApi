@@ -9,23 +9,23 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace BePrácticasLaborales.Migrations
+namespace DataAcces.Migrations
 {
     [DbContext(typeof(EntityDbContext))]
-    [Migration("20240226135402_Index")]
-    partial class Index
+    [Migration("20240305144235_testMigrations")]
+    partial class testMigrations
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.1")
+                .HasAnnotation("ProductVersion", "8.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("BePrácticasLaborales.DataAcces.Organization", b =>
+            modelBuilder.Entity("DataAcces.Entities.Organization", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -55,33 +55,32 @@ namespace BePrácticasLaborales.Migrations
                     b.UseTphMappingStrategy();
                 });
 
-            modelBuilder.Entity("BePrácticasLaborales.DataAcces.ResponsePosibility", b =>
+            modelBuilder.Entity("DataAcces.Entities.ResponsePosibility", b =>
                 {
                     b.Property<int>("Id")
-                        .HasColumnType("integer")
-                        .HasColumnOrder(0);
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
 
-                    b.Property<int>("SuveryAskId")
-                        .HasColumnType("integer")
-                        .HasColumnOrder(1);
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ResponseValue")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
-                    b.HasKey("Id", "SuveryAskId");
+                    b.Property<int>("SuveryAskId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("SuveryAskId");
 
-                    b.HasIndex("Id", "SuveryAskId");
-
-                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("Id", "SuveryAskId"), "hash");
+                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("SuveryAskId"), "hash");
 
                     b.ToTable("ResponsePosibilities");
                 });
 
-            modelBuilder.Entity("BePrácticasLaborales.DataAcces.Survey", b =>
+            modelBuilder.Entity("DataAcces.Entities.Survey", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -113,7 +112,7 @@ namespace BePrácticasLaborales.Migrations
                     b.ToTable("Surveys");
                 });
 
-            modelBuilder.Entity("BePrácticasLaborales.DataAcces.SurveyAsk", b =>
+            modelBuilder.Entity("DataAcces.Entities.SurveyAsk", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -133,10 +132,12 @@ namespace BePrácticasLaborales.Migrations
 
                     b.HasIndex("SurveyId");
 
+                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("SurveyId"), "hash");
+
                     b.ToTable("SurveyAsks");
                 });
 
-            modelBuilder.Entity("BePrácticasLaborales.DataAcces.SurveyResponse", b =>
+            modelBuilder.Entity("DataAcces.Entities.SurveyResponse", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -147,22 +148,19 @@ namespace BePrácticasLaborales.Migrations
                     b.Property<int>("ResponsePosibilityId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("SurveyAskId")
-                        .HasColumnType("integer");
-
                     b.Property<int>("SuveryAskId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("SurveyAskId");
+                    b.HasIndex("ResponsePosibilityId");
 
-                    b.HasIndex("ResponsePosibilityId", "SuveryAskId");
+                    b.HasIndex("SuveryAskId");
 
                     b.ToTable("SurveyResponses");
                 });
 
-            modelBuilder.Entity("BePrácticasLaborales.DataAcces.User", b =>
+            modelBuilder.Entity("DataAcces.Entities.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -380,16 +378,16 @@ namespace BePrácticasLaborales.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("BePrácticasLaborales.DataAcces.Ministery", b =>
+            modelBuilder.Entity("DataAcces.Entities.Ministery", b =>
                 {
-                    b.HasBaseType("BePrácticasLaborales.DataAcces.Organization");
+                    b.HasBaseType("DataAcces.Entities.Organization");
 
                     b.HasDiscriminator().HasValue("Ministery");
                 });
 
-            modelBuilder.Entity("BePrácticasLaborales.DataAcces.University", b =>
+            modelBuilder.Entity("DataAcces.Entities.University", b =>
                 {
-                    b.HasBaseType("BePrácticasLaborales.DataAcces.Organization");
+                    b.HasBaseType("DataAcces.Entities.Organization");
 
                     b.Property<int>("MinisteryId")
                         .HasColumnType("integer");
@@ -399,9 +397,9 @@ namespace BePrácticasLaborales.Migrations
                     b.HasDiscriminator().HasValue("University");
                 });
 
-            modelBuilder.Entity("BePrácticasLaborales.DataAcces.ResponsePosibility", b =>
+            modelBuilder.Entity("DataAcces.Entities.ResponsePosibility", b =>
                 {
-                    b.HasOne("BePrácticasLaborales.DataAcces.SurveyAsk", "SurveyAsk")
+                    b.HasOne("DataAcces.Entities.SurveyAsk", "SurveyAsk")
                         .WithMany("ResponsePosibilities")
                         .HasForeignKey("SuveryAskId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -410,9 +408,9 @@ namespace BePrácticasLaborales.Migrations
                     b.Navigation("SurveyAsk");
                 });
 
-            modelBuilder.Entity("BePrácticasLaborales.DataAcces.Survey", b =>
+            modelBuilder.Entity("DataAcces.Entities.Survey", b =>
                 {
-                    b.HasOne("BePrácticasLaborales.DataAcces.Organization", "Organization")
+                    b.HasOne("DataAcces.Entities.Organization", "Organization")
                         .WithMany("Surveys")
                         .HasForeignKey("OrganizationId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -421,9 +419,9 @@ namespace BePrácticasLaborales.Migrations
                     b.Navigation("Organization");
                 });
 
-            modelBuilder.Entity("BePrácticasLaborales.DataAcces.SurveyAsk", b =>
+            modelBuilder.Entity("DataAcces.Entities.SurveyAsk", b =>
                 {
-                    b.HasOne("BePrácticasLaborales.DataAcces.Survey", "Survey")
+                    b.HasOne("DataAcces.Entities.Survey", "Survey")
                         .WithMany("SurveyAsks")
                         .HasForeignKey("SurveyId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -432,24 +430,28 @@ namespace BePrácticasLaborales.Migrations
                     b.Navigation("Survey");
                 });
 
-            modelBuilder.Entity("BePrácticasLaborales.DataAcces.SurveyResponse", b =>
+            modelBuilder.Entity("DataAcces.Entities.SurveyResponse", b =>
                 {
-                    b.HasOne("BePrácticasLaborales.DataAcces.SurveyAsk", null)
+                    b.HasOne("DataAcces.Entities.ResponsePosibility", "ResponsePosibility")
                         .WithMany("SurveyResponses")
-                        .HasForeignKey("SurveyAskId");
+                        .HasForeignKey("ResponsePosibilityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("BePrácticasLaborales.DataAcces.ResponsePosibility", "ResponsePosibility")
+                    b.HasOne("DataAcces.Entities.SurveyAsk", "SurveyAsk")
                         .WithMany("SurveyResponses")
-                        .HasForeignKey("ResponsePosibilityId", "SuveryAskId")
+                        .HasForeignKey("SuveryAskId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("ResponsePosibility");
+
+                    b.Navigation("SurveyAsk");
                 });
 
-            modelBuilder.Entity("BePrácticasLaborales.DataAcces.User", b =>
+            modelBuilder.Entity("DataAcces.Entities.User", b =>
                 {
-                    b.HasOne("BePrácticasLaborales.DataAcces.Organization", "Organization")
+                    b.HasOne("DataAcces.Entities.Organization", "Organization")
                         .WithMany("Users")
                         .HasForeignKey("OrganizationId");
 
@@ -467,7 +469,7 @@ namespace BePrácticasLaborales.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
                 {
-                    b.HasOne("BePrácticasLaborales.DataAcces.User", null)
+                    b.HasOne("DataAcces.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -476,7 +478,7 @@ namespace BePrácticasLaborales.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
                 {
-                    b.HasOne("BePrácticasLaborales.DataAcces.User", null)
+                    b.HasOne("DataAcces.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -491,7 +493,7 @@ namespace BePrácticasLaborales.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BePrácticasLaborales.DataAcces.User", null)
+                    b.HasOne("DataAcces.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -500,16 +502,16 @@ namespace BePrácticasLaborales.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
                 {
-                    b.HasOne("BePrácticasLaborales.DataAcces.User", null)
+                    b.HasOne("DataAcces.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("BePrácticasLaborales.DataAcces.University", b =>
+            modelBuilder.Entity("DataAcces.Entities.University", b =>
                 {
-                    b.HasOne("BePrácticasLaborales.DataAcces.Ministery", "Ministery")
+                    b.HasOne("DataAcces.Entities.Ministery", "Ministery")
                         .WithMany("Universities")
                         .HasForeignKey("MinisteryId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -518,31 +520,31 @@ namespace BePrácticasLaborales.Migrations
                     b.Navigation("Ministery");
                 });
 
-            modelBuilder.Entity("BePrácticasLaborales.DataAcces.Organization", b =>
+            modelBuilder.Entity("DataAcces.Entities.Organization", b =>
                 {
                     b.Navigation("Surveys");
 
                     b.Navigation("Users");
                 });
 
-            modelBuilder.Entity("BePrácticasLaborales.DataAcces.ResponsePosibility", b =>
+            modelBuilder.Entity("DataAcces.Entities.ResponsePosibility", b =>
                 {
                     b.Navigation("SurveyResponses");
                 });
 
-            modelBuilder.Entity("BePrácticasLaborales.DataAcces.Survey", b =>
+            modelBuilder.Entity("DataAcces.Entities.Survey", b =>
                 {
                     b.Navigation("SurveyAsks");
                 });
 
-            modelBuilder.Entity("BePrácticasLaborales.DataAcces.SurveyAsk", b =>
+            modelBuilder.Entity("DataAcces.Entities.SurveyAsk", b =>
                 {
                     b.Navigation("ResponsePosibilities");
 
                     b.Navigation("SurveyResponses");
                 });
 
-            modelBuilder.Entity("BePrácticasLaborales.DataAcces.Ministery", b =>
+            modelBuilder.Entity("DataAcces.Entities.Ministery", b =>
                 {
                     b.Navigation("Universities");
                 });

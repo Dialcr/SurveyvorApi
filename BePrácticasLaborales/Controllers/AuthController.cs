@@ -31,6 +31,7 @@ public class AuthController : ControllerBase
     }
    
 
+    /*
     [HttpGet]
     [Route("/test")]
     [Authorize(Roles = "ADMIN")]
@@ -55,7 +56,18 @@ public class AuthController : ControllerBase
         return Ok("good response");
         
     }
-    
+    [HttpGet("obtener-id-usuario")]
+    public IActionResult ObtenerIdUsuario()
+    {
+        // Obtiene el ClaimsPrincipal actual
+        ClaimsPrincipal user = _httpContextAccessor.HttpContext.User;
+
+        // Obtiene el ID del usuario del Claim "sub" (sujeto)
+        string userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        return Ok(new { UserId = userId });
+    }
+    */
     [HttpPost]
     [Route("signin")]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
@@ -93,7 +105,7 @@ public class AuthController : ControllerBase
     }
     
     [HttpPost]
-    [Route("recovery/assword")]
+    [Route("recovery/password")]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResponseErrorDto), StatusCodes.Status400BadRequest)]
     [AllowAnonymous]
@@ -108,16 +120,6 @@ public class AuthController : ControllerBase
         return Ok(response) ;
     }
     
-    [HttpGet("obtener-id-usuario")]
-    public IActionResult ObtenerIdUsuario()
-    {
-        // Obtiene el ClaimsPrincipal actual
-        ClaimsPrincipal user = _httpContextAccessor.HttpContext.User;
-
-        // Obtiene el ID del usuario del Claim "sub" (sujeto)
-        string userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-        return Ok(new { UserId = userId });
-    }
+    
 }
 

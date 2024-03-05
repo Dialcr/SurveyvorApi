@@ -40,7 +40,7 @@ public class OrganizationServices : CustomServiceBase
 
     }
 
-    public async Task<OneOf<ResponseErrorDto, University>> Adduniversity(UniversitiIntputDto universitiIntputDto)
+    public async Task<OneOf<ResponseErrorDto, UniversityOutputDto>> Adduniversity(UniversitiIntputDto universitiIntputDto)
     {
         var request = await _context.University.SingleOrDefaultAsync(x=>x.Name == universitiIntputDto.Name);
         if (request is not null)
@@ -65,11 +65,20 @@ public class OrganizationServices : CustomServiceBase
         {
             Name = universitiIntputDto.Name,
             Enable = universitiIntputDto.Enable,
+            MinisteryId = ministery.Id
         };
         _context.University.Add(newUniversity);
         await _context.SaveChangesAsync();
-        
-        return newUniversity;
+        var uni = await 
+            _context.University.FirstOrDefaultAsync(x =>
+                x.Name == universitiIntputDto.Name && x.MinisteryId == ministery.Id);
+        return new UniversityOutputDto()
+        {
+            Id = uni!.Id,
+            Enable = uni.Enable,
+            MinisteryId = uni.MinisteryId,
+            Name = uni.Name
+        };
     }
     public async Task<OneOf<ResponseErrorDto, Ministery>> AddMinnistery(UniversitiIntputDto newMinistery)
     {

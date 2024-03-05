@@ -42,7 +42,7 @@ public class SurveyServices : CustomServiceBase
         var surveys = new List<Survey>();
         if (organization is Ministery)
         {
-            surveys = _context.Surveys.Where(x=>_context.Organization.
+            surveys = _context.Surveys.Include(x=>x.Organization).Where(x=>_context.Organization.
                     FirstOrDefault(y=>y.Id == x.Id)!.Id == organizationId )
                 .ToList();
             if (!surveys.Any())
@@ -57,7 +57,7 @@ public class SurveyServices : CustomServiceBase
         }
         else
         {
-            surveys = _context.Surveys.Where(x => x.OrganizationId == organizationId).ToList();
+            surveys = _context.Surveys.Include(x=>x.Organization).Where(x => x.OrganizationId == organizationId).ToList();
             if (!surveys.Any())
             {
                 return new ResponseErrorDto()

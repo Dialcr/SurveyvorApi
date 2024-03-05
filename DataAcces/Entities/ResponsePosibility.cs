@@ -8,10 +8,8 @@ public class ResponsePosibility
 {
     
     [Key]
-    [Column(Order = 0)]
     public int Id { get; set; }
-    [Key]
-    [Column(Order = 1)]
+    
     public int SuveryAskId { get; set; }
 
     [ForeignKey(nameof(SuveryAskId))]

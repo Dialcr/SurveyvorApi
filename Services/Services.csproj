@@ -24,4 +24,8 @@
       <ProjectReference Include="..\DataAcces\DataAcces.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Info\UH\" />
+    </ItemGroup>
+
 </Project>

@@ -19,13 +19,19 @@ public class SurveyController : ControllerBase
         _surveyServices = surveyServices;
         _importDbServices = importDbServices;
     }
-    [HttpGet]
+    
+    [HttpPost]
     [Route("/import/data")]
     [Authorize(Roles = "ADMIN")]
-    public async Task<IActionResult> Testenpoint(string token, string userName, int organizationId )
+    public async Task<IActionResult> ImportInfo()
     { 
-        var info =await _importDbServices.ImportData(organizationId);  
-        return Ok(info);
+        //var info =await _importDbServices.ImportData(organizationId);  
+        var info =await _importDbServices.FindObject();
+        if (info.TryPickT0(out var error, out var response))
+        {
+            return BadRequest(error);
+        }
+        return Ok(response);
         
     }
     [HttpGet]
@@ -46,17 +52,31 @@ public class SurveyController : ControllerBase
     }
     [HttpGet]
     [Route("/SurveyByUniversity")]
-    [ProducesResponseType(typeof(ICollection<Survey>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ICollection<SurveyoutputDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResponseErrorDto), StatusCodes.Status400BadRequest)]
     [Authorize(Roles = "ORGANIZATION")]
-    public async Task<OneOf<ResponseErrorDto, IActionResult>> SurveyByUniversity(int organizationId )
+    public async Task<IActionResult> SurveyByUniversity(int organizationId )
     { 
         var result = await _surveyServices.SurveyByUniversity(organizationId);
         if (result.TryPickT0(out var error, out var response))
         {
             return BadRequest(error);
         }
-        return Ok(response);
+
+        var esc = new List<SurveyoutputDto>();
+        foreach (var item in response)
+        {
+            esc.Add(new SurveyoutputDto()
+            {
+                Id = item.Id,
+                Description = item.Description,
+                SatiscationState = item.SatiscationState,
+                OrganizationId = item.OrganizationId,
+                OrganizationName = item.Organization.Name
+                
+            });
+        }
+        return Ok(esc);
         
     }
     [HttpGet]

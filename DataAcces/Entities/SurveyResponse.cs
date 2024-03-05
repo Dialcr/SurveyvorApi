@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataAcces.Entities;
 
@@ -17,7 +18,11 @@ public class SurveyResponse
     */
     
     public int ResponsePosibilityId { get; set; }
-    public int SuveryAskId { get; set; }
-    
+    [ForeignKey(nameof(ResponsePosibilityId))]
     public ResponsePosibility? ResponsePosibility { get; set; }
+    public int SuveryAskId { get; set; }
+
+    [ForeignKey(nameof(SuveryAskId))]
+    public SurveyAsk? SurveyAsk { get; set; }
+    
 }

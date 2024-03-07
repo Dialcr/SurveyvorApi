@@ -92,7 +92,7 @@ public class OrganizationsController : ControllerBase
     [ProducesResponseType(typeof(Organization), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResponseErrorDto), StatusCodes.Status400BadRequest)]
     [Route("editOrganization")]
-    [Authorize(Roles = "ORGANIZATION")] 
+    [Authorize(Roles = "ADMIN")] 
     public async Task<IActionResult> EditOrganization(OrganizatinosIntupDto organizatinosIntupDto, int organizationId)
     {
         var result = await _organizationServices.EditOrganization(organizationId,organizatinosIntupDto);

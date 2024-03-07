@@ -19,7 +19,7 @@ public class SurveyoutputDto
 }
 public static class SurveyExtention
 {
-    public static SurveyoutputDto ToCanteenCartDto(this Survey survey)
+    public static SurveyoutputDto ToSurveyOutputtDto(this Survey survey)
     {
         return new SurveyoutputDto()
         {

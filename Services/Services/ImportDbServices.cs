@@ -155,6 +155,46 @@ public class ImportDbServices : CustomServiceBase
 
 
     
+    static void ExploreJsonElement(JsonElement jsonElement, Dictionary<string, string> keyValuePairs)
+    {
+        var stack = new Stack<(JsonElement Element, string CurrentPath)>();
+        stack.Push((jsonElement, ""));
+
+        while (stack.Count > 0)
+        {
+            var (currentElement, currentPath) = stack.Pop();
+
+            if (currentElement.ValueKind == JsonValueKind.Object)
+            {
+                foreach (var property in currentElement.EnumerateObject())
+                {
+                    string propertyName = property.Name;
+                    string propertyPath = string.IsNullOrEmpty(currentPath) ? propertyName : $"{currentPath}.{propertyName}";
+
+                    stack.Push((property.Value, propertyPath));
+                }
+            }
+            else if (currentElement.ValueKind == JsonValueKind.Array)
+            {
+                int index = 0;
+                foreach (var arrayElement in currentElement.EnumerateArray())
+                {
+                    string arrayPath = $"{currentPath}[{index}]";
+                    stack.Push((arrayElement, arrayPath));
+                    index++;
+                }
+            }
+            else
+            {
+                // Si no es un objeto ni un array, se asume que es un valor simple
+                // Añade la ruta y el valor al diccionario
+                keyValuePairs[currentPath] = currentElement.ToString();
+            }
+        }
+    }
+
+
+    /*
     static void ExploreJsonElement(JsonElement jsonElement, Dictionary<string, string> keyValuePairs, string currentPath = "")
     {
         if (jsonElement.ValueKind == JsonValueKind.Object)
@@ -172,6 +212,7 @@ public class ImportDbServices : CustomServiceBase
             keyValuePairs[currentPath] = jsonElement.ToString();
         }
     }
+    */
     public async Task<OneOf<ResponseErrorDto, string>> FindObject()
     {
         var file = "./../Services/Info/";
@@ -201,14 +242,18 @@ public class ImportDbServices : CustomServiceBase
                         return new ResponseErrorDto()
                         {
                             ErrorCode = 404,
-                            ErrorMessage = "Organization not found"
+                            ErrorMessage = $"Organization {fileName} not found "
                         };
                     }
-                    //var importData = await ImportData(organization.Id, Path.GetFileNameWithoutExtension(jsonFile), Path.GetFullPath(jsonFile));
-                    var importData = await ImportData2(organization.Id, Path.GetFileNameWithoutExtension(jsonFile), Path.GetFullPath(jsonFile));
-                    if (importData.TryPickT0(out var error, out var message))
+                    var survey = _context.Surveys.FirstOrDefault(x=>x.Description == Path.GetFileNameWithoutExtension(jsonFile));
+                    if (survey is null)
                     {
-                        return error;
+                        var importData = await ImportData2(organization.Id, Path.GetFileNameWithoutExtension(jsonFile),
+                            Path.GetFullPath(jsonFile));
+                        if (importData.TryPickT0(out var error, out var message))
+                        {
+                            return error;
+                        }
                     }
                 }
                 catch (Exception ex)
@@ -290,10 +335,10 @@ public class ImportDbServices : CustomServiceBase
             {
                 // Acceder al array "responses" en el JSON
                 JsonElement responsesArray = jsonDocument.RootElement.GetProperty("responses");
-                Dictionary<string, string> helpDictionary = new Dictionary<string, string>();
                 // Iterar sobre cada elemento del array "responses"
                 foreach (JsonElement responseElement in responsesArray.EnumerateArray())
                 {
+                    Dictionary<string, string> helpDictionary = new Dictionary<string, string>();
                     ExploreJsonElement(responseElement, helpDictionary);
                     keyValuePairs.Add(helpDictionary);
                 }

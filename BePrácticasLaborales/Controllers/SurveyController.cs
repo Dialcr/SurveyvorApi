@@ -63,20 +63,8 @@ public class SurveyController : ControllerBase
             return BadRequest(error);
         }
 
-        var esc = new List<SurveyoutputDto>();
-        foreach (var item in response)
-        {
-            esc.Add(new SurveyoutputDto()
-            {
-                Id = item.Id,
-                Description = item.Description,
-                SatiscationState = item.SatiscationState,
-                OrganizationId = item.OrganizationId,
-                OrganizationName = item.Organization.Name
-                
-            });
-        }
-        return Ok(esc);
+       
+        return Ok(response);
         
     }
     [HttpGet]
@@ -132,7 +120,52 @@ public class SurveyController : ControllerBase
     [Authorize(Roles = "ORGANIZATION")]
     public  IActionResult PorcentSurveyResponsesBysurveyask(int surveyAskId , int responseId)
     { 
-        var result =  _surveyServices.PorcentSurveyResponsesBysurveyask(surveyAskId, responseId);
+        var result =  _surveyServices.PorcentSurveyResponsesBySurveyask(surveyAskId, responseId);
+        if (result.TryPickT0(out var error, out var response))
+        {
+            return BadRequest(error);
+        }
+        return Ok(response);
+        
+    }
+    [HttpGet]
+    [Route("/PorcentSurveyResponsesBySurveyaskDescription")]
+    [ProducesResponseType(typeof(double), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ResponseErrorDto), StatusCodes.Status400BadRequest)]
+    [Authorize(Roles = "ORGANIZATION")]
+    public  IActionResult PorcentSurveyResponsesBySurveyaskDescription(int surveyId,string surveyAskDescription, string reponse)
+    { 
+        var result =  _surveyServices.PorcentSurveyResponsesBySurveyaskDescription(surveyId,surveyAskDescription, reponse);
+        if (result.TryPickT0(out var error, out var response))
+        {
+            return BadRequest(error);
+        }
+        return Ok(response);
+        
+    }
+    [HttpGet]
+    [Route("/GetAllResponseBySurveyAskDescription")]
+    [ProducesResponseType(typeof(ICollection<SurveyResponseOutputDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ResponseErrorDto), StatusCodes.Status400BadRequest)]
+    [Authorize(Roles = "ORGANIZATION")]
+    public  IActionResult GetAllResponseBySurveyAskDescription(int surveyId, string surveyAskDescription)
+    { 
+        var result =  _surveyServices.GetAllResponseBySurveyAskDescription(surveyId,surveyAskDescription);
+        if (result.TryPickT0(out var error, out var response))
+        {
+            return BadRequest(error);
+        }
+        return Ok(response);
+        
+    }
+    [HttpGet]
+    [Route("/SurveyByUniversityName")]
+    [ProducesResponseType(typeof(ICollection<SurveyoutputDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ResponseErrorDto), StatusCodes.Status400BadRequest)]
+    [Authorize(Roles = "ORGANIZATION")]
+    public async Task<IActionResult> SurveyByUniversityName(string organizationName)
+    { 
+        var result =  await _surveyServices.SurveyByUniversityName(organizationName);
         if (result.TryPickT0(out var error, out var response))
         {
             return BadRequest(error);

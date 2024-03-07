@@ -1,0 +1,31 @@
+﻿{
+  "responses": [
+    {
+      "\u00bfC\u00f3mo valora usted la calidad del almuerzo en la CUJAE? [Bueno]": "No",
+      "\u00bfC\u00f3mo valora usted la calidad del almuerzo en la CUJAE? [Malo]": "No",
+      "\u00bfC\u00f3mo valora usted la calidad del almuerzo en la CUJAE? [Muy Malo]": "No",
+      "\u00bfC\u00f3mo valora usted la calidad del almuerzo en la CUJAE? [No se no almuerzo en la CUJAE]": "S\u00ed",
+      "\u00bfC\u00f3mo cree que es el trato en el comedor con los estudiantes? [Bueno]": "No",
+      "\u00bfC\u00f3mo cree que es el trato en el comedor con los estudiantes? [Malo]": "No",
+      "\u00bfC\u00f3mo cree que es el trato en el comedor con los estudiantes? [No se no almuerzo en la CUJAE]": "S\u00ed"
+    },
+    {
+      "\u00bfC\u00f3mo valora usted la calidad del almuerzo en la CUJAE? [Bueno]": "No",
+      "\u00bfC\u00f3mo valora usted la calidad del almuerzo en la CUJAE? [Malo]": "No",
+      "\u00bfC\u00f3mo valora usted la calidad del almuerzo en la CUJAE? [Muy Malo]": "S\u00ed",
+      "\u00bfC\u00f3mo valora usted la calidad del almuerzo en la CUJAE? [No se no almuerzo en la CUJAE]": "No",
+      "\u00bfC\u00f3mo cree que es el trato en el comedor con los estudiantes? [Bueno]": "No",
+      "\u00bfC\u00f3mo cree que es el trato en el comedor con los estudiantes? [Malo]": "S\u00ed",
+      "\u00bfC\u00f3mo cree que es el trato en el comedor con los estudiantes? [No se no almuerzo en la CUJAE]": "No"
+    },
+    {
+      "\u00bfC\u00f3mo valora usted la calidad del almuerzo en la CUJAE? [Bueno]": "N\/A",
+      "\u00bfC\u00f3mo valora usted la calidad del almuerzo en la CUJAE? [Malo]": "N\/A",
+      "\u00bfC\u00f3mo valora usted la calidad del almuerzo en la CUJAE? [Muy Malo]": "S\u00ed",
+      "\u00bfC\u00f3mo valora usted la calidad del almuerzo en la CUJAE? [No se no almuerzo en la CUJAE]": "N\/A",
+      "\u00bfC\u00f3mo cree que es el trato en el comedor con los estudiantes? [Bueno]": "S\u00ed",
+      "\u00bfC\u00f3mo cree que es el trato en el comedor con los estudiantes? [Malo]": "No",
+      "\u00bfC\u00f3mo cree que es el trato en el comedor con los estudiantes? [No se no almuerzo en la CUJAE]": "No"
+    }
+  ]
+}

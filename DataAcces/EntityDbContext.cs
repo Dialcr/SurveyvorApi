@@ -51,8 +51,6 @@ public class EntityDbContext  : IdentityDbContext<User,IdentityRole<int>, int > 
         modelBuilder.Entity<User>()
             .HasOne(x => x.Organization)
             .WithMany(x=>x.Users);
-        
-        
         modelBuilder.Entity<Ministery>()
             .HasMany(x => x.Universities)
             .WithOne(x => x.Ministery);
@@ -72,13 +70,18 @@ public class EntityDbContext  : IdentityDbContext<User,IdentityRole<int>, int > 
             .WithMany(rp => rp.SurveyResponses);
 
         modelBuilder.Entity<SurveyAsk>()
-            .HasIndex(x => x.SurveyId)
-            .HasMethod("hash");
-        //todo: 
+            .HasIndex(x => x.SurveyId);
+        
+        
         modelBuilder.Entity<ResponsePosibility>()
-            .HasIndex(x => x.SuveryAskId)
-            .HasMethod("hash");
+            .HasIndex(x => x.SuveryAskId);
 
+        modelBuilder.Entity<SurveyAsk>()
+            .HasIndex(x => x.Description);
+        
+        modelBuilder.Entity<ResponsePosibility>()
+            .HasIndex(x => x.ResponseValue);
+        
 
     }
 }

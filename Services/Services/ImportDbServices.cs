@@ -320,7 +320,7 @@ public class ImportDbServices : CustomServiceBase
         
         //agregar survey
         string surveyAsk = string.Empty;
-        List<string> responsePosibilities = new List<string>();
+        var responsePosibilities = new List<string>();
         for (int i = 0; i < keyValuePairs.ElementAt(0).Count(); i++)
         {
             string value = $"{keyValuePairs.ElementAt(0).ElementAt(i).Key}: {keyValuePairs.ElementAt(0).ElementAt(i).Value}";
@@ -337,12 +337,18 @@ public class ImportDbServices : CustomServiceBase
                 };
             }
 
+            var a = i == keyValuePairs.ElementAt(0).Count() - 1;
+            if (a)
+            {
+                responsePosibilities.Add(match.Groups[2].Value.Trim());
+            }
             if (surveyAsk.IsNullOrEmpty())
             {
                 surveyAsk = match.Groups[1].Value.Trim();
             }
-            else if (!surveyAsk.Equals(match.Groups[1].Value.Trim()) || i == keyValuePairs.ElementAt(0).Count() - 1)
+            else if (!surveyAsk.Equals(match.Groups[1].Value.Trim()) || a)
             {
+                //todo: separar los casos para acceiones diferentes que se queda colgada una respuesta 
                 var newSurveyAsk = new SurveyAsk()
                 {
                     Description = surveyAsk,
@@ -365,12 +371,13 @@ public class ImportDbServices : CustomServiceBase
                 }
 
                 surveyAsk = null;
+                responsePosibilities = new List<string>();
             }
             responsePosibilities.Add(match.Groups[2].Value.Trim());
         }
 
         _context.Surveys.Add(newSurvey);
-        
+        await _context.SaveChangesAsync();
         //agregar respuestas
 
         #region MyRegion
@@ -423,10 +430,13 @@ public class ImportDbServices : CustomServiceBase
                     var response = new SurveyResponse()
                     {
                         SurveyAsk = ask,
-                        ResponsePosibility = responseValue
+                        ResponsePosibility = responseValue,
+                        ResponsePosibilityId = responseValue.Id
                     };
                     _context.SurveyResponses.Add(response);
                 }
+
+                surveyAsk = null;
             }
         }
 

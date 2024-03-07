@@ -1,4 +1,6 @@
-﻿namespace Services.Dtos;
+﻿using DataAcces.Entities;
+
+namespace Services.Dtos;
 
 public class SurveyoutputDto
 {
@@ -11,5 +13,23 @@ public class SurveyoutputDto
 
     public int OrganizationId { get; set; }
     public string OrganizationName { get; set; }
+    
+    public int? SurveysCount { get; set; }
 
+}
+public static class SurveyExtention
+{
+    public static SurveyoutputDto ToCanteenCartDto(this Survey survey)
+    {
+        return new SurveyoutputDto()
+        {
+            Id = survey.Id,
+            Description = survey.Description,
+            SatiscationState = survey.SatiscationState,
+            OrganizationId = survey.OrganizationId,
+            OrganizationName = survey.Organization.Name
+
+        };
+
+    }
 }

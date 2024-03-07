@@ -61,10 +61,14 @@ public static class ServiceCollectionExtention
             {
                 ValidateIssuer = true,
                 ValidateAudience = true,
-                LifetimeValidator = (notBefore, expires, securityToken, validationParameters) => true,
+                LifetimeValidator = (notBefore, expires, securityToken, validationParameters) =>  {
+                    return expires > DateTime.UtcNow;
+                },
                 ValidAudience = configuration["JwtSettings:Audience"],
                 ValidIssuer = configuration["JwtSettings:Issuer"],
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSettings:Key"]))
+                ValidateLifetime = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSettings:Key"])),
+                
             };
         });
     

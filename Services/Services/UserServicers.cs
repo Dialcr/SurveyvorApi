@@ -139,6 +139,7 @@ public class UserServicers : CustomServiceBase
 
     public async Task<OneOf<ResponseErrorDto, string>> LoginAsync(string username, string userPassword)
     {
+        //todo: recordar que el tiempo de expiracion del token es de 2 min
         var user = _userManager.Users.FirstOrDefault(x => x.UserName == username);
         if (user is not null)
         {

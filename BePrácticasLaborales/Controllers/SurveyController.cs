@@ -36,11 +36,11 @@ public class SurveyController : ControllerBase
     }
     [HttpGet]
     [Route("/OrganizatinoWithMoreSurvey")]
-    [ProducesResponseType(typeof(ICollection<Survey>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ICollection<SurveyoutputDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResponseErrorDto), StatusCodes.Status400BadRequest)]
     [Authorize(Roles = "ORGANIZATION")]
     //todo: arreglar este metodo
-    public OneOf<ResponseErrorDto, IActionResult> OrganizatinoWithMoreSurvey(int ministeryId )
+    public IActionResult OrganizatinoWithMoreSurvey(int ministeryId )
     { 
         var result = _surveyServices.OrganizatinoWithMoreSurvey();
         if (result.TryPickT0(out var error, out var response))
@@ -84,7 +84,7 @@ public class SurveyController : ControllerBase
     [ProducesResponseType(typeof(ICollection<SurveyAsk>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResponseErrorDto), StatusCodes.Status400BadRequest)]
     [Authorize(Roles = "ORGANIZATION")]
-    public OneOf<ResponseErrorDto, IActionResult> SurveyAskBySurveyId(int surveyId )
+    public IActionResult SurveyAskBySurveyId(int surveyId )
     { 
         var result =  _surveyServices.SurveyAskBySurveyId(surveyId);
         if (result.TryPickT0(out var error, out var response))
@@ -100,7 +100,7 @@ public class SurveyController : ControllerBase
     [ProducesResponseType(typeof(ICollection<ResponsePosibility>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResponseErrorDto), StatusCodes.Status400BadRequest)]
     [Authorize(Roles = "ORGANIZATION")]
-    public OneOf<ResponseErrorDto, IActionResult> SurveyResponsePosibilityBysurvey(int surveyAskId )
+    public  IActionResult SurveyResponsePosibilityBysurvey(int surveyAskId )
     { 
         var result =  _surveyServices.SurveyResponsePosibilityBysurvey(surveyAskId);
         if (result.TryPickT0(out var error, out var response))
@@ -115,7 +115,7 @@ public class SurveyController : ControllerBase
     [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResponseErrorDto), StatusCodes.Status400BadRequest)]
     [Authorize(Roles = "ORGANIZATION")]
-    public OneOf<ResponseErrorDto, IActionResult> CountSurveyResponsesBysurveyask(int surveyAskId , int responseId)
+    public  IActionResult CountSurveyResponsesBysurveyask(int surveyAskId , int responseId)
     { 
         var result =  _surveyServices.CountSurveyResponsesBysurveyask(surveyAskId, responseId);
         if (result.TryPickT0(out var error, out var response))
@@ -130,7 +130,7 @@ public class SurveyController : ControllerBase
     [ProducesResponseType(typeof(double), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResponseErrorDto), StatusCodes.Status400BadRequest)]
     [Authorize(Roles = "ORGANIZATION")]
-    public OneOf<ResponseErrorDto, IActionResult> PorcentSurveyResponsesBysurveyask(int surveyAskId , int responseId)
+    public  IActionResult PorcentSurveyResponsesBysurveyask(int surveyAskId , int responseId)
     { 
         var result =  _surveyServices.PorcentSurveyResponsesBysurveyask(surveyAskId, responseId);
         if (result.TryPickT0(out var error, out var response))

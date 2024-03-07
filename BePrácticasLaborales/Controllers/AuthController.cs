@@ -98,7 +98,6 @@ public class AuthController : ControllerBase
         var result = await _userServicers.CreateUserAsync(userIntputDto,Url, accountController);
         if (result.TryPickT0(out var error, out var response))
         {
-            
             return BadRequest(error);
         }
         return Ok(response) ;

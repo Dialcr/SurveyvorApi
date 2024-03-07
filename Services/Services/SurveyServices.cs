@@ -12,10 +12,11 @@ public class SurveyServices : CustomServiceBase
     {
     }
     
-    public OneOf<ResponseErrorDto, ICollection<Survey>> OrganizatinoWithMoreSurvey()
+    public OneOf<ResponseErrorDto, ICollection<SurveyoutputDto>> OrganizatinoWithMoreSurvey()
     {
-        var surveys = _context.Surveys.Include(x => x.SurveyAsks)
-            .ThenInclude(x => x.SurveyResponses)
+        var surveys = _context.Surveys
+            .Include(x=>x.SurveyAsks)
+            .Include(x=>x.Organization)
             .OrderByDescending(x => x.SurveyAsks.Sum(z => z.SurveyResponses!.Count())).ToList();
         if (!surveys.Any())
         {
@@ -25,7 +26,7 @@ public class SurveyServices : CustomServiceBase
                 ErrorMessage = "Organization list not found"
             };
         }
-        return surveys;
+        return surveys.Select(x=> x.ToCanteenCartDto()).ToList();
     }
     public async Task<OneOf<ResponseErrorDto, ICollection<Survey>>> SurveyByUniversity(int organizationId)
     {
@@ -131,7 +132,24 @@ public class SurveyServices : CustomServiceBase
         }
 
         return (cant* 100.0) / total;
-    }  
+    }
+    public OneOf<ResponseErrorDto, double> AllSurvey(int surveyAskId, int reponse)
+    {
+        var cant =
+            _context.SurveyResponses.Count(x => x.SuveryAskId == surveyAskId && x.ResponsePosibilityId == reponse);
+        var total = _context.SurveyResponses.Count();
+        if (cant ==0)
+        {
+            return new ResponseErrorDto()
+            {
+                ErrorCode = 404,
+                ErrorMessage = $"not one response with reponse {reponse} for survey ask with id {surveyAskId}"
+            };
+                
+        }
+
+        return (cant* 100.0) / total;
+    }
     
     
 }

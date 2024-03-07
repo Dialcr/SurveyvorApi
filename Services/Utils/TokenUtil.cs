@@ -48,14 +48,15 @@ public class TokenUtil
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
+        var expires = DateTime.Now.AddMinutes(_jwtSettings.LifeTimeToken);
         var token = new JwtSecurityToken(
             issuer: _jwtSettings.Issuer,
             audience: _jwtSettings.Audience,
             claims: claims,
-            signingCredentials: creds
+            signingCredentials: creds,
+            expires: expires
         );
-
-        return new JwtSecurityTokenHandler().WriteToken(token);
+        var jwtToken = new JwtSecurityTokenHandler().WriteToken(token);
+        return jwtToken;
     }
 }

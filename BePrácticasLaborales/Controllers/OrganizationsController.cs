@@ -1,5 +1,4 @@
-﻿
-using DataAcces.Entities;
+﻿using DataAcces.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OneOf;
@@ -50,7 +49,8 @@ public class OrganizationsController : ControllerBase
     [ProducesResponseType(typeof(ICollection<University>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResponseErrorDto), StatusCodes.Status404NotFound)]
     [Route("getAllUniversiti")]
-    [Authorize(Roles = "ORGANIZATION")]
+    //[Authorize(Roles = "ADMIN")]
+    [AllowAnonymous]
     public IActionResult GetAllUniversity(int ministeryId)
     {
         var result = _organizationServices.GetAllUniversity(ministeryId);

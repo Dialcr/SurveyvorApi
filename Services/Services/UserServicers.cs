@@ -40,7 +40,7 @@ public class UserServicers : CustomServiceBase
     }
 
     public async Task<OneOf<ResponseErrorDto,User>> CreateUserAsync(UserIntputDto userIntputDto, IUrlHelper urlHelper
-    ,string accountController)
+        ,string accountController)
     {   
         var result = await _userManager!.CreateAsync(new User()
         {
@@ -65,31 +65,15 @@ public class UserServicers : CustomServiceBase
         {
             try
             {
-                if (userIntputDto.Role.ToLower() == RoleNames.Admin.ToLower())
+                if (user.OrganizationId is null)
                 {
-                    if (user.OrganizationId is not null)
+                    return new ResponseErrorDto()
                     {
-                        return new ResponseErrorDto()
-                        {
-                            ErrorCode = 400,
-                            ErrorMessage = "Error the user cant have admin role and organization"
-                        };
-                    }
-                    await _userManager.AddToRoleAsync(user, RoleNames.Admin.ToUpper());
-                    
+                        ErrorCode = 400,
+                        ErrorMessage = "Error the user cant have organization role and have not organization assigned"
+                    };
                 }
-                else
-                {
-                    if (user.OrganizationId is null)
-                    {
-                        return new ResponseErrorDto()
-                        {
-                            ErrorCode = 400,
-                            ErrorMessage = "Error the user cant have organization role and have not organization assigned"
-                        };
-                    }
-                    await _userManager.AddToRoleAsync(user, RoleNames.Organization.ToUpper());
-                }
+                await _userManager.AddToRoleAsync(user, RoleNames.Organization.ToUpper());
                 
 #if DEBUG   
                 var templatePath = "./../Services/Services/Template/ConfirmEmailTemplate.html";
@@ -383,12 +367,12 @@ public class UserServicers : CustomServiceBase
         var httpContext = new HttpContextAccessor().HttpContext;
         if (httpContext is not null)
         {
-            var confirmationLink = urlHelper.Action(nameof(AccountController.ConfirmEmailToken), 
-                "Account", 
+            var confirmationLink = urlHelper.Action(nameof(AccountController.ConfirmEmailToken),
+                "Account",
                 new { token, userName  = user.UserName },
                 httpContext.Request.Scheme, _mailSettings.UrlWEB);
             mailMessage.Body = $"Para confirmar su cuenta, haga click en el siguiente enlace:\n\n{confirmationLink}\n\naqui deberia de haber un link";
-            
+
             _emailServices.SendEmail(mailMessage,token);
         }
         return true;

@@ -56,7 +56,7 @@ public class AuthController : ControllerBase
         return Ok("good response");
         
     }
-    [HttpGet("obtener-id-usuario")]
+    [HttpGet("  obtener-id-usuario")]
     public IActionResult ObtenerIdUsuario()
     {
         // Obtiene el ClaimsPrincipal actual

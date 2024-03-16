@@ -99,4 +99,31 @@ public static class ServiceCollectionExtention
         services.Configure<MailSettings>(configuration.GetSection("MailSettings"));
         return services;
     }
+    
+    public static IServiceCollection SetCors(
+        this IServiceCollection services,
+        IConfiguration configuration,
+        string policyName)
+    {
+        var origins = configuration
+            .GetSection("CorsAllowedOrigins")
+            .Get<string[]>();
+
+        if (origins is null)
+            throw new NullReferenceException(nameof(origins));
+
+        services.AddCors(options =>
+        {
+            options.AddPolicy(name: policyName, builder =>
+            {
+                builder
+                    .WithOrigins(origins)
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials();
+            });
+        });
+
+        return services;
+    }
 }

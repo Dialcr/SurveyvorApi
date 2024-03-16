@@ -4,6 +4,8 @@ using BePrácticasLaborales.DataAcces;
 using HibernatingRhinos.Profiler.Appender.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 
+const string corsPolicyName = "MyCustomPolicy";
+
 //using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +14,7 @@ var loggingLevel = builder.Configuration.GetSection("Logging");
 
 
 builder.Services.AddControllers();
+builder.Services.SetCors(builder.Configuration, corsPolicyName);
 builder.Services.AddSwaggerGen();   
 builder.Services.AddEndpointsApiExplorer();
 

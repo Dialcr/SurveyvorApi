@@ -1,5 +1,4 @@
-﻿using System.Security.Claims;
-using DataAcces.Entities;
+﻿using DataAcces.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -70,13 +69,13 @@ public class AuthController : ControllerBase
     */
     [HttpPost]
     [Route("signin")]
-    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(AuthResponseDtoOutput), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResponseErrorDto), StatusCodes.Status400BadRequest)]
     [AllowAnonymous]
     public async Task<IActionResult> Signin(
-      string username, string userPassword)
+     [FromBody]UserSignIn userSignIn)
     {
-        var result = await _userServicers.LoginAsync(username, userPassword);
+        var result = await _userServicers.LoginAsync(userSignIn.Username, userSignIn.UserPassword);
         if (result.TryPickT0(out var error, out var response))
         {
             return BadRequest(error);

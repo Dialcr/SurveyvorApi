@@ -88,7 +88,8 @@ public class AuthController : ControllerBase
     [Route("registrer")]
     [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResponseErrorDto), StatusCodes.Status400BadRequest)]
-    [Authorize(Roles = "ADMIN")]
+    //[Authorize(Roles = "ADMIN")]
+    [AllowAnonymous]
     public async Task<IActionResult> UserRegistrer(
         [FromBody] UserIntputDto userIntputDto)
     {

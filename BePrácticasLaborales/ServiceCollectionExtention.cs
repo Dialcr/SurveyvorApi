@@ -41,7 +41,8 @@ public static class ServiceCollectionExtention
             UserIdClaimType = ClaimTypes.NameIdentifier,
             UserNameClaimType = ClaimTypes.Name 
         };
-        options.SignIn.RequireConfirmedEmail = true;
+        //change this emailconfirm
+        options.SignIn.RequireConfirmedEmail = false;
     })
         .AddEntityFrameworkStores<EntityDbContext>()
         .AddDefaultTokenProviders()

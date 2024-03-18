@@ -121,7 +121,7 @@ public class UserServicers : CustomServiceBase
         };
     }
 
-    public async Task<OneOf<ResponseErrorDto, string>> LoginAsync(string username, string userPassword)
+    public async Task<OneOf<ResponseErrorDto, AuthResponseDtoOutput>> LoginAsync(string username, string userPassword)
     {
         //todo: recordar que el tiempo de expiracion del token es de 2 min
         var user = _userManager.Users.FirstOrDefault(x => x.UserName == username);
@@ -132,8 +132,22 @@ public class UserServicers : CustomServiceBase
             
             if (result.Succeeded)
             {
+                var role = await _userManager.GetRolesAsync(user);
                 var token =  await _tokenUtil.GenerateTokenAsync(user);
-                return token;
+                return new AuthResponseDtoOutput()
+                {
+                    User = new UserOutputDto()
+                    {
+                        UserName = user.UserName!,
+                        Email = user.Email!,
+                        Role = role[0]
+                    },
+                    Authentication = new Jwt()
+                    {
+                        AccessToken = token
+                    },
+                    UserId = user.Id
+                };
             }
             
             return new ResponseErrorDto()

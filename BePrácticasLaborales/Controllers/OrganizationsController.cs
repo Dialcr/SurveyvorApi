@@ -7,6 +7,8 @@ using Services.Services;
 
 namespace BePrácticasLaborales.Controllers;
 
+[ApiController]
+[Route("api/[controller]")]
 public class OrganizationsController : ControllerBase
 {
     private readonly OrganizationServices _organizationServices;
@@ -48,17 +50,31 @@ public class OrganizationsController : ControllerBase
     [HttpGet]
     [ProducesResponseType(typeof(ICollection<University>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResponseErrorDto), StatusCodes.Status404NotFound)]
-    [Route("getAllUniversiti")]
+    [Route("getAllUniversityByMinistery")]
     //[Authorize(Roles = "ADMIN")]
     [AllowAnonymous]
-    public IActionResult GetAllUniversity(int ministeryId)
+    public IActionResult GetAllUniversityByMinistery(int ministeryId)
     {
-        var result = _organizationServices.GetAllUniversity(ministeryId);
+        var result = _organizationServices.GetAllUniversityByMinistery(ministeryId);
         if (result.TryPickT0(out var error, out var response))
         {
             return NotFound(error);
         }
         return Ok(response);
+    }
+    
+    [HttpGet]
+    [ProducesResponseType(typeof(ICollection<University>), StatusCodes.Status200OK)]
+    [Route("getAllUniversity")]
+    [AllowAnonymous]
+    public IActionResult GetAllUniversity()
+    {
+        var result = _organizationServices.GetAllUniversity();
+        if (!result.Any())
+        {
+            return BadRequest(result);
+        }
+        return Ok(result);
     }
     [HttpPost]
     [ProducesResponseType(typeof(UniversityOutputDto), StatusCodes.Status200OK)]

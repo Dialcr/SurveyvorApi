@@ -69,16 +69,10 @@ public class OrganizationServices : CustomServiceBase
         };
         _context.University.Add(newUniversity);
         await _context.SaveChangesAsync();
-        var uni = await 
+        var university = await 
             _context.University.FirstOrDefaultAsync(x =>
                 x.Name == universitiIntputDto.Name && x.MinisteryId == ministery.Id);
-        return new UniversityOutputDto()
-        {
-            Id = uni!.Id,
-            Enable = uni.Enable,
-            MinisteryId = uni.MinisteryId,
-            Name = uni.Name
-        };
+        return university.ToUniversityOutputDto();
     }
     public async Task<OneOf<ResponseErrorDto, Ministery>> AddMinnistery(UniversitiIntputDto newMinistery)
     {
@@ -116,7 +110,7 @@ public class OrganizationServices : CustomServiceBase
 
         return university;
     }
-    public OneOf<ResponseErrorDto, ICollection<University>> GetAllUniversity(int ministeryid)
+    public OneOf<ResponseErrorDto, ICollection<University>> GetAllUniversityByMinistery(int ministeryid)
     {
         var university =  _context.University.Where(x=>x.MinisteryId == ministeryid);
         if (!university.Any())
@@ -129,6 +123,10 @@ public class OrganizationServices : CustomServiceBase
         }
 
         return university.ToList();
+    }
+    public IEnumerable<UniversityOutputDto> GetAllUniversity()
+    {
+        return _context.University.Where(x => x.Enable).Select(x=>x.ToUniversityOutputDto());
     }
     public async Task<OneOf<ResponseErrorDto, Ministery>> GetMinistery(int ministryId)
     {

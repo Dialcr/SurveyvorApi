@@ -7,8 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 using Services.Services;
 
 namespace BePrácticasLaborales.Controllers;
-
-public class AccountController : Controller
+[ApiController]
+[Route("api/[controller]")]
+public class AccountController : ControllerBase
 {
     private readonly UserManager<User> _userManager;
     private readonly UserServicers _userServices;

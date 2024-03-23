@@ -9,7 +9,6 @@ using Services.Utils;
 namespace BePrácticasLaborales.Controllers;
 [ApiController]
 [Route("[Controller]")]
-
 public class AuthController : ControllerBase
 {
     private readonly UserManager<User> _userManager;

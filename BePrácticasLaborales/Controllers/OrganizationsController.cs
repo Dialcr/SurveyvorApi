@@ -18,20 +18,7 @@ public class OrganizationsController : ControllerBase
         _organizationServices = organizationServices;
     }
 
-    [HttpGet]
-    [ProducesResponseType(typeof(Ministery), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ResponseErrorDto), StatusCodes.Status404NotFound)]
-    [Route("getMinisteryById")]
-    [Authorize(Roles = "ORGANIZATION")]
-    public async Task<IActionResult> GetMinisteryById(int ministeryId)
-    {
-        var result = await _organizationServices.GetMinistery(ministeryId);
-        if (result.TryPickT0(out var error, out var response))
-        {
-            return NotFound(error);
-        }
-        return Ok(response);
-    }
+    
     [HttpGet]
     [ProducesResponseType(typeof(University), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResponseErrorDto), StatusCodes.Status404NotFound)]
@@ -47,22 +34,7 @@ public class OrganizationsController : ControllerBase
         }
         return Ok(response);
     }
-    [HttpGet]
-    [ProducesResponseType(typeof(ICollection<University>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ResponseErrorDto), StatusCodes.Status404NotFound)]
-    [Route("getAllUniversityByMinistery")]
-    //[Authorize(Roles = "ADMIN")]
-    [AllowAnonymous]
-    public IActionResult GetAllUniversityByMinistery(int ministeryId)
-    {
-        var result = _organizationServices.GetAllUniversityByMinistery(ministeryId);
-        if (result.TryPickT0(out var error, out var response))
-        {
-            return NotFound(error);
-        }
-        return Ok(response);
-    }
-    
+   
     [HttpGet]
     [ProducesResponseType(typeof(ICollection<University>), StatusCodes.Status200OK)]
     [Route("getAllUniversity")]
@@ -90,28 +62,15 @@ public class OrganizationsController : ControllerBase
         }
         return Ok(response);
     }
-    [HttpPost]
-    [ProducesResponseType(typeof(Ministery), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ResponseErrorDto), StatusCodes.Status400BadRequest)]
-    [Route("addMinistery")]
-    [Authorize(Roles = "ADMIN")]
-    public async Task<IActionResult> AddMinistery(UniversitiIntputDto ministery)
-    {
-        var result = await _organizationServices.AddMinnistery(ministery);
-        if (result.TryPickT0(out var error, out var response))
-        {
-            return BadRequest(error);
-        }
-        return Ok(response);
-    }
+   
     [HttpPut]
-    [ProducesResponseType(typeof(Organization), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(University), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResponseErrorDto), StatusCodes.Status400BadRequest)]
     [Route("editOrganization")]
     [Authorize(Roles = "ADMIN")] 
-    public async Task<IActionResult> EditOrganization(OrganizatinosIntupDto organizatinosIntupDto, int organizationId)
+    public async Task<IActionResult> EditUniversity(UniversityIntupDto universityIntupDto, int organizationId)
     {
-        var result = await _organizationServices.EditOrganization(organizationId,organizatinosIntupDto);
+        var result = await _organizationServices.EditOrganization(organizationId,universityIntupDto);
         if (result.TryPickT0(out var error, out var response))
         {
             return BadRequest(error);

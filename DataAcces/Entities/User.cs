@@ -8,6 +8,6 @@ public class User : IdentityUser<int>
     public int? OrganizationId { get; set; }
     
     [ForeignKey(nameof(OrganizationId))]
-    public Organization? Organization { get; set; }
+    public University? Organization { get; set; }
     
 }

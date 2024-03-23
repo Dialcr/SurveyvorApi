@@ -1,6 +1,6 @@
 ﻿namespace Services.Dtos;
 
-public class OrganizatinosIntupDto
+public class UniversityIntupDto
 {
     public string Name { get; set; }
     

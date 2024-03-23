@@ -298,17 +298,9 @@ public class UserServicers : CustomServiceBase
 
                 };
             }
-            //var token = await _userManager.GenerateUserTokenAsync(user, TokenOptions.DefaultProvider, "recovery_password");
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
             var mailMessage = new MailMessage(_mailSettings.From, user.Email!);
             mailMessage.Subject = "Reset Password";
-            
-            /*
-            var confirmationLink = urlHelper.Action(nameof(AccountController.ResetPassword),
-                "Account",
-                new { userEmail=email,token,newPassword },
-                httpContext.Request.Scheme, _mailSettings.UrlWEB);
-            */
                 
             string urlConToken = $"{_mailSettings.UrlWEBFront}?token={token}";
 

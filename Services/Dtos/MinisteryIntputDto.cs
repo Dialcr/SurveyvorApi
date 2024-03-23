@@ -1,6 +1,6 @@
 ﻿namespace Services.Dtos;
 
-public class MinisteryIntputDto: OrganizatinosIntupDto
+public class MinisteryIntputDto: UniversityIntupDto
 {
     public List<int> UniversitiesId { get; set; }
 }

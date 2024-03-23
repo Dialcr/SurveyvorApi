@@ -13,13 +13,9 @@ public class EntityDbContext  : IdentityDbContext<User,IdentityRole<int>, int > 
     }
     
     public DbSet<User> User { get; set; }
-//public DbSet<IdentityRole> IdentityRole { get; set; }
-    public DbSet<Organization> Organization { get; set; }
-/*
-*/
+    public DbSet<IdentityRole> IdentityRole { get; set; }
+
     public DbSet<University> University { get; set; }
-    public DbSet<Ministery> Ministery { get; set; }
-    
     public DbSet<Survey> Surveys { get; set; }
     public DbSet<SurveyAsk>  SurveyAsks{ get; set; }
     public DbSet<SurveyResponse> SurveyResponses { get; set; }
@@ -51,9 +47,6 @@ public class EntityDbContext  : IdentityDbContext<User,IdentityRole<int>, int > 
         modelBuilder.Entity<User>()
             .HasOne(x => x.Organization)
             .WithMany(x=>x.Users);
-        modelBuilder.Entity<Ministery>()
-            .HasMany(x => x.Universities)
-            .WithOne(x => x.Ministery);
         
         modelBuilder.Entity<Survey>()
             .HasOne(x=>x.Organization)
@@ -81,7 +74,10 @@ public class EntityDbContext  : IdentityDbContext<User,IdentityRole<int>, int > 
         
         modelBuilder.Entity<ResponsePosibility>()
             .HasIndex(x => x.ResponseValue);
-        
+
+        modelBuilder.Entity<University>()
+            .HasIndex(x => x.Name)
+            .IsUnique();
 
     }
 }

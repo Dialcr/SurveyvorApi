@@ -28,9 +28,9 @@ public class SurveyServices : CustomServiceBase
         }
         return surveys.Select(x=> x.ToSurveyOutputtDto()).ToList();
     }
-    public async Task<OneOf<ResponseErrorDto, ICollection<SurveyoutputDto>>> SurveyByUniversity(int organizationId)
+    public async Task<OneOf<ResponseErrorDto, ICollection<SurveyoutputDto>>> SurveyByUniversity(int universityId)
     {
-        var organization = await _context.Organization.SingleOrDefaultAsync(x=>x.Id == organizationId);
+        var organization = await _context.University.SingleOrDefaultAsync(x=>x.Id == universityId);
         if (organization is null)
         {
             return new ResponseErrorDto()
@@ -41,33 +41,15 @@ public class SurveyServices : CustomServiceBase
             };
         }
         var surveys = new List<Survey>();
-        if (organization is Ministery)
+        surveys = _context.Surveys.Include(x=>x.Organization).Where(x => x.OrganizationId == universityId).ToList();
+        if (!surveys.Any())
         {
-            surveys = _context.Surveys.Include(x=>x.Organization).Where(x=>_context.Organization.
-                    FirstOrDefault(y=>y.Id == x.Id)!.Id == organizationId )
-                .ToList();
-            if (!surveys.Any())
+            return new ResponseErrorDto()
             {
-                return new ResponseErrorDto()
-                {
-                    ErrorCode = 404,
-                    ErrorMessage = $"Survey list of organization with id {organizationId} not found"
-                };
+                ErrorCode = 404,
+                ErrorMessage = $"Survey list of organization with id {universityId} not found"
+            };
                 
-            }
-        }
-        else
-        {
-            surveys = _context.Surveys.Include(x=>x.Organization).Where(x => x.OrganizationId == organizationId).ToList();
-            if (!surveys.Any())
-            {
-                return new ResponseErrorDto()
-                {
-                    ErrorCode = 404,
-                    ErrorMessage = $"Survey list of organization with id {organizationId} not found"
-                };
-                
-            }
         }
         
         return surveys.Select(x=>x.ToSurveyOutputtDto()).ToList();
@@ -157,7 +139,7 @@ public class SurveyServices : CustomServiceBase
             _context.SurveyResponses.Include(x=>x.ResponsePosibility)
                 .Include(x=>x.SurveyAsk)
                 .Where(x => x.SurveyAsk!.SurveyId== surveyId 
-                                                && x.SurveyAsk.Description == surveyAskDescription);
+                            && x.SurveyAsk.Description == surveyAskDescription);
        
         if (!surveyResponses.Any())
         {
@@ -191,9 +173,9 @@ public class SurveyServices : CustomServiceBase
 
         return (cant* 100.0) / total;
     }
-    public async Task<OneOf<ResponseErrorDto, ICollection<SurveyoutputDto>>> SurveyByUniversityName(string organizationName)
+    public async Task<OneOf<ResponseErrorDto, IEnumerable<SurveyoutputDto>>> SurveyByUniversityName(string universityName)
     {
-        var organization = await _context.Organization.SingleOrDefaultAsync(x=>x.Name == organizationName);
+        var organization = await _context.University.SingleOrDefaultAsync(x=>x.Name == universityName);
         if (organization is null)
         {
             return new ResponseErrorDto()
@@ -204,35 +186,16 @@ public class SurveyServices : CustomServiceBase
             };
         }
         var surveys = new List<Survey>();
-        if (organization is Ministery)
+        surveys = _context.Surveys.Include(x=>x.Organization).Where(x => x.Organization!.Name == universityName).ToList();
+        if (!surveys.Any())
         {
-            surveys = _context.Surveys.Include(x=>x.Organization).Where(x=>_context.Organization.
-                    FirstOrDefault(y=>y.Id == x.Id)!.Name == organizationName )
-                .ToList();
-            if (!surveys.Any())
+            return new ResponseErrorDto()
             {
-                return new ResponseErrorDto()
-                {
-                    ErrorCode = 404,
-                    ErrorMessage = $"Survey list of organization {organizationName} not found"
-                };
+                ErrorCode = 404,
+                ErrorMessage = $"Survey list of organization {universityName} not found"
+            };
                 
-            }
         }
-        else
-        {
-            surveys = _context.Surveys.Include(x=>x.Organization).Where(x => x.Organization!.Name == organizationName).ToList();
-            if (!surveys.Any())
-            {
-                return new ResponseErrorDto()
-                {
-                    ErrorCode = 404,
-                    ErrorMessage = $"Survey list of organization {organizationName} not found"
-                };
-                
-            }
-        }
-        
         return surveys.Select(x=>x.ToSurveyOutputtDto()).ToList();
     }
 }

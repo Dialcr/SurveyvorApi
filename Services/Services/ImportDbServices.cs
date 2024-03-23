@@ -236,7 +236,7 @@ public class ImportDbServices : CustomServiceBase
                 try
                 {
                     
-                    var organization = _context.Organization.FirstOrDefault(x=>x.Name == fileName);
+                    var organization = _context.University.FirstOrDefault(x=>x.Name == fileName);
                     if (organization is null)
                     {
                         return new ResponseErrorDto()

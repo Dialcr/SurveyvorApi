@@ -16,7 +16,7 @@ public class Survey
 
     public int OrganizationId { get; set; }
     [ForeignKey(nameof(OrganizationId))]
-    public Organization? Organization { get; set; }
+    public University? Organization { get; set; }
 
     public DateTimeOffset StartDate { get; set; }
     public DateTimeOffset EndDate { get; set; }

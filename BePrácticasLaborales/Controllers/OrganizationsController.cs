@@ -8,7 +8,7 @@ using Services.Services;
 namespace BePrácticasLaborales.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("[controller]")]
 public class OrganizationsController : ControllerBase
 {
     private readonly OrganizationServices _organizationServices;

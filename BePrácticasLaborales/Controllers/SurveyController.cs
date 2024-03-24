@@ -57,7 +57,7 @@ public class SurveyController : ControllerBase
     [Authorize(Roles = "ORGANIZATION")]
     public async Task<IActionResult> SurveyByUniversity(int organizationId )
     { 
-        var result = await _surveyServices.SurveyByUniversity(organizationId);
+        var result = await _surveyServices.SurveyByUniversityId(organizationId);
         if (result.TryPickT0(out var error, out var response))
         {
             return BadRequest(error);
@@ -172,6 +172,20 @@ public class SurveyController : ControllerBase
         }
         return Ok(response);
         
+    }
+    [HttpGet]
+    [Route("/GetSurveyInfo")]
+    [ProducesResponseType(typeof(SurveyoutputDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ResponseErrorDto), StatusCodes.Status400BadRequest)]
+    [Authorize(Roles = "ORGANIZATION")]
+    public IActionResult GetSurveyInfo(int surveyId)
+    { 
+        var result =  _surveyServices.GetSurveyInfo(surveyId);
+        if (result.TryPickT0(out var error, out var response))
+        {
+            return BadRequest(error);
+        }
+        return Ok(response);
     }
     
 }

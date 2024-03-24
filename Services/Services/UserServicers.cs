@@ -39,7 +39,7 @@ public class UserServicers : CustomServiceBase
         _emailServices = emailServices;
     }
 
-    public async Task<OneOf<ResponseErrorDto,User>> CreateUserAsync(UserIntputDto userIntputDto, IUrlHelper urlHelper
+    public async Task<OneOf<ResponseErrorDto,UserOutputDto>> CreateUserAsync(UserIntputDto userIntputDto, IUrlHelper urlHelper
         ,string accountController)
     {   
         var result = await _userManager!.CreateAsync(new User()
@@ -102,7 +102,10 @@ public class UserServicers : CustomServiceBase
                 }
                 _emailServices.SendEmail(mailMessage,token);
 
-                return user;
+                var userOutput = user.ToUserOutputDto();
+                var role = await _userManager.GetRolesAsync(user);
+                userOutput.Role = role[0];
+                return userOutput ;
             }
             catch (Exception e)
             {
@@ -122,9 +125,30 @@ public class UserServicers : CustomServiceBase
         };
     }
 
+    public async Task<OneOf<ResponseErrorDto, UserOutputDto>> EditUser(UserIntputDto userIntputDto)
+    {
+        var user = _userManager!.FindByNameAsync(userIntputDto.Name).Result;
+        if (user is null)
+        {
+            return new ResponseErrorDto()
+            {
+                ErrorCode = 404,
+                ErrorMessage = "User not found"
+            };
+        }
+
+        user.Email = userIntputDto.Email;
+        user.OrganizationId = userIntputDto.OrganizationId;
+        user.Image = userIntputDto.Image ?? user.Image;
+     
+        var userOutput = user.ToUserOutputDto();
+        var role = await _userManager.GetRolesAsync(user);
+        userOutput.Role = role[0];
+        return userOutput ;
+    }
+
     public async Task<OneOf<ResponseErrorDto, AuthResponseDtoOutput>> LoginAsync(string username, string userPassword)
     {
-        //todo: recordar que el tiempo de expiracion del token es de 2 min
         var user = _userManager.Users.FirstOrDefault(x => x.UserName == username);
         if (user is not null)
         {
@@ -139,7 +163,7 @@ public class UserServicers : CustomServiceBase
                 {
                     User = new UserOutputDto()
                     {
-                        UserName = user.UserName!,
+                        Name = user.UserName!,
                         Email = user.Email!,
                         Role = role[0]
                     },

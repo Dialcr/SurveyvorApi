@@ -85,7 +85,7 @@ public class AuthController : ControllerBase
     
     [HttpPost]
     [Route("registrer")]
-    [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(UserOutputDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResponseErrorDto), StatusCodes.Status400BadRequest)]
     //[Authorize(Roles = "ADMIN")]
     [AllowAnonymous]
@@ -95,6 +95,22 @@ public class AuthController : ControllerBase
         var accountController = nameof(AccountController.ConfirmEmailToken);
         
         var result = await _userServicers.CreateUserAsync(userIntputDto,Url, accountController);
+        if (result.TryPickT0(out var error, out var response))
+        {
+            return BadRequest(error);
+        }
+        return Ok(response) ;
+    }
+     [HttpPatch]
+    [Route("editUser")]
+    [ProducesResponseType(typeof(UserOutputDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ResponseErrorDto), StatusCodes.Status400BadRequest)]
+    [Authorize(Roles = "ADMIN")]
+    [Authorize(Roles = "ORGANIZATION")]
+    public async Task<IActionResult> EditUser(
+        [FromBody] UserIntputDto userIntputDto)
+    {
+        var result = await _userServicers.EditUser(userIntputDto);
         if (result.TryPickT0(out var error, out var response))
         {
             return BadRequest(error);

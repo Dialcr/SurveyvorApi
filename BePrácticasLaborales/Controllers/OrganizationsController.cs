@@ -23,6 +23,7 @@ public class OrganizationsController : ControllerBase
     [ProducesResponseType(typeof(University), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResponseErrorDto), StatusCodes.Status404NotFound)]
     [Route("GetUniversityById")]
+    [Authorize(Roles = "ADMIN")]
     [Authorize(Roles = "ORGANIZATION")]
     public async Task<IActionResult> GetUniversityById(int universityId)
     {
@@ -64,13 +65,29 @@ public class OrganizationsController : ControllerBase
     }
    
     [HttpPut]
-    [ProducesResponseType(typeof(University), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(UniversityOutputDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResponseErrorDto), StatusCodes.Status400BadRequest)]
     [Route("editOrganization")]
     [Authorize(Roles = "ADMIN")] 
-    public async Task<IActionResult> EditUniversity(UniversityIntupDto universityIntupDto, int organizationId)
+    [Authorize(Roles = "ORGANIZATION")] 
+    public async Task<IActionResult> EditUniversity([FromBody]UniversityIntupDto universityIntupDto)
     {
-        var result = await _organizationServices.EditOrganization(organizationId,universityIntupDto);
+        var result = await _organizationServices.EditOrganization(universityIntupDto.Id,universityIntupDto);
+        if (result.TryPickT0(out var error, out var response))
+        {
+            return BadRequest(error);
+        }
+        return Ok(response);
+    }
+    [HttpPut]
+    [ProducesResponseType(typeof(UniversityOutputDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ResponseErrorDto), StatusCodes.Status400BadRequest)]
+    [Route("DisableUnivarsity")]
+    [Authorize(Roles = "ADMIN")] 
+    public IActionResult DisableUnivarsity([FromBody]int universityId)
+    {
+        //todo: esto alomejor hay que cambiarlo por deleteUniversity
+        var result = _organizationServices.DisableUnivarsity(universityId);
         if (result.TryPickT0(out var error, out var response))
         {
             return BadRequest(error);

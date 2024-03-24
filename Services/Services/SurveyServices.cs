@@ -6,12 +6,8 @@ using Services.Dtos;
 
 namespace Services.Services;
 
-public class SurveyServices : CustomServiceBase
+public class SurveyServices(EntityDbContext context) : CustomServiceBase(context)
 {
-    public SurveyServices(EntityDbContext context) : base(context)
-    {
-    }
-    
     public OneOf<ResponseErrorDto, ICollection<SurveyoutputDto>> OrganizatinoWithMoreSurvey()
     {
         var surveys = _context.Surveys
@@ -26,9 +22,9 @@ public class SurveyServices : CustomServiceBase
                 ErrorMessage = "Organization list not found"
             };
         }
-        return surveys.Select(x=> x.ToSurveyOutputtDto()).ToList();
+        return surveys.Select(x=> x.ToSurveyOutputDtoWithResponses()).ToList();
     }
-    public async Task<OneOf<ResponseErrorDto, ICollection<SurveyoutputDto>>> SurveyByUniversity(int universityId)
+    public async Task<OneOf<ResponseErrorDto, ICollection<SurveyoutputDto>>> SurveyByUniversityId(int universityId)
     {
         var organization = await _context.University.SingleOrDefaultAsync(x=>x.Id == universityId);
         if (organization is null)
@@ -40,8 +36,12 @@ public class SurveyServices : CustomServiceBase
 
             };
         }
-        var surveys = new List<Survey>();
-        surveys = _context.Surveys.Include(x=>x.Organization).Where(x => x.OrganizationId == universityId).ToList();
+
+        var surveys = _context.Surveys
+            .Include(x => x.Organization)
+            .Include(x => x.SurveyAsks)
+            .ThenInclude(x=>x.SurveyResponses)
+            .Where(x=>x.OrganizationId == universityId);
         if (!surveys.Any())
         {
             return new ResponseErrorDto()
@@ -52,7 +52,7 @@ public class SurveyServices : CustomServiceBase
                 
         }
         
-        return surveys.Select(x=>x.ToSurveyOutputtDto()).ToList();
+        return surveys.Select(x=> x.ToSurveyOutputDtoWithResponses()).ToList();
     }
     public OneOf<ResponseErrorDto, ICollection<SurveyAsk>> SurveyAskBySurveyId(int surveyId)
     {
@@ -173,7 +173,7 @@ public class SurveyServices : CustomServiceBase
 
         return (cant* 100.0) / total;
     }
-    public async Task<OneOf<ResponseErrorDto, IEnumerable<SurveyoutputDto>>> SurveyByUniversityName(string universityName)
+    public async Task<OneOf<ResponseErrorDto, ICollection<SurveyoutputDto>>> SurveyByUniversityName(string universityName)
     {
         var organization = await _context.University.SingleOrDefaultAsync(x=>x.Name == universityName);
         if (organization is null)
@@ -185,8 +185,11 @@ public class SurveyServices : CustomServiceBase
 
             };
         }
-        var surveys = new List<Survey>();
-        surveys = _context.Surveys.Include(x=>x.Organization).Where(x => x.Organization!.Name == universityName).ToList();
+        var surveys = _context.Surveys
+            .Include(x => x.Organization)
+            .Include(x => x.SurveyAsks)
+            .ThenInclude(x=>x.SurveyResponses)
+            .Where(x => x.Organization!.Name == universityName);
         if (!surveys.Any())
         {
             return new ResponseErrorDto()
@@ -196,6 +199,30 @@ public class SurveyServices : CustomServiceBase
             };
                 
         }
-        return surveys.Select(x=>x.ToSurveyOutputtDto()).ToList();
+        return surveys.Select(x=> x.ToSurveyOutputDtoWithResponses()).ToList();
     }
+
+    public OneOf<ResponseErrorDto,SurveyoutputDto> GetSurveyInfo(int surveyId)
+    {
+        var survey = _context.Surveys
+            .Include(x => x.Organization)
+            .Include(x => x.SurveyAsks)
+            .ThenInclude(x=>x.SurveyResponses)
+            .SingleOrDefault(x => x.Id == surveyId);
+        if (survey is null)
+        {
+            return new ResponseErrorDto()
+            {
+                ErrorCode = 404,
+                ErrorMessage = $"Survey with id {surveyId} not found"
+            };
+                
+        }
+        return survey.ToSurveyOutputDtoWithResponses();
+    }
+    
+//todo:    17=>solicitar crear una encuesta(role organization)
+//todo:        18=>mostrar solicitudes de encuensta(role admin)
+//todo:        19=>aceptar o rechazar solicitudes de encuestas(role admin)
+
 }

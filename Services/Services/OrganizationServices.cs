@@ -7,15 +7,8 @@ using Services.Dtos;
 
 namespace Services.Services;
 
-public class OrganizationServices : CustomServiceBase
+public class OrganizationServices(EntityDbContext context) : CustomServiceBase(context)
 {
-    public OrganizationServices(EntityDbContext context) : base(context)
-    {
-        
-    }
-    //todo editar las organizaciones
-    // TODO: editar solo un usuario admin
-
     public async Task<OneOf<ResponseErrorDto, University>> EditOrganization(int organizationId, UniversityIntupDto universityInputDto)
     {
         var organization = await _context.University.SingleOrDefaultAsync(x => x.Id == organizationId);
@@ -32,7 +25,6 @@ public class OrganizationServices : CustomServiceBase
         if (!universityInputDto.Name.IsNullOrEmpty())
         {
             organization.Name = universityInputDto.Name;
-            organization.Enable = universityInputDto.Enable;
             organization.Email = universityInputDto.Email;
             organization.Description = universityInputDto.Description;
             organization.facultiesNumber = universityInputDto.facultiesNumber <= 0 ? 1 : universityInputDto.facultiesNumber;
@@ -97,7 +89,21 @@ public class OrganizationServices : CustomServiceBase
     {
         return _context.University.Where(x => x.Enable).Select(x=>x.ToUniversityOutputDto());
     }
-    
+    public OneOf<ResponseErrorDto, UniversityOutputDto> DisableUnivarsity(int universityId)
+    {
+        var university = _context.University.SingleOrDefault(x => x.Id == universityId);
+        if (university is null)
+        {
+            return new ResponseErrorDto()
+            {
+                ErrorCode = 404,
+                ErrorMessage = "University not found"
+            };
+        }
+        university.Enable = false;
+        _context.SaveChanges();
+        return university.ToUniversityOutputDto();
+    }
 
     public OneOf<ResponseErrorDto, ICollection<University>> UniersitiesWithMoreSurvey()
     {

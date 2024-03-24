@@ -44,9 +44,10 @@ public class UserServicers : CustomServiceBase
     {   
         var result = await _userManager!.CreateAsync(new User()
         {
-            UserName = userIntputDto.Username,
+            UserName = userIntputDto.Name,
             Email = userIntputDto.Email,
-            OrganizationId = userIntputDto.OrganizationId
+            OrganizationId = userIntputDto.OrganizationId,
+            Image = userIntputDto.Image ?? File.ReadAllBytes("./../DataAcces/Images/user.jpg")
         }, userIntputDto.Password);
         
         if (!result.Succeeded)
@@ -58,7 +59,7 @@ public class UserServicers : CustomServiceBase
 
             };
         }
-        var user =  await _userManager.FindByNameAsync(userIntputDto.Username);
+        var user =  await _userManager.FindByNameAsync(userIntputDto.Name);
         var token = await _userManager.GenerateEmailConfirmationTokenAsync(user!);
 
         if (user is not null)

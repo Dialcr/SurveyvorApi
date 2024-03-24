@@ -53,9 +53,9 @@ public class OrganizationsController : ControllerBase
     [ProducesResponseType(typeof(ResponseErrorDto), StatusCodes.Status400BadRequest)]
     [Route("addUniversity")]
     [Authorize(Roles = "ADMIN")]
-    public async Task<IActionResult> AddUniversity(UniversitiIntputDto universitiIntputDto)
+    public async Task<IActionResult> AddUniversity(UniversityIntupDto universityIntputDto)
     {
-        var result = await _organizationServices.Adduniversity(universitiIntputDto);
+        var result = await _organizationServices.AdduniversityAsync(universityIntputDto);
         if (result.TryPickT0(out var error, out var response))
         {
             return BadRequest(error);

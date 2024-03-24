@@ -25,13 +25,21 @@ public class OrganizationServices : CustomServiceBase
             return new ResponseErrorDto()
             {
                 ErrorCode = 404,
-                ErrorMessage = "Ministry not found"
+                ErrorMessage = "University not found"
             };
         }
 
         if (!universityInputDto.Name.IsNullOrEmpty())
         {
             organization.Name = universityInputDto.Name;
+            organization.Enable = universityInputDto.Enable;
+            organization.Email = universityInputDto.Email;
+            organization.Description = universityInputDto.Description;
+            organization.facultiesNumber = universityInputDto.facultiesNumber <= 0 ? 1 : universityInputDto.facultiesNumber;
+            organization.BgImage = universityInputDto.BgImage ??
+                                   organization.BgImage;
+            organization.ProfileImage = universityInputDto.ProfileImage ??
+                                        organization.ProfileImage;
         }
         organization.Enable = universityInputDto.Enable;
         
@@ -40,7 +48,7 @@ public class OrganizationServices : CustomServiceBase
 
     }
 
-    public async Task<OneOf<ResponseErrorDto, UniversityOutputDto>> Adduniversity(UniversitiIntputDto universitiIntputDto)
+    public async Task<OneOf<ResponseErrorDto, UniversityOutputDto>> AdduniversityAsync(UniversityIntupDto universitiIntputDto)
     {
         var request = await _context.University.SingleOrDefaultAsync(x=>x.Name == universitiIntputDto.Name);
         if (request is not null)
@@ -56,6 +64,11 @@ public class OrganizationServices : CustomServiceBase
         {
             Name = universitiIntputDto.Name,
             Enable = universitiIntputDto.Enable,
+            Email = universitiIntputDto.Email,
+            Description = universitiIntputDto.Description,
+            facultiesNumber = universitiIntputDto.facultiesNumber,
+            BgImage = universitiIntputDto.BgImage ?? await File.ReadAllBytesAsync("./../DataAcces/Images/university2.jpg"),
+            ProfileImage = universitiIntputDto.ProfileImage ?? await File.ReadAllBytesAsync("./../DataAcces/Images/university1.jpg")
         };
         _context.University.Add(newUniversity);
         await _context.SaveChangesAsync();

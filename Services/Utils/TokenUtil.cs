@@ -59,4 +59,24 @@ public class TokenUtil
         var jwtToken = new JwtSecurityTokenHandler().WriteToken(token);
         return jwtToken;
     }
+    
+    public string GetUserIdFromToken(string token)
+    {
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var key = Encoding.ASCII.GetBytes(_jwtSettings.Key);
+
+        tokenHandler.ValidateToken(token, new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(key),
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ClockSkew = TimeSpan.Zero
+        }, out SecurityToken validatedToken);
+
+        var jwtToken = (JwtSecurityToken)validatedToken;
+        var userId = jwtToken.Claims.First(x => x.Type == JwtRegisteredClaimNames.Sub).Value;
+
+        return userId;
+    }
 }

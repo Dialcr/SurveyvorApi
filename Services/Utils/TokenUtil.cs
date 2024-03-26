@@ -63,23 +63,35 @@ public class TokenUtil
     public int GetUserIdFromToken(string token)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(_jwtSettings.Key);
+        var key = Encoding.UTF8.GetBytes(_jwtSettings.Key);
 
-        tokenHandler.ValidateToken(token, new TokenValidationParameters
+        try
         {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(key),
-            ValidateIssuer = false,
-            ValidateAudience = false,
-            ClockSkew = TimeSpan.Zero
-        }, out SecurityToken validatedToken);
+            tokenHandler.ValidateToken(token, new TokenValidationParameters
+            {
+                IssuerSigningKey = new SymmetricSecurityKey(key),
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidIssuer = _jwtSettings.Issuer,
+                ValidAudience = _jwtSettings.Audience,
+                LifetimeValidator = (notBefore, expires, securityToken, validationParameters) =>  {
+                    return expires > DateTime.UtcNow;
+                },
+                ValidateLifetime = true,
+            }, out var validatedToken);
 
-        var jwtToken = (JwtSecurityToken)validatedToken;
-        var userId = jwtToken.Claims.First(x => x.Type == JwtRegisteredClaimNames.Sub).Value;
-        var userId2 = jwtToken.Claims.First(x => x.Type == ClaimTypes.Sid).Value;
-        var role = jwtToken.Claims.First(x => x.Type == ClaimTypes.Role).Value;
+            var jwtToken = (JwtSecurityToken)validatedToken;
+            var userId = jwtToken.Claims.First(x => x.Type == JwtRegisteredClaimNames.Sub).Value;
+            //var userId2 = jwtToken.Claims.First(x => x.Type == ClaimTypes.Sid).Value;
+            //var role = jwtToken.Claims.First(x => x.Type == ClaimTypes.Role).Value;
 
-        return int.Parse(userId);
+            return int.Parse(userId);
+        }
+        catch (Exception e)
+        {
+            return 0;
+        }
+
     }
     
     

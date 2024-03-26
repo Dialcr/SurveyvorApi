@@ -33,10 +33,9 @@ public class OrganizationsController(OrganizationServices organizationServices, 
     [ProducesResponseType(typeof(ResponseErrorDto), StatusCodes.Status404NotFound)]
     [Route("GetUniversityByUser")]
     [Authorize(Roles = "ORGANIZATION")]
-    public async Task<IActionResult> GetUniversityById()
+    public async Task<IActionResult> GetUniversityByUser(string token )
     {
-        //todo: revisar que este metodo funcione
-        string accessToken = HttpContext.Request.Headers["Authorization"]!;
+        string? accessToken = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
         accessToken = accessToken!.Replace("Bearer", "");
         var userId = tokenUtil.GetUserIdFromToken(accessToken);
         var result = await organizationServices.GetUniversityByUserAsync(userId);

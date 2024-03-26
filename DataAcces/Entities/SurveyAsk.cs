@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using BePrácticasLaborales.DataAcces;
 
 namespace DataAcces.Entities;
 
@@ -18,8 +17,8 @@ public class SurveyAsk
     [MaxLength(150)]
     public string Description { get; set; }
     
-    public ICollection<ResponsePosibility>? ResponsePosibilities { get; set; }
+    public IEnumerable<ResponsePosibility>? ResponsePosibilities { get; set; }
     
-    public ICollection<SurveyResponse>? SurveyResponses { get; set; }
+    public IEnumerable<SurveyResponse>? SurveyResponses { get; set; }
     
 }

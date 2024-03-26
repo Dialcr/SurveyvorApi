@@ -97,7 +97,6 @@ public class ImportDbServices : CustomServiceBase
                     var newSurvey = new Survey()
                     {
                         Description = descriptionOfSurvey,
-                        SatiscationState = "",
                         OrganizationId = organization,
                     };
                     _context.Surveys.Add(newSurvey);
@@ -292,15 +291,6 @@ public class ImportDbServices : CustomServiceBase
 
         return keyValuePairs;
     }
-
-    
-    
-    
-    
-    
-    
-    
-    
     public async Task<OneOf<ResponseErrorDto, string>> ImportData2(
         int organization, string descriptionOfSurvey, string filePath)
     {
@@ -313,13 +303,11 @@ public class ImportDbServices : CustomServiceBase
                 while (!fileReader.EndOfStream)
                 {
                     fileInfo = fileReader.ReadToEnd();
-                    //System.Console.WriteLine(test);
                 }
             }
         }
         catch (IOException ex)
         {
-            //System.Console.WriteLine(ex.Message);
             return new ResponseErrorDto()
             {
                 ErrorCode = 404,
@@ -356,7 +344,6 @@ public class ImportDbServices : CustomServiceBase
         var newSurvey = new Survey()
         {
             Description = descriptionOfSurvey,
-            SatiscationState = "",
             OrganizationId = organization,
             SurveyAsks = new List<SurveyAsk>(),
             
@@ -402,11 +389,14 @@ public class ImportDbServices : CustomServiceBase
                     SurveyResponses = new List<SurveyResponse>()
                         
                 };
-                newSurvey.SurveyAsks.Add(newSurveyAsk);
+                //newSurvey.SurveyAsks.Add(newSurveyAsk);
+                newSurvey.SurveyAsks.ToList().Add(newSurveyAsk);
                     
                 foreach (var response in responsePosibilities)
                 {
-                    newSurveyAsk.ResponsePosibilities.Add(new ResponsePosibility()
+                    //todo: le tive que poner el todo xq cambie la entidad de icollectiojn a ienumerable
+                    //newSurveyAsk.ResponsePosibilities.Add(new ResponsePosibility()
+                    newSurveyAsk.ResponsePosibilities.ToList().Add(new ResponsePosibility()
                     {
                         SurveyAsk = newSurveyAsk,
                         ResponseValue = response,

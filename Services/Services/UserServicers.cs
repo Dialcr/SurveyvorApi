@@ -47,7 +47,7 @@ public class UserServicers : CustomServiceBase
             UserName = userIntputDto.Name,
             Email = userIntputDto.Email,
             OrganizationId = userIntputDto.OrganizationId,
-            Image = userIntputDto.Image ?? File.ReadAllBytes("./../DataAcces/Images/user.jpg")
+            Image = userIntputDto.Image ?? $"http://gravatar.com/avatar/${{md5({userIntputDto.Name})}}?d=identicon"
         }, userIntputDto.Password);
         
         if (!result.Succeeded)

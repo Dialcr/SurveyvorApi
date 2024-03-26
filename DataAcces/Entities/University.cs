@@ -24,7 +24,7 @@ public class University
     
     public byte[] BgImage { get; set; } = File.ReadAllBytes("./../DataAcces/Images/university2.jpg");
     
-    public int facultiesNumber { get; set; }
+    public int FacultiesNumber { get; set; }
     public ICollection<User>? Users { get; set; }
 
     public ICollection<Survey> Surveys { get; set; }   

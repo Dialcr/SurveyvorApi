@@ -11,7 +11,7 @@ public class SurveyAskOutputDto
 
 public static class SurveyAskExtention
 {
-    public static SurveyAskOutputDto ToSurveyOutputDtoWithResponses(this SurveyAsk surveyAsk)
+    public static SurveyAskOutputDto ToSurveyAskOutputDtoWithResponses(this SurveyAsk surveyAsk)
     {
         return new SurveyAskOutputDto()
         {

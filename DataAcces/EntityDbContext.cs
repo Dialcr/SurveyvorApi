@@ -20,6 +20,7 @@ public class EntityDbContext  : IdentityDbContext<User,IdentityRole<int>, int > 
     public DbSet<SurveyAsk>  SurveyAsks{ get; set; }
     public DbSet<SurveyResponse> SurveyResponses { get; set; }
     public DbSet<ResponsePosibility> ResponsePosibilities { get; set; }
+    public DbSet<Application> Applications { get; set; }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

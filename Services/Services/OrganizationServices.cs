@@ -27,7 +27,7 @@ public class OrganizationServices(EntityDbContext context) : CustomServiceBase(c
             organization.Name = universityInputDto.Name;
             organization.Email = universityInputDto.Email;
             organization.Description = universityInputDto.Description;
-            organization.facultiesNumber = universityInputDto.facultiesNumber <= 0 ? 1 : universityInputDto.facultiesNumber;
+            organization.FacultiesNumber = universityInputDto.FacultiesNumber <= 0 ? 1 : universityInputDto.FacultiesNumber;
             organization.BgImage = universityInputDto.BgImage ??
                                    organization.BgImage;
             organization.ProfileImage = universityInputDto.ProfileImage ??
@@ -40,7 +40,7 @@ public class OrganizationServices(EntityDbContext context) : CustomServiceBase(c
 
     }
 
-    public async Task<OneOf<ResponseErrorDto, UniversityOutputDto>> AdduniversityAsync(UniversityIntupDto universitiIntputDto)
+    public async Task<OneOf<ResponseErrorDto, UniversityOutputDto>> AddUniversityAsync(UniversityIntupDto universitiIntputDto)
     {
         var request = await _context.University.SingleOrDefaultAsync(x=>x.Name == universitiIntputDto.Name);
         if (request is not null)
@@ -58,7 +58,7 @@ public class OrganizationServices(EntityDbContext context) : CustomServiceBase(c
             Enable = universitiIntputDto.Enable,
             Email = universitiIntputDto.Email,
             Description = universitiIntputDto.Description,
-            facultiesNumber = universitiIntputDto.facultiesNumber,
+            FacultiesNumber = universitiIntputDto.FacultiesNumber,
             BgImage = universitiIntputDto.BgImage ?? await File.ReadAllBytesAsync("./../DataAcces/Images/university2.jpg"),
             ProfileImage = universitiIntputDto.ProfileImage ?? await File.ReadAllBytesAsync("./../DataAcces/Images/university1.jpg")
         };
@@ -70,7 +70,7 @@ public class OrganizationServices(EntityDbContext context) : CustomServiceBase(c
         return university.ToUniversityOutputDto();
     }
 
-    public async Task<OneOf<ResponseErrorDto, University>> GetUniversity(int universityId)
+    public async Task<OneOf<ResponseErrorDto, UniversityOutputDto>> GetUniversity(int universityId)
     {
         var university = await _context.University.SingleOrDefaultAsync(x=>x.Id == universityId);
         if (university is null)
@@ -82,14 +82,29 @@ public class OrganizationServices(EntityDbContext context) : CustomServiceBase(c
             };
         }
 
-        return university;
+        return university.ToUniversityOutputDto();
+    }
+    public async Task<OneOf<ResponseErrorDto, UniversityOutputDto>> GetUniversityByUserAsync(int userId)
+    {
+        var university = await _context.University
+            .SingleOrDefaultAsync(x=>x.Users!.Any(y=>y.Id==userId) );
+        if (university is null)
+        {
+            return new ResponseErrorDto()
+            {
+                ErrorCode = 404,
+                ErrorMessage = "University not found"
+            };
+        }
+
+        return university.ToUniversityOutputDto();
     }
    
     public IEnumerable<UniversityOutputDto> GetAllUniversity()
     {
         return _context.University.Where(x => x.Enable).Select(x=>x.ToUniversityOutputDto());
     }
-    public OneOf<ResponseErrorDto, UniversityOutputDto> DisableUnivarsity(int universityId)
+    public OneOf<ResponseErrorDto, UniversityOutputDto> DisableUniversity(int universityId)
     {
         var university = _context.University.SingleOrDefault(x => x.Id == universityId);
         if (university is null)

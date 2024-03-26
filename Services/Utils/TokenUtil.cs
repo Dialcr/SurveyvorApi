@@ -60,7 +60,7 @@ public class TokenUtil
         return jwtToken;
     }
     
-    public string GetUserIdFromToken(string token)
+    public int GetUserIdFromToken(string token)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(_jwtSettings.Key);
@@ -76,7 +76,11 @@ public class TokenUtil
 
         var jwtToken = (JwtSecurityToken)validatedToken;
         var userId = jwtToken.Claims.First(x => x.Type == JwtRegisteredClaimNames.Sub).Value;
+        var userId2 = jwtToken.Claims.First(x => x.Type == ClaimTypes.Sid).Value;
+        var role = jwtToken.Claims.First(x => x.Type == ClaimTypes.Role).Value;
 
-        return userId;
+        return int.Parse(userId);
     }
+    
+    
 }

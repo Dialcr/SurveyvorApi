@@ -15,5 +15,5 @@ public class UniversityIntupDto
     
     public byte[]? BgImage { get; set; } = File.ReadAllBytes("./../DataAcces/Images/university2.jpg");
 
-    public int facultiesNumber { get; set; } = 1;
+    public int FacultiesNumber { get; set; } = 1;
 }

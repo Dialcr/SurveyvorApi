@@ -13,7 +13,7 @@ public class UserOutputDto
 
     public string Role { get; set; } = "";
 
-    public byte[] Image { get; set; } = File.ReadAllBytes("./../DataAcces/Images/user.jpg");
+    public string Image { get; set; } = "http://gravatar.com/avatar/${md5(this.username)}?d=identicon";
 }
 
 

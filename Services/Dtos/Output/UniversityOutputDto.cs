@@ -12,9 +12,9 @@ public class UniversityOutputDto
     public string Description { get; set; }="";
     
     //todo: agragar imagenes son 2
-    public byte[] ProfileImage { get; set; } = File.ReadAllBytes("./../DataAcces/Images/university1.jpg");
+    public string? ProfileImage { get; set; } = Convert.ToBase64String(File.ReadAllBytes("./../DataAcces/Images/university1.jpg"));
     
-    public byte[] BgImage { get; set; } = File.ReadAllBytes("./../DataAcces/Images/university2.jpg");
+    public string? BgImage { get; set; } = Convert.ToBase64String(File.ReadAllBytes("./../DataAcces/Images/university2.jpg"));
     
     public int FacultiesNumber { get; set; }
 }

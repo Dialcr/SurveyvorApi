@@ -11,9 +11,9 @@ public class UniversityIntupDto
     
     public string Description { get; set; }= "";
     
-    public byte[]? ProfileImage { get; set; } = File.ReadAllBytes("./../DataAcces/Images/university1.jpg");
+    public string? ProfileImage { get; set; } = "";
     
-    public byte[]? BgImage { get; set; } = File.ReadAllBytes("./../DataAcces/Images/university2.jpg");
+    public string? BgImage { get; set; } = "";
 
     public int FacultiesNumber { get; set; } = 1;
 }

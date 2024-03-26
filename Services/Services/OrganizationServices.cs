@@ -59,8 +59,8 @@ public class OrganizationServices(EntityDbContext context) : CustomServiceBase(c
             Email = universitiIntputDto.Email,
             Description = universitiIntputDto.Description,
             FacultiesNumber = universitiIntputDto.FacultiesNumber,
-            BgImage = universitiIntputDto.BgImage ?? await File.ReadAllBytesAsync("./../DataAcces/Images/university2.jpg"),
-            ProfileImage = universitiIntputDto.ProfileImage ?? await File.ReadAllBytesAsync("./../DataAcces/Images/university1.jpg")
+            BgImage = universitiIntputDto.BgImage ?? Convert.ToBase64String(File.ReadAllBytes("./../DataAcces/Images/university2.jpg")),
+            ProfileImage = universitiIntputDto.ProfileImage ?? Convert.ToBase64String(File.ReadAllBytes("./../DataAcces/Images/university1.jpg")) 
         };
         _context.University.Add(newUniversity);
         await _context.SaveChangesAsync();

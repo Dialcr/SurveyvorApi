@@ -2,9 +2,7 @@
 
 public class SurveyAskInputDto
 {
-    public int SurveyId { get; set; }
-    
-    public string Description { get; set; }
-    
-    public IEnumerable<ResponsePosibilityInputDto>? ResponsePosibilities { get; set; }
+    public string Question { get; set; }
+    //public IEnumerable<ResponsePosibilityInputDto>? Answers { get; set; }
+    public IEnumerable<string>? Answers { get; set; }
 }

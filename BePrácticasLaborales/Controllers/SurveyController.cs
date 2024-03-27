@@ -190,6 +190,12 @@ public class SurveyController(SurveyServices surveyServices, ImportDbServices im
     [Authorize(Roles = "ORGANIZATION")]
     public async Task<IActionResult> ApplicateSurveyAsync(SurveyInputDto surveyInput)
     { 
+        //todo: obtener el id de la organizacion 
+        string accessToken = HttpContext.Request.Headers["Authorization"]!;
+        accessToken = accessToken!.Replace("Bearer", "");
+        var userId = tokenUtil.GetUserIdFromToken(accessToken);
+        var organization = organizationServices.GetUniversity(userId);
+        surveyInput.OrganizationId = organization.Id;
         var result =  await surveyServices.ApplicateSurveyAsync(surveyInput);
         if (result.TryPickT0(out var error, out var response))
         {

@@ -230,18 +230,18 @@ public class SurveyServices(EntityDbContext context) : CustomServiceBase(context
     {
         var survey = new Survey
         {
-            Tittle = surveyInputDto.Tittle,
+            Tittle = surveyInputDto.Title,
             Description = surveyInputDto.Description,
             OrganizationId = surveyInputDto.OrganizationId,
             StartDate = surveyInputDto.StartDate,
             EndDate = surveyInputDto.EndDate,
             Available = false,
-            SurveyAsks = surveyInputDto.SurveyAsks!.Select(x => new SurveyAsk
+            SurveyAsks = surveyInputDto.Questions!.Select(x => new SurveyAsk
             {
-                Description = x.Description,
-                ResponsePosibilities = x.ResponsePosibilities!.Select(y => new ResponsePosibility()
+                Description = x.Question,
+                ResponsePosibilities = x.Answers!.Select(y => new ResponsePosibility()
                 {
-                    ResponseValue = y.ResponseValue
+                    ResponseValue = y
                 }) ?? []
             })
         };

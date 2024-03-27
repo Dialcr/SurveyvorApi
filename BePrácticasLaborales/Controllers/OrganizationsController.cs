@@ -50,7 +50,7 @@ public class OrganizationsController(OrganizationServices organizationServices, 
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<UniversityOutputDto>), StatusCodes.Status200OK)]
     [Route("getAllUniversity")]
-    [AllowAnonymous]
+    [Authorize(Roles = "ADMIN")]
     public IActionResult GetAllUniversity()
     {
         var result = organizationServices.GetAllUniversity();
@@ -64,7 +64,7 @@ public class OrganizationsController(OrganizationServices organizationServices, 
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<OrganizationOutputDto>), StatusCodes.Status200OK)]
     [Route("GetAllOrganizations")]
-    [Authorize(Roles = "ADMIN")]
+    [AllowAnonymous]
     public IActionResult GetAllOrganizations()
     {
         var result = organizationServices.GetAllOrganizations();

@@ -4,6 +4,7 @@ using IdentityServer4.Extensions;
 using Microsoft.EntityFrameworkCore;
 using OneOf;
 using Services.Dtos;
+using Services.Dtos.Output;
 
 namespace Services.Services;
 
@@ -103,6 +104,10 @@ public class OrganizationServices(EntityDbContext context) : CustomServiceBase(c
     public IEnumerable<UniversityOutputDto> GetAllUniversity()
     {
         return _context.University.Where(x => x.Enable).Select(x=>x.ToUniversityOutputDto());
+    }
+    public IEnumerable<OrganizationOutputDto> GetAllOrganizations()
+    {
+        return _context.University.Where(x => x.Enable).Select(x=>x.ToOrganizationOutputDto());
     }
     public OneOf<ResponseErrorDto, UniversityOutputDto> DisableUniversity(int universityId)
     {

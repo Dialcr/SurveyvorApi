@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OneOf;
 using Services.Dtos;
+using Services.Dtos.Output;
 using Services.Services;
 using Services.Utils;
 
@@ -47,12 +48,26 @@ public class OrganizationsController(OrganizationServices organizationServices, 
     }
    
     [HttpGet]
-    [ProducesResponseType(typeof(ICollection<University>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IEnumerable<UniversityOutputDto>), StatusCodes.Status200OK)]
     [Route("getAllUniversity")]
     [AllowAnonymous]
     public IActionResult GetAllUniversity()
     {
         var result = organizationServices.GetAllUniversity();
+        if (!result.Any())
+        {
+            return BadRequest(result);
+        }
+        return Ok(result);
+    }
+    
+    [HttpGet]
+    [ProducesResponseType(typeof(IEnumerable<OrganizationOutputDto>), StatusCodes.Status200OK)]
+    [Route("GetAllOrganizations")]
+    [Authorize(Roles = "ADMIN")]
+    public IActionResult GetAllOrganizations()
+    {
+        var result = organizationServices.GetAllOrganizations();
         if (!result.Any())
         {
             return BadRequest(result);

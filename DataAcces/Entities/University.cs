@@ -1,6 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Net.Mime;
 
 namespace DataAcces.Entities;
 
@@ -19,7 +17,7 @@ public class University
     
     public string Description { get; set; }
     
-    //todo: agragar imagenes son 2 en string base64
+    //imagenes son 2 en string base64
     public string ProfileImage { get; set; } 
     
     public string BgImage { get; set; }

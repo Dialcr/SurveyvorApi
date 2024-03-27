@@ -10,7 +10,7 @@ public class ResponsePosibility
     [Key]
     public int Id { get; set; }
     
-    public int SuveryAskId { get; set; }
+    public int? SuveryAskId { get; set; }
 
     [ForeignKey(nameof(SuveryAskId))]
     public SurveyAsk? SurveyAsk { get; set; }

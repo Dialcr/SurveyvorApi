@@ -190,12 +190,12 @@ public class SurveyController(SurveyServices surveyServices, ImportDbServices im
     [Authorize(Roles = "ORGANIZATION")]
     public async Task<IActionResult> ApplicateSurveyAsync(SurveyInputDto surveyInput)
     { 
-        //todo: obtener el id de la organizacion 
-        string accessToken = HttpContext.Request.Headers["Authorization"]!;
+        //todo: arreglar el terror este 
+        string? accessToken = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
         accessToken = accessToken!.Replace("Bearer", "");
         var userId = tokenUtil.GetUserIdFromToken(accessToken);
-        var organization = organizationServices.GetUniversity(userId);
-        surveyInput.OrganizationId = organization.Id;
+        var organization = await organizationServices.GetUniversityByUserAsync(userId);
+        surveyInput.OrganizationId = organization.AsT1.Id;
         var result =  await surveyServices.ApplicateSurveyAsync(surveyInput);
         if (result.TryPickT0(out var error, out var response))
         {
@@ -258,7 +258,7 @@ public class SurveyController(SurveyServices surveyServices, ImportDbServices im
     [Authorize(Roles = "ORGANIZATION")]
     public async Task<IActionResult> GetAllRejectedApplicationsSurveys()
     { 
-        string accessToken = HttpContext.Request.Headers["Authorization"]!;
+        string? accessToken = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
         accessToken = accessToken!.Replace("Bearer", "");
         var userId = tokenUtil.GetUserIdFromToken(accessToken);
         var organization = await organizationServices.GetUniversityByUserAsync(userId);

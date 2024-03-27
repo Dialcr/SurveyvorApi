@@ -228,6 +228,7 @@ public class SurveyServices(EntityDbContext context) : CustomServiceBase(context
 //todo:    17=>solicitar crear una encuesta(role organization)
     public async Task<OneOf<ResponseErrorDto, SurveyOutputDto>> ApplicateSurveyAsync(SurveyInputDto surveyInputDto)
     {
+        /*
         var survey = new Survey
         {
             Tittle = surveyInputDto.Title,
@@ -254,6 +255,47 @@ public class SurveyServices(EntityDbContext context) : CustomServiceBase(context
         context.Applications.Add(newApplication);
         await _context.SaveChangesAsync();
         return survey.ToSurveyOutputDto();
+        */
+        
+        var survey = new Survey
+        {
+            Tittle = surveyInputDto.Title,
+            Description = surveyInputDto.Description,
+            OrganizationId = surveyInputDto.OrganizationId,
+            StartDate = surveyInputDto.StartDate,
+            EndDate = surveyInputDto.EndDate,
+            Available = false,
+            SurveyAsks = new List<SurveyAsk>() // Inicializa la colección
+        };
+
+        // Agrega cada SurveyAsk individualmente
+        foreach (var question in surveyInputDto.Questions!)
+        {
+            var surveyAsk = new SurveyAsk
+            {
+                Description = question.Question,
+                ResponsePosibilities = question.Answers?.Select(answer => new ResponsePosibility
+                {
+                    ResponseValue = answer
+                }).ToList() ?? new List<ResponsePosibility>()
+            };
+            survey.SurveyAsks.ToList().Add(surveyAsk);
+        }
+    
+        var newApplication = new Application()
+        {
+            ApplicationState = ApplicationState.Pending,
+            Survey = survey
+        };
+
+        context.Applications.Add(newApplication);
+        await _context.SaveChangesAsync();
+        var surveyOut = context.Surveys
+            .Include(x=>x.Organization)
+            .Include(x=>x.SurveyAsks)
+            .OrderBy(x=>x.Id)
+            .LastOrDefault();
+        return surveyOut!.ToSurveyOutputDto();
     }
 //todo:        18=>mostrar solicitudes de encuensta(role admin)
     public  IEnumerable<ApplicationOutputDto> GetAllApplicationsSurveys()

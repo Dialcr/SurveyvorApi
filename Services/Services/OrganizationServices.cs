@@ -71,7 +71,7 @@ public class OrganizationServices(EntityDbContext context) : CustomServiceBase(c
         return university.ToUniversityOutputDto();
     }
 
-    public async Task<OneOf<ResponseErrorDto, UniversityOutputDto>> GetUniversity(int universityId)
+    public async Task<OneOf<ResponseErrorDto, UniversityOutputDto>> GetUniversityAsync(int universityId)
     {
         var university = await _context.University.SingleOrDefaultAsync(x=>x.Id == universityId);
         if (university is null)

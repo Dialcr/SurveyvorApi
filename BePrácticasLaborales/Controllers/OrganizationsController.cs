@@ -22,7 +22,7 @@ public class OrganizationsController(OrganizationServices organizationServices, 
     public async Task<IActionResult> GetUniversityById(int universityId)
     {
         
-        var result = await organizationServices.GetUniversity(universityId);
+        var result = await organizationServices.GetUniversityAsync(universityId);
         if (result.TryPickT0(out var error, out var response))
         {
             return NotFound(error);

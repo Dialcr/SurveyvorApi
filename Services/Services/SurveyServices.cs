@@ -212,7 +212,8 @@ public class SurveyServices(EntityDbContext context) : CustomServiceBase(context
             .Include(x => x.Organization)
             .Include(x => x.SurveyAsks)!
             .ThenInclude(x=>x.SurveyResponses)
-            .SingleOrDefault(x => x.Id == surveyId && x.Available);
+            .SingleOrDefault(x => x.Id == surveyId );
+            //.SingleOrDefault(x => x.Id == surveyId && x.Available);
         if (survey is null)
         {
             return new ResponseErrorDto()

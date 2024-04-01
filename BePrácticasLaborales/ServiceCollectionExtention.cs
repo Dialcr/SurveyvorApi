@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Services.Services;
 using Services.Services.EmailServices;
 using Services.Settings;
@@ -122,6 +123,48 @@ public static class ServiceCollectionExtention
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials();
+            });
+        });
+
+        return services;
+    }
+    
+    
+    
+    public static IServiceCollection SetSwagger(this IServiceCollection services)
+    {
+        services.AddEndpointsApiExplorer();
+        services.AddSwaggerGen(option =>
+        {
+            option.SwaggerDoc("v1", new OpenApiInfo
+            {
+                Title = "Practices",
+                Version = "1",
+            });
+
+            option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                In = ParameterLocation.Header,
+                Description = "",
+                Name = "Authorization",
+                Type = SecuritySchemeType.Http,
+                BearerFormat = "JWT",
+                Scheme = "Bearer"
+            });
+
+            option.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type=ReferenceType.SecurityScheme,
+                            Id="Bearer"
+                        }
+                    },
+                    Array.Empty<string>()
+                }
             });
         });
 

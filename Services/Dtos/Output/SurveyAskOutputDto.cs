@@ -1,6 +1,6 @@
 ﻿using DataAcces.Entities;
 
-namespace Services.Dtos;
+namespace Services.Dtos.Output;
 
 public class SurveyAskOutputDto
 {

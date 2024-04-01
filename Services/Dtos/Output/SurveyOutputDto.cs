@@ -1,4 +1,5 @@
 ﻿using DataAcces.Entities;
+using Services.Dtos.Output;
 
 namespace Services.Dtos;
 
@@ -8,6 +9,7 @@ public class SurveyOutputDto
     public int Id { get; set; }
 
     public string Description { get; set; } = "";
+    public string Tittle { get; set; } = "";
 
     public int OrganizationId { get; set; }
     public string OrganizationName { get; set; }= "";
@@ -31,11 +33,8 @@ public static class SurveyExtention
             SurveyAskOutputDtos = survey.SurveyAsks!.Select(x=>x.ToSurveyAskOutputDtoWithResponses()),
             StartDate = survey.StartDate,
             EndDate = survey.EndDate,
-            
-                //todo: si es pregunta de texto no tiene funciona la cuenta de la siguite linea
-            //todo cambiar eso 
             SurveyParticipants = survey.SurveyAsks!.ToList()[0].SurveyResponses!.Count(),
-            
+            Tittle = survey.Tittle
         };
 
     }
@@ -50,6 +49,7 @@ public static class SurveyExtention
             SurveyAskOutputDtos = survey.SurveyAsks!.Select(x=>x.ToSurveyAskOutputDtoWithResponses()),
             StartDate = survey.StartDate,
             EndDate = survey.EndDate,
+            Tittle = survey.Tittle
         };
 
     }

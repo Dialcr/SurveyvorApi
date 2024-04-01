@@ -25,6 +25,7 @@ builder.Services.AddDbContext<EntityDbContext>(options =>
         .EnableSensitiveDataLogging());
 builder.Services.SetAuthentication(builder.Configuration);
 builder.Services.SetServices(builder.Configuration);
+builder.Services.SetSwagger();
 
 var app = builder.Build();
 EntityFrameworkProfiler.Initialize();

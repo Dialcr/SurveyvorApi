@@ -246,7 +246,7 @@ public class SurveyServices(EntityDbContext context) : CustomServiceBase(context
                 }) ?? []
             })
         };
-        
+
         var newApplication = new Application()
         {
             ApplicationState = ApplicationState.Pending,
@@ -268,6 +268,7 @@ public class SurveyServices(EntityDbContext context) : CustomServiceBase(context
             SurveyAsks = new List<SurveyAsk>() // Inicializa la colección
         };
 
+        var SurveyAsks = new List<SurveyAsk>(); // Inicializa la colección
         // Agrega cada SurveyAsk individualmente
         foreach (var question in surveyInputDto.Questions!)
         {
@@ -279,9 +280,11 @@ public class SurveyServices(EntityDbContext context) : CustomServiceBase(context
                     ResponseValue = answer
                 }).ToList() ?? new List<ResponsePosibility>()
             };
-            survey.SurveyAsks.ToList().Add(surveyAsk);
+            //survey.SurveyAsks.ToList().Add(surveyAsk);
+            SurveyAsks.Add(surveyAsk);
         }
-    
+
+        survey.SurveyAsks = SurveyAsks;
         var newApplication = new Application()
         {
             ApplicationState = ApplicationState.Pending,
@@ -374,6 +377,7 @@ public class SurveyServices(EntityDbContext context) : CustomServiceBase(context
     {
         var applications = _context.Applications
             .Include(x => x.Survey)
+            .ThenInclude(y=>y!.Organization)
             .Include(x => x.Survey!.SurveyAsks)
             .Where(x => x.ApplicationState == ApplicationState.Pending)
             .Select(x => x.ToApplicationOutputDto());

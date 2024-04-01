@@ -50,9 +50,13 @@ public class SurveyController(SurveyServices surveyServices, ImportDbServices im
     [ProducesResponseType(typeof(ICollection<SurveyOutputDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResponseErrorDto), StatusCodes.Status400BadRequest)]
     [Authorize(Roles = "ORGANIZATION")]
-    public async Task<IActionResult> SurveyByUniversity(int organizationId )
+    public async Task<IActionResult> SurveyByUniversity()
     { 
-        var result = await surveyServices.SurveyByUniversityId(organizationId);
+        string? accessToken = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+        accessToken = accessToken!.Replace("Bearer", "");
+        var userId = tokenUtil.GetUserIdFromToken(accessToken);
+        var organization = await organizationServices.GetUniversityByUserAsync(userId);
+        var result = await surveyServices.SurveyByUniversityId(organization.AsT1.Id);
         if (result.TryPickT0(out var error, out var response))
         {
             return BadRequest(error);

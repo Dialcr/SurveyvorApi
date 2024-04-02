@@ -3,6 +3,7 @@ using DataAcces.Entities;
 using Microsoft.EntityFrameworkCore;
 using OneOf;
 using Services.Dtos;
+using Services.Dtos.Input;
 using Services.Dtos.Intput;
 
 namespace Services.Services;
@@ -220,7 +221,7 @@ public class SurveyServices(EntityDbContext context) : CustomServiceBase(context
             .Include(x => x.SurveyAsks)!
             .ThenInclude(x=>x.ResponsePosibilities)
             .SingleOrDefault(x => x.Id == surveyId );
-            //.SingleOrDefault(x => x.Id == surveyId && x.Available);
+        //.SingleOrDefault(x => x.Id == surveyId && x.Available);
         if (survey is null)
         {
             return new ResponseErrorDto()
@@ -396,5 +397,73 @@ public class SurveyServices(EntityDbContext context) : CustomServiceBase(context
             .Select(x => x.ToApplicationOutputDto());
        
         return applications;
+    }
+    
+    
+    
+    
+    public async Task<OneOf<ResponseErrorDto, SurveyResponsesDto>> AddResponseToSurvey( SurveyResponsesDto surveyResponsesDto)
+    {
+        var surveyQuestions = _context.SurveyAsks.Where(x => x.SurveyId == surveyResponsesDto.SurveyId);
+        if (!surveyQuestions.Any())
+        {
+            return new ResponseErrorDto()
+            {
+                ErrorCode = 404,
+                ErrorMessage = $"Survey with id {surveyResponsesDto.SurveyId} not found"
+            };
+        }
+        
+        if (surveyResponsesDto.Responses.Count() != surveyQuestions.Count())
+        {
+            return new ResponseErrorDto()
+            {
+                ErrorCode = 400,
+                ErrorMessage = "The number of responses does not match the number of survey questions"
+            };
+        }
+        var newResponses = new List<SurveyResponse>();
+        foreach (var response in surveyResponsesDto.Responses)
+        {
+            if (response.ResponsePosibilityId is null)
+            {
+                newResponses.Add(new SurveyResponse()
+                {
+                    SuveryAskId = response.AskId,
+                    ResponsePosibility = new ResponsePosibility()
+                    {
+                        SuveryAskId  = response.AskId,
+                        ResponseValue = response.ResponseValue
+                    },
+                });
+            }
+            else
+            {
+                newResponses.Add(new SurveyResponse()
+                {
+                    SuveryAskId = response.AskId,
+                    ResponsePosibilityId = response.ResponsePosibilityId.Value
+                      
+                });
+            }
+                 
+        }
+
+        try
+        {
+            await context.SurveyResponses.AddRangeAsync(newResponses);
+            await context.SaveChangesAsync();
+        }
+        catch (Exception e)
+        {
+            return new ResponseErrorDto()
+            {
+                ErrorCode = 500,
+                ErrorMessage = e.Message
+            };
+        }
+        
+
+        return surveyResponsesDto;
     }
 }

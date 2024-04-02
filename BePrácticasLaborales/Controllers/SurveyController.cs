@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Services.Services;
 using OneOf;
 using Services.Dtos;
+using Services.Dtos.Input;
 using Services.Dtos.Intput;
 using Services.Utils;
 
@@ -272,6 +273,21 @@ public class SurveyController(SurveyServices surveyServices, ImportDbServices im
         }
         var result =  surveyServices.GetAllRejectedApplicationsSurveys(university.Id);
         return Ok(result);
+    }
+    
+    [HttpPost]
+    [Route("/AddResponseToSurvey")]
+    [ProducesResponseType(typeof(SurveyResponsesDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ResponseErrorDto), StatusCodes.Status400BadRequest)]
+    [AllowAnonymous]
+    public async Task<IActionResult> AddResponseToSurvey([FromBody]SurveyResponsesDto surveyResponsesDto)
+    { 
+        var resutl = await surveyServices.AddResponseToSurvey(surveyResponsesDto);
+        if (resutl.TryPickT0(out var error, out var responses))
+        {
+            return BadRequest(error);
+        }
+        return Ok(responses);
     }
     
 }

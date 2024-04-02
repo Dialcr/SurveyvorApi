@@ -12,7 +12,10 @@ public class SurveyServices(EntityDbContext context) : CustomServiceBase(context
     public OneOf<ResponseErrorDto, ICollection<SurveyOutputDto>> OrganizatinoWithMoreSurvey()
     {
         var surveys = _context.Surveys
-            .Include(x=>x.SurveyAsks)
+            .Include(x=>x.SurveyAsks)!
+            .ThenInclude(x=>x.SurveyResponses)
+            .Include(x=>x.SurveyAsks)!
+            .ThenInclude(x=>x.ResponsePosibilities)
             .Include(x=>x.Organization)
             .OrderByDescending(x => x.SurveyAsks.Sum(z => z.SurveyResponses!.Count())).ToList();
         if (!surveys.Any())
@@ -42,6 +45,8 @@ public class SurveyServices(EntityDbContext context) : CustomServiceBase(context
             .Include(x => x.Organization)
             .Include(x => x.SurveyAsks)!
             .ThenInclude(x=>x.SurveyResponses)
+            .Include(x => x.SurveyAsks)!
+            .ThenInclude(x=>x.ResponsePosibilities)
             .Where(x=>x.OrganizationId == universityId);
         if (!surveys.Any())
         {
@@ -212,6 +217,8 @@ public class SurveyServices(EntityDbContext context) : CustomServiceBase(context
             .Include(x => x.Organization)
             .Include(x => x.SurveyAsks)!
             .ThenInclude(x=>x.SurveyResponses)
+            .Include(x => x.SurveyAsks)!
+            .ThenInclude(x=>x.ResponsePosibilities)
             .SingleOrDefault(x => x.Id == surveyId );
             //.SingleOrDefault(x => x.Id == surveyId && x.Available);
         if (survey is null)
@@ -296,7 +303,8 @@ public class SurveyServices(EntityDbContext context) : CustomServiceBase(context
         await _context.SaveChangesAsync();
         var surveyOut = context.Surveys
             .Include(x=>x.Organization)
-            .Include(x=>x.SurveyAsks)
+            .Include(x=>x.SurveyAsks)!
+            .ThenInclude(x=>x.ResponsePosibilities)
             .OrderBy(x=>x.Id)
             .LastOrDefault();
         return surveyOut!.ToSurveyOutputDto();
@@ -306,7 +314,8 @@ public class SurveyServices(EntityDbContext context) : CustomServiceBase(context
     {
         var applications = _context.Applications
             .Include(x => x.Survey)
-            .Include(x => x.Survey!.SurveyAsks)
+            .Include(x => x.Survey!.SurveyAsks)!
+            .ThenInclude(x=>x.ResponsePosibilities)
             .Include(x => x.Survey!.Organization)
             .Select(x => x.ToApplicationOutputDto());
        
@@ -345,7 +354,8 @@ public class SurveyServices(EntityDbContext context) : CustomServiceBase(context
     public async Task<OneOf<ResponseErrorDto, SurveyOutputDto>> DisableSurveyAsync(int surveyId)
     {
         var survey = context.Surveys
-            .Include(x=>x.SurveyAsks)
+            .Include(x=>x.SurveyAsks)!
+            .ThenInclude(x=>x.ResponsePosibilities)
             .FirstOrDefault(x => x.Id == surveyId && x.Available);
         if (survey is null)
         {
@@ -367,7 +377,8 @@ public class SurveyServices(EntityDbContext context) : CustomServiceBase(context
         
         var applications = _context.Applications
             .Include(x => x.Survey)
-            .Include(x => x.Survey!.SurveyAsks)
+            .Include(x => x.Survey!.SurveyAsks)!
+            .ThenInclude(x=>x.ResponsePosibilities)
             .Where(x => x.ApplicationState == ApplicationState.Rejected && x.Survey!.OrganizationId == organizationId)
             .Select(x => x.ToApplicationOutputDto());
        
@@ -379,7 +390,8 @@ public class SurveyServices(EntityDbContext context) : CustomServiceBase(context
         var applications = _context.Applications
             .Include(x => x.Survey)
             .ThenInclude(y=>y!.Organization)
-            .Include(x => x.Survey!.SurveyAsks)
+            .Include(x => x.Survey!.SurveyAsks)!
+            .ThenInclude(x=>x.ResponsePosibilities)
             .Where(x => x.ApplicationState == ApplicationState.Pending)
             .Select(x => x.ToApplicationOutputDto());
        

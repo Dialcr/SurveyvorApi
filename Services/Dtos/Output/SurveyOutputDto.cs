@@ -22,6 +22,7 @@ public class SurveyOutputDto
 }
 public static class SurveyExtention
 {
+    /*
     public static SurveyOutputDto ToSurveyOutputDtoWithResponses(this Survey survey)
     {
         return new SurveyOutputDto()
@@ -30,7 +31,7 @@ public static class SurveyExtention
             Description = survey.Description,
             OrganizationId = survey.OrganizationId,
             OrganizationName = survey.Organization!.Name,
-            SurveyAskOutputDtos = survey.SurveyAsks!.Select(x=>x.ToSurveyAskOutputDtoWithResponses()),
+            SurveyAskOutputDtos = survey.SurveyAsks!.Select(x=>x.ToSurveyAskOutputDtoWithOutResponsesPosibilities()),
             StartDate = survey.StartDate,
             EndDate = survey.EndDate,
             SurveyParticipants = survey.SurveyAsks!.ToList()[0].SurveyResponses!.Count(),
@@ -38,6 +39,24 @@ public static class SurveyExtention
         };
 
     }
+    */
+    public static SurveyOutputDto ToSurveyOutputDtoWithResponses(this Survey survey)
+    {
+        return new SurveyOutputDto()
+        {
+            Id = survey.Id,
+            Description = survey.Description,
+            OrganizationId = survey.OrganizationId,
+            OrganizationName = survey.Organization!.Name,
+            SurveyAskOutputDtos = survey.SurveyAsks!.Select(x=>x.ToSurveyAskOutputDtoWithResponsesPosibilities()),
+            StartDate = survey.StartDate,
+            EndDate = survey.EndDate,
+            SurveyParticipants = survey.SurveyAsks!.ToList()[0].SurveyResponses!.Count(),
+            Tittle = survey.Tittle
+        };
+
+    }
+    
     public static SurveyOutputDto ToSurveyOutputDto(this Survey survey)
     {
         return new SurveyOutputDto()
@@ -46,11 +65,12 @@ public static class SurveyExtention
             Description = survey.Description,
             OrganizationId = survey.OrganizationId,
             OrganizationName = survey.Organization!.Name,
-            SurveyAskOutputDtos = survey.SurveyAsks!.Select(x=>x.ToSurveyAskOutputDtoWithResponses()),
+            SurveyAskOutputDtos = survey.SurveyAsks!.Select(x=>x.ToSurveyAskOutputDtoWithResponsesPosibilities()),
             StartDate = survey.StartDate,
             EndDate = survey.EndDate,
             Tittle = survey.Tittle
         };
 
     }
+     
 }

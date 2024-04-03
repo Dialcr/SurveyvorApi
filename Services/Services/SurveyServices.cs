@@ -372,6 +372,8 @@ public class SurveyServices(EntityDbContext context) : CustomServiceBase(context
             .Include(x=>x.Survey)
             .ThenInclude(x=>x.SurveyAsks)
             .ThenInclude(x=>x.ResponsePosibilities)
+            .Include(x=>x.Survey)
+            .ThenInclude(x=>x.Organization)
             .FirstOrDefault(x=>x.Id == applicationId && x.ApplicationState == ApplicationState.Pending);
         if (application is null)
         {

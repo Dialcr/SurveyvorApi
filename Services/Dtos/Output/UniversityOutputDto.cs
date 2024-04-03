@@ -1,4 +1,5 @@
 ﻿using DataAcces.Entities;
+using Services.Dtos.Output;
 
 namespace Services.Dtos;
 
@@ -11,7 +12,6 @@ public class UniversityOutputDto
     public bool Enable { get; set; }
     public string Description { get; set; }="";
     
-    //todo: agragar imagenes son 2
     public string? ProfileImage { get; set; } = Convert.ToBase64String(File.ReadAllBytes("./../DataAcces/Images/university1.jpg"));
     
     public string? BgImage { get; set; } = Convert.ToBase64String(File.ReadAllBytes("./../DataAcces/Images/university2.jpg"));
@@ -34,6 +34,23 @@ public static class UniversityExtention
             Description = university.Description,
             ProfileImage = university.ProfileImage,
             BgImage = university.BgImage,
+            
+        };
+
+    } 
+    public static UniversityWithSurveysOutputDto ToUniversityWithSurveysOutputDto(this University university)
+    {
+        return new UniversityWithSurveysOutputDto()
+        {
+            Id = university.Id,
+            Enable = university.Enable,
+            Name = university.Name,
+            FacultiesNumber = university.FacultiesNumber,
+            Email = university.Email,
+            Description = university.Description,
+            ProfileImage = university.ProfileImage,
+            BgImage = university.BgImage,
+            SurveyAviableCount = university.Surveys.Count(x=>x.Available)
             
         };
 

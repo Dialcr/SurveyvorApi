@@ -48,7 +48,39 @@ public class SurveyServices(EntityDbContext context) : CustomServiceBase(context
             .ThenInclude(x=>x.SurveyResponses)
             .Include(x => x.SurveyAsks)!
             .ThenInclude(x=>x.ResponsePosibilities)
-            .Where(x=>x.OrganizationId == universityId);
+            .Where(x=>x.OrganizationId == universityId );
+        if (!surveys.Any())
+        {
+            return new ResponseErrorDto()
+            {
+                ErrorCode = 404,
+                ErrorMessage = $"Survey list of organization with id {universityId} not found"
+            };
+                
+        }
+        
+        return surveys.Select(x=> x.ToSurveyOutputDtoWithResponses()).ToList();
+    }
+    public async Task<OneOf<ResponseErrorDto, ICollection<SurveyOutputDto>>> SurveyActiveByUniversityId(int universityId)
+    {
+        var organization = await _context.University.SingleOrDefaultAsync(x=>x.Id == universityId);
+        if (organization is null)
+        {
+            return new ResponseErrorDto()
+            {
+                ErrorCode = 404,
+                ErrorMessage = "Organization not found"
+
+            };
+        }
+
+        var surveys = _context.Surveys
+            .Include(x => x.Organization)
+            .Include(x => x.SurveyAsks)!
+            .ThenInclude(x=>x.SurveyResponses)
+            .Include(x => x.SurveyAsks)!
+            .ThenInclude(x=>x.ResponsePosibilities)
+            .Where(x=>x.OrganizationId == universityId );
         if (!surveys.Any())
         {
             return new ResponseErrorDto()
@@ -321,6 +353,17 @@ public class SurveyServices(EntityDbContext context) : CustomServiceBase(context
             .Select(x => x.ToApplicationOutputDto());
        
         return applications;
+    }
+    public  ApplicationOutputDto GetApplicationsSurveyInfo(int applicationId)
+    {
+        var aplicationInfo = context.Applications
+            .Include(x => x.Survey)
+            .Include(x => x.Survey!.SurveyAsks)!
+            .ThenInclude(x=>x.ResponsePosibilities)
+            .Include(x => x.Survey!.Organization).
+            FirstOrDefault(x => x.Id == applicationId);
+        
+        return aplicationInfo.ToApplicationOutputDto();
     }
 //todo:        19=>aceptar o rechazar solicitudes de encuestas(role admin)
     public async Task<OneOf<ResponseErrorDto, ApplicationOutputDto>> RespondApplicationsSurveyAsync(int applicationId, bool accepted)

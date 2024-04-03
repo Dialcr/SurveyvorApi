@@ -63,9 +63,23 @@ public class SurveyController(SurveyServices surveyServices, ImportDbServices im
             return BadRequest(error);
         }
 
-       
         return Ok(response);
+    }
+    [HttpGet]
+    [Route("/SurveyActiveByUniversity")]
+    [ProducesResponseType(typeof(ICollection<SurveyOutputDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ResponseErrorDto), StatusCodes.Status400BadRequest)]
+    [AllowAnonymous]
+    public async Task<IActionResult> SurveyActiveByUniversity(int organizationId)
+    { 
         
+        var result = await surveyServices.SurveyActiveByUniversityId(organizationId);
+        if (result.TryPickT0(out var error, out var response))
+        {
+            return BadRequest(error);
+        }
+
+        return Ok(response);
     }
     [HttpGet]
     [Route("/SurveyAskBySurveyId")]
@@ -215,6 +229,16 @@ public class SurveyController(SurveyServices surveyServices, ImportDbServices im
     public IActionResult GetAllApplicationsSurveys()
     { 
         var result =  surveyServices.GetAllApplicationsSurveys();
+        return Ok(result);
+    } 
+    
+    [HttpGet]
+    [Route("/GetApplicationsSurveyInfo")]
+    [ProducesResponseType(typeof(ApplicationOutputDto), StatusCodes.Status200OK)]
+    [Authorize(Roles = "ADMIN")]
+    public IActionResult GetApplicationsSurveyInfo(int applicationId)
+    { 
+        var result =  surveyServices.GetApplicationsSurveyInfo(applicationId);
         return Ok(result);
     } 
     [HttpPatch]

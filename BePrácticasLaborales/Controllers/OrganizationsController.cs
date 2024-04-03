@@ -62,6 +62,20 @@ public class OrganizationsController(OrganizationServices organizationServices, 
     }
     
     [HttpGet]
+    [ProducesResponseType(typeof(IEnumerable<UniversityWithSurveysOutputDto>), StatusCodes.Status200OK)]
+    [Route("GetAllUniversityWithActiveSurvey")]
+    [AllowAnonymous]
+    public IActionResult GetAllUniversityWithActiveSurvey()
+    {
+        var result = organizationServices.GetAllUniversityWithActiveSurvey();
+        if (!result.Any())
+        {
+            return BadRequest(result);
+        }
+        return Ok(result);
+    }
+    
+    [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<OrganizationOutputDto>), StatusCodes.Status200OK)]
     [Route("GetAllOrganizations")]
     [AllowAnonymous]

@@ -105,6 +105,12 @@ public class OrganizationServices(EntityDbContext context) : CustomServiceBase(c
     {
         return _context.University.Where(x => x.Enable).Select(x=>x.ToUniversityOutputDto());
     }
+    public IEnumerable<UniversityWithSurveysOutputDto> GetAllUniversityWithActiveSurvey()
+    {
+        return _context.University.Include(x=>x.Surveys)
+            .Where(x => x.Enable && x.Surveys.Any(x =>x.Available))
+            .Select(x=>x.ToUniversityWithSurveysOutputDto());
+    }
     public IEnumerable<OrganizationOutputDto> GetAllOrganizations()
     {
         return _context.University.Where(x => x.Enable).Select(x=>x.ToOrganizationOutputDto());

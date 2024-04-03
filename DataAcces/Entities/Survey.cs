@@ -9,9 +9,9 @@ public class Survey
     [Key]
     public int Id { get; set; }
 
-    [MaxLength(25)]
+    [MaxLength(150)]
     public string Tittle { get; set; }
-    [MaxLength(100)]
+    [MaxLength(300)]
     public string Description { get; set; }
     
     //todo: hacer trigger para cambiar el esatdo de aviable si ha sido rechazada la solicitud asociada

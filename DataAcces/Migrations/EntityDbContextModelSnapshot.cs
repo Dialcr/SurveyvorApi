@@ -41,7 +41,7 @@ namespace BePrácticasLaborales.Migrations
                     b.HasIndex("SurveyId")
                         .IsUnique();
 
-                    b.ToTable("Applications");
+                    b.ToTable("Applications", (string)null);
                 });
 
             modelBuilder.Entity("DataAcces.Entities.ResponsePosibility", b =>
@@ -66,7 +66,7 @@ namespace BePrácticasLaborales.Migrations
 
                     b.HasIndex("SuveryAskId");
 
-                    b.ToTable("ResponsePosibilities");
+                    b.ToTable("ResponsePosibilities", (string)null);
                 });
 
             modelBuilder.Entity("DataAcces.Entities.Survey", b =>
@@ -103,7 +103,7 @@ namespace BePrácticasLaborales.Migrations
 
                     b.HasIndex("OrganizationId");
 
-                    b.ToTable("Surveys");
+                    b.ToTable("Surveys", (string)null);
                 });
 
             modelBuilder.Entity("DataAcces.Entities.SurveyAsk", b =>
@@ -128,7 +128,7 @@ namespace BePrácticasLaborales.Migrations
 
                     b.HasIndex("SurveyId");
 
-                    b.ToTable("SurveyAsks");
+                    b.ToTable("SurveyAsks", (string)null);
                 });
 
             modelBuilder.Entity("DataAcces.Entities.SurveyAskResponse", b =>
@@ -148,7 +148,7 @@ namespace BePrácticasLaborales.Migrations
 
                     b.HasIndex("SuveryAskId");
 
-                    b.ToTable("SurveyAskResponses");
+                    b.ToTable("SurveyAskResponses", (string)null);
                 });
 
             modelBuilder.Entity("DataAcces.Entities.SurveyResponse", b =>
@@ -166,7 +166,7 @@ namespace BePrácticasLaborales.Migrations
 
                     b.HasIndex("SurveyId");
 
-                    b.ToTable("SurveyResponses");
+                    b.ToTable("SurveyResponses", (string)null);
                 });
 
             modelBuilder.Entity("DataAcces.Entities.University", b =>
@@ -210,7 +210,7 @@ namespace BePrácticasLaborales.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("University");
+                    b.ToTable("University", (string)null);
                 });
 
             modelBuilder.Entity("DataAcces.Entities.User", b =>
@@ -306,7 +306,7 @@ namespace BePrácticasLaborales.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("IdentityRole");
+                    b.ToTable("IdentityRole", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<int>", b =>

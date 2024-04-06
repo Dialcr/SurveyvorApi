@@ -5,6 +5,7 @@ using OneOf;
 using Services.Dtos;
 using Services.Dtos.Input;
 using Services.Dtos.Intput;
+using Services.Dtos.Output;
 
 namespace Services.Services;
 
@@ -176,7 +177,7 @@ public class SurveyServices(EntityDbContext context) : CustomServiceBase(context
         return (cant* 100.0) / total;
     }
 
-    public OneOf<ResponseErrorDto, ICollection<SurveyResponseOutputDto>> GetAllResponseBySurveyAskDescription(int surveyId, string surveyAskDescription)
+    public OneOf<ResponseErrorDto, ICollection<SurveyAskResponseOutputDto>> GetAllResponseBySurveyAskDescription(int surveyId, string surveyAskDescription)
     {
         var surveyResponses =
             _context.SurveyAskResponses.Include(x=>x.ResponsePosibility)
@@ -499,9 +500,13 @@ public class SurveyServices(EntityDbContext context) : CustomServiceBase(context
                  
         }
 
+        var surveyResponse = new SurveyResponse();
         try
         {
-            await context.SurveyAskResponses.AddRangeAsync(newResponses);
+            surveyResponse.SurveyId = surveyResponse.SurveyId;
+            surveyResponse.SurveyAskResponses = newResponses;
+            await context.SurveyResponses.AddAsync(surveyResponse);
+            //await context.SurveyAskResponses.AddRangeAsync(newResponses);
             await context.SaveChangesAsync();
         }
         catch (Exception e)
@@ -516,4 +521,18 @@ public class SurveyServices(EntityDbContext context) : CustomServiceBase(context
 
         return surveyResponsesDto;
     }
+
+    public IEnumerable<SurveyResponseOutputDto> GetResponseFromSurvey(int surveyId)
+    {
+        var result = context.SurveyResponses!
+            .Include(x => x.SurveyAskResponses!)
+            .ThenInclude(x => x.SurveyAsk!)
+            .Include(x => x.SurveyAskResponses!)
+            .ThenInclude(x => x.ResponsePosibility)
+            .Where(x => x.SurveyId == surveyId)
+            .Select(x => x.ToSurveyResponseDto());
+
+        return result;
+    }
+    
 }

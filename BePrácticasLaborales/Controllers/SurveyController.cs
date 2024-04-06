@@ -6,6 +6,7 @@ using OneOf;
 using Services.Dtos;
 using Services.Dtos.Input;
 using Services.Dtos.Intput;
+using Services.Dtos.Output;
 using Services.Utils;
 
 namespace BePrácticasLaborales.Controllers;
@@ -159,7 +160,7 @@ public class SurveyController(SurveyServices surveyServices, ImportDbServices im
     }
     [HttpGet]
     [Route("/GetAllResponseBySurveyAskDescription")]
-    [ProducesResponseType(typeof(ICollection<SurveyResponseOutputDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ICollection<SurveyAskResponseOutputDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResponseErrorDto), StatusCodes.Status400BadRequest)]
     [Authorize(Roles = "ORGANIZATION")]
     public  IActionResult GetAllResponseBySurveyAskDescription(int surveyId, string surveyAskDescription)
@@ -191,7 +192,7 @@ public class SurveyController(SurveyServices surveyServices, ImportDbServices im
     [Route("/GetSurveyInfo")]
     [ProducesResponseType(typeof(SurveyOutputDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResponseErrorDto), StatusCodes.Status400BadRequest)]
-    [Authorize(Roles = "ORGANIZATION")]
+    [AllowAnonymous]
     public IActionResult GetSurveyInfo(int surveyId)
     { 
         var result =  surveyServices.GetSurveyInfo(surveyId);
@@ -312,6 +313,18 @@ public class SurveyController(SurveyServices surveyServices, ImportDbServices im
             return BadRequest(error);
         }
         return Ok(responses);
+    }
+    [HttpGet]
+    [Route("/GetResponseFromSurvey")]
+    [AllowAnonymous]
+    public IActionResult GetResponseFromSurvey(int surveyId)
+    { 
+        var resutl = surveyServices.GetResponseFromSurvey(surveyId);
+        if (!resutl.Any())
+        {
+            return BadRequest(resutl);
+        }
+        return Ok(resutl);
     }
     
 }

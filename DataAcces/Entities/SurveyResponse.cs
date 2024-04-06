@@ -12,4 +12,6 @@ public class SurveyResponse
     
     [ForeignKey(nameof(SurveyId))]
     public Survey? Survey { get; set; }
+
+    public IEnumerable<SurveyAskResponse>? SurveyAskResponses { get; set; }
 }

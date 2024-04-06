@@ -473,6 +473,11 @@ public class SurveyServices(EntityDbContext context) : CustomServiceBase(context
                 ErrorMessage = "The number of responses does not match the number of survey questions"
             };
         }
+        var surveyResponse = new SurveyResponse()
+        {
+            SurveyId = surveyResponsesDto.SurveyId,
+            SurveyAskResponses = new List<SurveyAskResponse>()
+        };
         var newResponses = new List<SurveyAskResponse>();
         foreach (var response in surveyResponsesDto.Responses)
         {
@@ -484,8 +489,9 @@ public class SurveyServices(EntityDbContext context) : CustomServiceBase(context
                     ResponsePosibility = new ResponsePosibility()
                     {
                         SuveryAskId  = response.AskId,
-                        ResponseValue = response.ResponseValue
+                        ResponseValue = response.ResponseValue,
                     },
+                    SurveyResponse = surveyResponse
                 });
             }
             else
@@ -493,20 +499,20 @@ public class SurveyServices(EntityDbContext context) : CustomServiceBase(context
                 newResponses.Add(new SurveyAskResponse()
                 {
                     SuveryAskId = response.AskId,
-                    ResponsePosibilityId = response.ResponsePosibilityId.Value
+                    ResponsePosibilityId = response.ResponsePosibilityId.Value,
+                    SurveyResponse = surveyResponse
                       
                 });
             }
                  
         }
-
-        var surveyResponse = new SurveyResponse();
+        
         try
         {
-            surveyResponse.SurveyId = surveyResponse.SurveyId;
-            surveyResponse.SurveyAskResponses = newResponses;
-            await context.SurveyResponses.AddAsync(surveyResponse);
-            //await context.SurveyAskResponses.AddRangeAsync(newResponses);
+            //surveyResponse.SurveyId = surveyResponse.SurveyId;
+            //surveyResponse.SurveyAskResponses = newResponses;
+            //await context.SurveyResponses.AddAsync(surveyResponse);
+            await context.SurveyAskResponses.AddRangeAsync(newResponses);
             await context.SaveChangesAsync();
         }
         catch (Exception e)

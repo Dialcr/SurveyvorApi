@@ -42,6 +42,11 @@ public static class SurveyExtention
     */
     public static SurveyOutputDto ToSurveyOutputDtoWithResponses(this Survey survey)
     {
+        int participant = 0;
+        if (survey.SurveyResponses is not null)
+        {
+            participant = survey.SurveyResponses.Count();
+        }
         return new SurveyOutputDto()
         {
             Id = survey.Id,
@@ -51,7 +56,8 @@ public static class SurveyExtention
             SurveyAskOutputDtos = survey.SurveyAsks!.Select(x=>x.ToSurveyAskOutputDtoWithResponsesPosibilities()),
             StartDate = survey.StartDate,
             EndDate = survey.EndDate,
-            SurveyParticipants = survey.SurveyAsks!.ToList()[0].SurveyResponses!.Count(),
+//            SurveyParticipants = survey.SurveyAsks!.ToList()[0].SurveyResponses!.Count(),
+            SurveyParticipants = participant,
             Tittle = survey.Tittle
         };
 

@@ -4,8 +4,6 @@ namespace Services.Dtos;
 
 public class SurveyResponseOutputDto
 {
-    public int Id { get; set; }
-    
     public int ResponsePosibilityId { get; set; }
     public string ResponsePosibility { get; set; }
     public int SuveryAskId { get; set; }
@@ -14,15 +12,14 @@ public class SurveyResponseOutputDto
 
 public static class SurveyResponseExtention
 {
-    public static SurveyResponseOutputDto ToSurveyOutputtDto(this SurveyResponse surveyResponse)
+    public static SurveyResponseOutputDto ToSurveyOutputtDto(this SurveyAskResponse surveyAskResponse)
     {
         return new SurveyResponseOutputDto()
         {
-            Id = surveyResponse.Id,
-            ResponsePosibility = surveyResponse.ResponsePosibility!.ResponseValue,
-            ResponsePosibilityId = surveyResponse.ResponsePosibilityId,
-            SurveyAsk = surveyResponse.SurveyAsk!.Description,
-            SuveryAskId = surveyResponse.SuveryAskId
+            ResponsePosibility = surveyAskResponse.ResponsePosibility!.ResponseValue,
+            ResponsePosibilityId = surveyAskResponse.ResponsePosibilityId,
+            SurveyAsk = surveyAskResponse.SurveyAsk!.Description,
+            SuveryAskId = surveyAskResponse.SuveryAskId
         };
 
     }

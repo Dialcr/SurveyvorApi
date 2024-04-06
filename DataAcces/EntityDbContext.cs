@@ -18,9 +18,10 @@ public class EntityDbContext  : IdentityDbContext<User,IdentityRole<int>, int > 
     public DbSet<University> University { get; set; }
     public DbSet<Survey> Surveys { get; set; }
     public DbSet<SurveyAsk>  SurveyAsks{ get; set; }
-    public DbSet<SurveyResponse> SurveyResponses { get; set; }
+    public DbSet<SurveyAskResponse> SurveyAskResponses { get; set; }
     public DbSet<ResponsePosibility> ResponsePosibilities { get; set; }
     public DbSet<Application> Applications { get; set; }
+    public DbSet<SurveyResponse> SurveyResponses { get; set; }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -59,9 +60,11 @@ public class EntityDbContext  : IdentityDbContext<User,IdentityRole<int>, int > 
             .HasMany(x=>x.ResponsePosibilities)
             .WithOne(x=>x.SurveyAsk);
 
-        modelBuilder.Entity<SurveyResponse>()
+        modelBuilder.Entity<SurveyAskResponse>()
             .HasOne(sr => sr.ResponsePosibility)
             .WithMany(rp => rp.SurveyResponses);
+        modelBuilder.Entity<SurveyAskResponse>()
+            .HasKey(x => new { x.SurveyResponseId, x.SuveryAskId, x.ResponsePosibilityId });
 
         modelBuilder.Entity<SurveyAsk>()
             .HasIndex(x => x.SurveyId);
@@ -79,6 +82,6 @@ public class EntityDbContext  : IdentityDbContext<User,IdentityRole<int>, int > 
         modelBuilder.Entity<University>()
             .HasIndex(x => x.Name)
             .IsUnique();
-
+        
     }
 }

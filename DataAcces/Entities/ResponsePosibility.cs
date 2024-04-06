@@ -19,7 +19,7 @@ public class ResponsePosibility
     [MaxLength(50)]
     public string ResponseValue{ get; set; }
 
-    public ICollection<SurveyResponse>? SurveyResponses { get; set; }
+    public ICollection<SurveyAskResponse>? SurveyResponses { get; set; }
     
     
     

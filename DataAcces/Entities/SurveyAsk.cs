@@ -19,6 +19,6 @@ public class SurveyAsk
     
     public IEnumerable<ResponsePosibility>? ResponsePosibilities { get; set; }
     
-    public IEnumerable<SurveyResponse>? SurveyResponses { get; set; }
+    public IEnumerable<SurveyAskResponse>? SurveyAskResponses { get; set; }
     
 }

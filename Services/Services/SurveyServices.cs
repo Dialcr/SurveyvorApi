@@ -488,7 +488,7 @@ public class SurveyServices(EntityDbContext context) : CustomServiceBase(context
                     SuveryAskId = response.AskId,
                     ResponsePosibility = new ResponsePosibility()
                     {
-                        SuveryAskId  = response.AskId,
+                        //SuveryAskId  = response.AskId,
                         ResponseValue = response.ResponseValue,
                     },
                     SurveyResponse = surveyResponse

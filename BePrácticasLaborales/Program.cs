@@ -1,5 +1,6 @@
 using BePrácticasLaborales;
 using BePrácticasLaborales.DataAcces;
+using BePrácticasLaborales.Middleware;
 using HibernatingRhinos.Profiler.Appender.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 
@@ -30,6 +31,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+//todo: este es el middleware que se debe agregar
+//app.UseCheckSurveyDate();
 
 app.UseHttpsRedirection();
 app.UseCors(corsPolicyName);

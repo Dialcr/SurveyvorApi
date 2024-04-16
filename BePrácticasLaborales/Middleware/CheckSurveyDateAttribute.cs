@@ -1,5 +1,6 @@
 ﻿using BePrácticasLaborales.DataAcces;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.EntityFrameworkCore;
 
 namespace BePrácticasLaborales.Middleware;
 

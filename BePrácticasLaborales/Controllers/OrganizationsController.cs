@@ -12,7 +12,8 @@ namespace BePrácticasLaborales.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class OrganizationsController(OrganizationServices organizationServices, TokenUtil tokenUtil) : ControllerBase
+public class OrganizationsController(OrganizationServices organizationServices, TokenUtil tokenUtil)
+    : ControllerBase
 {
     [HttpGet]
     [ProducesResponseType(typeof(UniversityOutputDto), StatusCodes.Status200OK)]
@@ -21,7 +22,6 @@ public class OrganizationsController(OrganizationServices organizationServices, 
     [Authorize(Roles = "ADMIN")]
     public async Task<IActionResult> GetUniversityById(int universityId)
     {
-        
         var result = await organizationServices.GetUniversityAsync(universityId);
         if (result.TryPickT0(out var error, out var response))
         {
@@ -29,6 +29,7 @@ public class OrganizationsController(OrganizationServices organizationServices, 
         }
         return Ok(response);
     }
+
     [HttpGet]
     [ProducesResponseType(typeof(UniversityOutputDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResponseErrorDto), StatusCodes.Status404NotFound)]
@@ -36,7 +37,11 @@ public class OrganizationsController(OrganizationServices organizationServices, 
     [Authorize(Roles = "ORGANIZATION")]
     public async Task<IActionResult> GetUniversityByUser()
     {
-        string? accessToken = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+        string? accessToken = HttpContext
+            .Request.Headers["Authorization"]
+            .FirstOrDefault()
+            ?.Split(" ")
+            .Last();
         accessToken = accessToken!.Replace("Bearer", "");
         var userId = tokenUtil.GetUserIdFromToken(accessToken);
         var result = await organizationServices.GetUniversityByUserAsync(userId);
@@ -46,7 +51,7 @@ public class OrganizationsController(OrganizationServices organizationServices, 
         }
         return Ok(response);
     }
-   
+
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<UniversityOutputDto>), StatusCodes.Status200OK)]
     [Route("getAllUniversity")]
@@ -60,9 +65,12 @@ public class OrganizationsController(OrganizationServices organizationServices, 
         }
         return Ok(result);
     }
-    
+
     [HttpGet]
-    [ProducesResponseType(typeof(IEnumerable<UniversityWithSurveysOutputDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(
+        typeof(IEnumerable<UniversityWithSurveysOutputDto>),
+        StatusCodes.Status200OK
+    )]
     [Route("GetAllUniversityWithActiveSurvey")]
     [AllowAnonymous]
     public IActionResult GetAllUniversityWithActiveSurvey()
@@ -74,7 +82,7 @@ public class OrganizationsController(OrganizationServices organizationServices, 
         }
         return Ok(result);
     }
-    
+
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<OrganizationOutputDto>), StatusCodes.Status200OK)]
     [Route("GetAllOrganizations")]
@@ -88,6 +96,7 @@ public class OrganizationsController(OrganizationServices organizationServices, 
         }
         return Ok(result);
     }
+
     [HttpPost]
     [ProducesResponseType(typeof(UniversityOutputDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResponseErrorDto), StatusCodes.Status400BadRequest)]
@@ -102,27 +111,33 @@ public class OrganizationsController(OrganizationServices organizationServices, 
         }
         return Ok(response);
     }
-   
+
     [HttpPut]
     [ProducesResponseType(typeof(UniversityOutputDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResponseErrorDto), StatusCodes.Status400BadRequest)]
     [Route("editOrganization")]
-    [Authorize(Roles = "ADMIN")] 
-    public async Task<IActionResult> EditUniversity([FromBody]UniversityIntupDto universityIntupDto)
+    [Authorize(Roles = "ADMIN")]
+    public async Task<IActionResult> EditUniversity(
+        [FromBody] UniversityIntupDto universityIntupDto
+    )
     {
-        var result = await organizationServices.EditOrganization(universityIntupDto.Id,universityIntupDto);
+        var result = await organizationServices.EditOrganization(
+            universityIntupDto.Id,
+            universityIntupDto
+        );
         if (result.TryPickT0(out var error, out var response))
         {
             return BadRequest(error);
         }
         return Ok(response);
     }
+
     [HttpPatch]
     [ProducesResponseType(typeof(UniversityOutputDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResponseErrorDto), StatusCodes.Status400BadRequest)]
     [Route("DisableUniversity")]
-    [Authorize(Roles = "ADMIN")] 
-    public IActionResult DisableUniversity([FromBody]int universityId)
+    [Authorize(Roles = "ADMIN")]
+    public IActionResult DisableUniversity([FromBody] int universityId)
     {
         var result = organizationServices.DisableUniversity(universityId);
         if (result.TryPickT0(out var error, out var response))
@@ -131,7 +146,4 @@ public class OrganizationsController(OrganizationServices organizationServices, 
         }
         return Ok(response);
     }
-    
-    
-    
 }

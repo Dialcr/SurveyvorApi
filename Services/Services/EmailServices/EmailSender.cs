@@ -6,7 +6,6 @@ public interface IEmailSender
         List<string> receivers,
         List<string>? carbonCopy,
         string subject,
-        string messageBody);
+        string messageBody
+    );
 }
-
-    

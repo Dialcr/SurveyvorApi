@@ -16,7 +16,8 @@ namespace DataAcces.Migrations
                 type: "text",
                 nullable: false,
                 oldClrType: typeof(byte[]),
-                oldType: "bytea");
+                oldType: "bytea"
+            );
 
             migrationBuilder.AlterColumn<string>(
                 name: "BgImage",
@@ -24,7 +25,8 @@ namespace DataAcces.Migrations
                 type: "text",
                 nullable: false,
                 oldClrType: typeof(byte[]),
-                oldType: "bytea");
+                oldType: "bytea"
+            );
         }
 
         /// <inheritdoc />
@@ -36,7 +38,8 @@ namespace DataAcces.Migrations
                 type: "bytea",
                 nullable: false,
                 oldClrType: typeof(string),
-                oldType: "text");
+                oldType: "text"
+            );
 
             migrationBuilder.AlterColumn<byte[]>(
                 name: "BgImage",
@@ -44,7 +47,8 @@ namespace DataAcces.Migrations
                 type: "bytea",
                 nullable: false,
                 oldClrType: typeof(string),
-                oldType: "text");
+                oldType: "text"
+            );
         }
     }
 }

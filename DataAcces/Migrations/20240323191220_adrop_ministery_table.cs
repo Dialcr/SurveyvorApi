@@ -12,40 +12,34 @@ namespace DataAcces.Migrations
         {
             migrationBuilder.DropForeignKey(
                 name: "FK_AspNetUsers_Organization_OrganizationId",
-                table: "AspNetUsers");
+                table: "AspNetUsers"
+            );
 
             migrationBuilder.DropForeignKey(
                 name: "FK_Organization_Organization_MinisteryId",
-                table: "Organization");
+                table: "Organization"
+            );
 
             migrationBuilder.DropForeignKey(
                 name: "FK_Surveys_Organization_OrganizationId",
-                table: "Surveys");
+                table: "Surveys"
+            );
 
-            migrationBuilder.DropPrimaryKey(
-                name: "PK_Organization",
-                table: "Organization");
+            migrationBuilder.DropPrimaryKey(name: "PK_Organization", table: "Organization");
 
-            migrationBuilder.DropIndex(
-                name: "IX_Organization_MinisteryId",
-                table: "Organization");
+            migrationBuilder.DropIndex(name: "IX_Organization_MinisteryId", table: "Organization");
 
-            migrationBuilder.DropColumn(
-                name: "Discriminator",
-                table: "Organization");
+            migrationBuilder.DropColumn(name: "Discriminator", table: "Organization");
 
-            migrationBuilder.DropColumn(
-                name: "MinisteryId",
-                table: "Organization");
+            migrationBuilder.DropColumn(name: "MinisteryId", table: "Organization");
 
-            migrationBuilder.RenameTable(
-                name: "Organization",
-                newName: "University");
+            migrationBuilder.RenameTable(name: "Organization", newName: "University");
 
             migrationBuilder.AddPrimaryKey(
                 name: "PK_University",
                 table: "University",
-                column: "Id");
+                column: "Id"
+            );
 
             migrationBuilder.CreateTable(
                 name: "IdentityRole",
@@ -59,20 +53,23 @@ namespace DataAcces.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_IdentityRole", x => x.Id);
-                });
+                }
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_University_Name",
                 table: "University",
                 column: "Name",
-                unique: true);
+                unique: true
+            );
 
             migrationBuilder.AddForeignKey(
                 name: "FK_AspNetUsers_University_OrganizationId",
                 table: "AspNetUsers",
                 column: "OrganizationId",
                 principalTable: "University",
-                principalColumn: "Id");
+                principalColumn: "Id"
+            );
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Surveys_University_OrganizationId",
@@ -80,7 +77,8 @@ namespace DataAcces.Migrations
                 column: "OrganizationId",
                 principalTable: "University",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Cascade
+            );
         }
 
         /// <inheritdoc />
@@ -88,26 +86,21 @@ namespace DataAcces.Migrations
         {
             migrationBuilder.DropForeignKey(
                 name: "FK_AspNetUsers_University_OrganizationId",
-                table: "AspNetUsers");
+                table: "AspNetUsers"
+            );
 
             migrationBuilder.DropForeignKey(
                 name: "FK_Surveys_University_OrganizationId",
-                table: "Surveys");
+                table: "Surveys"
+            );
 
-            migrationBuilder.DropTable(
-                name: "IdentityRole");
+            migrationBuilder.DropTable(name: "IdentityRole");
 
-            migrationBuilder.DropPrimaryKey(
-                name: "PK_University",
-                table: "University");
+            migrationBuilder.DropPrimaryKey(name: "PK_University", table: "University");
 
-            migrationBuilder.DropIndex(
-                name: "IX_University_Name",
-                table: "University");
+            migrationBuilder.DropIndex(name: "IX_University_Name", table: "University");
 
-            migrationBuilder.RenameTable(
-                name: "University",
-                newName: "Organization");
+            migrationBuilder.RenameTable(name: "University", newName: "Organization");
 
             migrationBuilder.AddColumn<string>(
                 name: "Discriminator",
@@ -115,30 +108,35 @@ namespace DataAcces.Migrations
                 type: "character varying(13)",
                 maxLength: 13,
                 nullable: false,
-                defaultValue: "");
+                defaultValue: ""
+            );
 
             migrationBuilder.AddColumn<int>(
                 name: "MinisteryId",
                 table: "Organization",
                 type: "integer",
-                nullable: true);
+                nullable: true
+            );
 
             migrationBuilder.AddPrimaryKey(
                 name: "PK_Organization",
                 table: "Organization",
-                column: "Id");
+                column: "Id"
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_Organization_MinisteryId",
                 table: "Organization",
-                column: "MinisteryId");
+                column: "MinisteryId"
+            );
 
             migrationBuilder.AddForeignKey(
                 name: "FK_AspNetUsers_Organization_OrganizationId",
                 table: "AspNetUsers",
                 column: "OrganizationId",
                 principalTable: "Organization",
-                principalColumn: "Id");
+                principalColumn: "Id"
+            );
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Organization_Organization_MinisteryId",
@@ -146,7 +144,8 @@ namespace DataAcces.Migrations
                 column: "MinisteryId",
                 principalTable: "Organization",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Cascade
+            );
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Surveys_Organization_OrganizationId",
@@ -154,7 +153,8 @@ namespace DataAcces.Migrations
                 column: "OrganizationId",
                 principalTable: "Organization",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Cascade
+            );
         }
     }
 }

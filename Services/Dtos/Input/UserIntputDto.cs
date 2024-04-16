@@ -7,6 +7,4 @@ public class UserIntputDto
     public string Password { get; set; } = "";
     public int? OrganizationId { get; set; }
     public string? Image { get; set; } = "";
-
-
 }

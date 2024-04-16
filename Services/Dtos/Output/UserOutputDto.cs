@@ -6,16 +6,15 @@ namespace Services.Dtos;
 
 public class UserOutputDto
 {
-    
     public string Name { get; set; } = "";
-        
+
     public string Email { get; set; } = "";
 
     public string Role { get; set; } = "";
 
-    public string Image { get; set; } = "http://gravatar.com/avatar/${md5(this.username)}?d=identicon";
+    public string Image { get; set; } =
+        "http://gravatar.com/avatar/${md5(this.username)}?d=identicon";
 }
-
 
 public static class UserExtention
 {
@@ -27,6 +26,5 @@ public static class UserExtention
             Email = user.Email!,
             Image = user.Image,
         };
-
     }
 }

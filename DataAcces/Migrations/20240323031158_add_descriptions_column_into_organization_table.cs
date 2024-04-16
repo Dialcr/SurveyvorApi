@@ -15,15 +15,14 @@ namespace DataAcces.Migrations
                 table: "Organization",
                 type: "text",
                 nullable: false,
-                defaultValue: "");
+                defaultValue: ""
+            );
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "Description",
-                table: "Organization");
+            migrationBuilder.DropColumn(name: "Description", table: "Organization");
         }
     }
 }

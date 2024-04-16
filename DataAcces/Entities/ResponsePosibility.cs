@@ -6,10 +6,9 @@ namespace DataAcces.Entities;
 
 public class ResponsePosibility
 {
-    
     [Key]
     public int Id { get; set; }
-    
+
     public int? SuveryAskId { get; set; }
 
     [ForeignKey(nameof(SuveryAskId))]
@@ -17,10 +16,7 @@ public class ResponsePosibility
 
     [Required]
     [MaxLength(50)]
-    public string ResponseValue{ get; set; }
+    public string ResponseValue { get; set; }
 
-    public ICollection<SurveyAskResponse>? SurveyResponses { get; set; }
-    
-    
-    
+    public ICollection<SurveyResponse>? SurveyResponses { get; set; }
 }

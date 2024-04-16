@@ -11,14 +11,13 @@ namespace DataAcces.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "SatiscationState",
-                table: "Surveys");
+            migrationBuilder.DropColumn(name: "SatiscationState", table: "Surveys");
 
             migrationBuilder.RenameColumn(
                 name: "facultiesNumber",
                 table: "University",
-                newName: "FacultiesNumber");
+                newName: "FacultiesNumber"
+            );
 
             migrationBuilder.AlterColumn<string>(
                 name: "Description",
@@ -27,14 +26,16 @@ namespace DataAcces.Migrations
                 maxLength: 100,
                 nullable: false,
                 oldClrType: typeof(string),
-                oldType: "text");
+                oldType: "text"
+            );
 
             migrationBuilder.AddColumn<bool>(
                 name: "Available",
                 table: "Surveys",
                 type: "boolean",
                 nullable: false,
-                defaultValue: false);
+                defaultValue: false
+            );
 
             migrationBuilder.AddColumn<string>(
                 name: "Tittle",
@@ -42,7 +43,8 @@ namespace DataAcces.Migrations
                 type: "character varying(25)",
                 maxLength: 25,
                 nullable: false,
-                defaultValue: "");
+                defaultValue: ""
+            );
 
             migrationBuilder.AlterColumn<string>(
                 name: "Image",
@@ -51,14 +53,19 @@ namespace DataAcces.Migrations
                 maxLength: 100,
                 nullable: false,
                 oldClrType: typeof(byte[]),
-                oldType: "bytea");
+                oldType: "bytea"
+            );
 
             migrationBuilder.CreateTable(
                 name: "Applications",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table
+                        .Column<int>(type: "integer", nullable: false)
+                        .Annotation(
+                            "Npgsql:ValueGenerationStrategy",
+                            NpgsqlValueGenerationStrategy.IdentityByDefaultColumn
+                        ),
                     ApplicationState = table.Column<int>(type: "integer", nullable: false),
                     SurveyId = table.Column<int>(type: "integer", nullable: false)
                 },
@@ -70,34 +77,33 @@ namespace DataAcces.Migrations
                         column: x => x.SurveyId,
                         principalTable: "Surveys",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
+                        onDelete: ReferentialAction.Cascade
+                    );
+                }
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_Applications_SurveyId",
                 table: "Applications",
                 column: "SurveyId",
-                unique: true);
+                unique: true
+            );
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Applications");
+            migrationBuilder.DropTable(name: "Applications");
 
-            migrationBuilder.DropColumn(
-                name: "Available",
-                table: "Surveys");
+            migrationBuilder.DropColumn(name: "Available", table: "Surveys");
 
-            migrationBuilder.DropColumn(
-                name: "Tittle",
-                table: "Surveys");
+            migrationBuilder.DropColumn(name: "Tittle", table: "Surveys");
 
             migrationBuilder.RenameColumn(
                 name: "FacultiesNumber",
                 table: "University",
-                newName: "facultiesNumber");
+                newName: "facultiesNumber"
+            );
 
             migrationBuilder.AlterColumn<string>(
                 name: "Description",
@@ -106,14 +112,16 @@ namespace DataAcces.Migrations
                 nullable: false,
                 oldClrType: typeof(string),
                 oldType: "character varying(100)",
-                oldMaxLength: 100);
+                oldMaxLength: 100
+            );
 
             migrationBuilder.AddColumn<string>(
                 name: "SatiscationState",
                 table: "Surveys",
                 type: "text",
                 nullable: false,
-                defaultValue: "");
+                defaultValue: ""
+            );
 
             migrationBuilder.AlterColumn<byte[]>(
                 name: "Image",
@@ -122,7 +130,8 @@ namespace DataAcces.Migrations
                 nullable: false,
                 oldClrType: typeof(string),
                 oldType: "character varying(100)",
-                oldMaxLength: 100);
+                oldMaxLength: 100
+            );
         }
     }
 }

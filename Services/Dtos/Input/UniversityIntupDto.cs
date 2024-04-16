@@ -6,13 +6,13 @@ public class UniversityIntupDto
     public string Name { get; set; } = "";
 
     public bool Enable { get; set; } = true;
-    
-    public string Email { get; set; }= "";
-    
-    public string Description { get; set; }= "";
-    
+
+    public string Email { get; set; } = "";
+
+    public string Description { get; set; } = "";
+
     public string? ProfileImage { get; set; } = "";
-    
+
     public string? BgImage { get; set; } = "";
 
     public int FacultiesNumber { get; set; } = 1;

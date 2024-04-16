@@ -10,10 +10,15 @@ namespace Services.Services;
 
 public class OrganizationServices(EntityDbContext context) : CustomServiceBase(context)
 {
-    public async Task<OneOf<ResponseErrorDto, University>> EditOrganization(int organizationId, UniversityIntupDto universityInputDto)
+    public async Task<OneOf<ResponseErrorDto, University>> EditOrganization(
+        int organizationId,
+        UniversityIntupDto universityInputDto
+    )
     {
-        var organization = await _context.University.SingleOrDefaultAsync(x => x.Id == organizationId);
-        
+        var organization = await _context.University.SingleOrDefaultAsync(x =>
+            x.Id == organizationId
+        );
+
         if (organization is null)
         {
             return new ResponseErrorDto()
@@ -28,22 +33,25 @@ public class OrganizationServices(EntityDbContext context) : CustomServiceBase(c
             organization.Name = universityInputDto.Name;
             organization.Email = universityInputDto.Email;
             organization.Description = universityInputDto.Description;
-            organization.FacultiesNumber = universityInputDto.FacultiesNumber <= 0 ? 1 : universityInputDto.FacultiesNumber;
-            organization.BgImage = universityInputDto.BgImage ??
-                                   organization.BgImage;
-            organization.ProfileImage = universityInputDto.ProfileImage ??
-                                        organization.ProfileImage;
+            organization.FacultiesNumber =
+                universityInputDto.FacultiesNumber <= 0 ? 1 : universityInputDto.FacultiesNumber;
+            organization.BgImage = universityInputDto.BgImage ?? organization.BgImage;
+            organization.ProfileImage =
+                universityInputDto.ProfileImage ?? organization.ProfileImage;
         }
         organization.Enable = universityInputDto.Enable;
-        
+
         await _context.SaveChangesAsync();
         return organization;
-
     }
 
-    public async Task<OneOf<ResponseErrorDto, UniversityOutputDto>> AddUniversityAsync(UniversityIntupDto universitiIntputDto)
+    public async Task<OneOf<ResponseErrorDto, UniversityOutputDto>> AddUniversityAsync(
+        UniversityIntupDto universitiIntputDto
+    )
     {
-        var request = await _context.University.SingleOrDefaultAsync(x=>x.Name == universitiIntputDto.Name);
+        var request = await _context.University.SingleOrDefaultAsync(x =>
+            x.Name == universitiIntputDto.Name
+        );
         if (request is not null)
         {
             return new ResponseErrorDto()
@@ -60,20 +68,30 @@ public class OrganizationServices(EntityDbContext context) : CustomServiceBase(c
             Email = universitiIntputDto.Email,
             Description = universitiIntputDto.Description,
             FacultiesNumber = universitiIntputDto.FacultiesNumber,
-            BgImage = universitiIntputDto.BgImage ?? Convert.ToBase64String(File.ReadAllBytes("./../DataAcces/Images/university2.jpg")),
-            ProfileImage = universitiIntputDto.ProfileImage ?? Convert.ToBase64String(File.ReadAllBytes("./../DataAcces/Images/university1.jpg")) 
+            BgImage =
+                universitiIntputDto.BgImage
+                ?? Convert.ToBase64String(
+                    File.ReadAllBytes("./../DataAcces/Images/university2.jpg")
+                ),
+            ProfileImage =
+                universitiIntputDto.ProfileImage
+                ?? Convert.ToBase64String(
+                    File.ReadAllBytes("./../DataAcces/Images/university1.jpg")
+                )
         };
         _context.University.Add(newUniversity);
         await _context.SaveChangesAsync();
-        var university = await 
-            _context.University.FirstOrDefaultAsync(x =>
-                x.Name == universitiIntputDto.Name);
+        var university = await _context.University.FirstOrDefaultAsync(x =>
+            x.Name == universitiIntputDto.Name
+        );
         return university.ToUniversityOutputDto();
     }
 
-    public async Task<OneOf<ResponseErrorDto, UniversityOutputDto>> GetUniversityAsync(int universityId)
+    public async Task<OneOf<ResponseErrorDto, UniversityOutputDto>> GetUniversityAsync(
+        int universityId
+    )
     {
-        var university = await _context.University.SingleOrDefaultAsync(x=>x.Id == universityId);
+        var university = await _context.University.SingleOrDefaultAsync(x => x.Id == universityId);
         if (university is null)
         {
             return new ResponseErrorDto()
@@ -85,10 +103,14 @@ public class OrganizationServices(EntityDbContext context) : CustomServiceBase(c
 
         return university.ToUniversityOutputDto();
     }
-    public async Task<OneOf<ResponseErrorDto, UniversityOutputDto>> GetUniversityByUserAsync(int userId)
+
+    public async Task<OneOf<ResponseErrorDto, UniversityOutputDto>> GetUniversityByUserAsync(
+        int userId
+    )
     {
-        var university = await _context.University
-            .SingleOrDefaultAsync(x=>x.Users!.Any(y=>y.Id==userId) );
+        var university = await _context.University.SingleOrDefaultAsync(x =>
+            x.Users!.Any(y => y.Id == userId)
+        );
         if (university is null)
         {
             return new ResponseErrorDto()
@@ -100,21 +122,25 @@ public class OrganizationServices(EntityDbContext context) : CustomServiceBase(c
 
         return university.ToUniversityOutputDto();
     }
-   
+
     public IEnumerable<UniversityOutputDto> GetAllUniversity()
     {
-        return _context.University.Where(x => x.Enable).Select(x=>x.ToUniversityOutputDto());
+        return _context.University.Where(x => x.Enable).Select(x => x.ToUniversityOutputDto());
     }
+
     public IEnumerable<UniversityWithSurveysOutputDto> GetAllUniversityWithActiveSurvey()
     {
-        return _context.University.Include(x=>x.Surveys)
-            .Where(x => x.Enable && x.Surveys.Any(x =>x.Available))
-            .Select(x=>x.ToUniversityWithSurveysOutputDto());
+        return _context
+            .University.Include(x => x.Surveys)
+            .Where(x => x.Enable && x.Surveys.Any(x => x.Available))
+            .Select(x => x.ToUniversityWithSurveysOutputDto());
     }
+
     public IEnumerable<OrganizationOutputDto> GetAllOrganizations()
     {
-        return _context.University.Where(x => x.Enable).Select(x=>x.ToOrganizationOutputDto());
+        return _context.University.Where(x => x.Enable).Select(x => x.ToOrganizationOutputDto());
     }
+
     public OneOf<ResponseErrorDto, UniversityOutputDto> DisableUniversity(int universityId)
     {
         var university = _context.University.SingleOrDefault(x => x.Id == universityId);
@@ -133,7 +159,8 @@ public class OrganizationServices(EntityDbContext context) : CustomServiceBase(c
 
     public OneOf<ResponseErrorDto, ICollection<University>> UniersitiesWithMoreSurvey()
     {
-        var organizations = _context.University.Include(x=>x.Surveys)
+        var organizations = _context
+            .University.Include(x => x.Surveys)
             .OrderByDescending(x => x.Surveys.Count);
         if (!organizations.Any())
         {
@@ -144,14 +171,16 @@ public class OrganizationServices(EntityDbContext context) : CustomServiceBase(c
             };
         }
 
-        var cant =organizations.First().Surveys.Count();
-        var organizationsMax = organizations.Where(x=>x.Surveys.Count() == cant).ToList();
-        
+        var cant = organizations.First().Surveys.Count();
+        var organizationsMax = organizations.Where(x => x.Surveys.Count() == cant).ToList();
+
         return organizationsMax;
     }
+
     public OneOf<ResponseErrorDto, ICollection<University>> OrganizatinoWithFewerSurvey()
     {
-        var organizations = _context.University.Include(x=>x.Surveys)
+        var organizations = _context
+            .University.Include(x => x.Surveys)
             .OrderBy(x => x.Surveys.Count);
         if (!organizations.Any())
         {
@@ -162,16 +191,15 @@ public class OrganizationServices(EntityDbContext context) : CustomServiceBase(c
             };
         }
 
-        var cant =organizations.First().Surveys.Count();
-        var organizationsMax = organizations.Where(x=>x.Surveys.Count() == cant).ToList();
-        
+        var cant = organizations.First().Surveys.Count();
+        var organizationsMax = organizations.Where(x => x.Surveys.Count() == cant).ToList();
+
         return organizationsMax;
     }
-    public  IEnumerable<UniversityOutputDto> AllUniversity()
+
+    public IEnumerable<UniversityOutputDto> AllUniversity()
     {
-        var universities = _context.University.Select(x=>x.ToUniversityOutputDto());
+        var universities = _context.University.Select(x => x.ToUniversityOutputDto());
         return universities;
     }
-    
-    
 }

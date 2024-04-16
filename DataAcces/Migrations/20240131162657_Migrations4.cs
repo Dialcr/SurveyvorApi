@@ -15,7 +15,8 @@ namespace BePrácticasLaborales.Migrations
                 keyColumn: "Id",
                 keyValue: 1,
                 columns: new[] { "Name", "NormalizedName" },
-                values: new object[] { "admin", "ADMIN" });
+                values: new object[] { "admin", "ADMIN" }
+            );
         }
 
         /// <inheritdoc />
@@ -26,7 +27,8 @@ namespace BePrácticasLaborales.Migrations
                 keyColumn: "Id",
                 keyValue: 1,
                 columns: new[] { "Name", "NormalizedName" },
-                values: new object[] { "support", "SUPPORT" });
+                values: new object[] { "support", "SUPPORT" }
+            );
         }
     }
 }

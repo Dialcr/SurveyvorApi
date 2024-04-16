@@ -2,8 +2,7 @@
 
 public static class RoleNames
 {
-        public static string Admin = "ADMIN";
+    public static string Admin = "ADMIN";
 
-        public static string Organization = "ORGANIZATION";
+    public static string Organization = "ORGANIZATION";
 }
-

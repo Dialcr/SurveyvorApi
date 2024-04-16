@@ -22,42 +22,46 @@ namespace BePrácticasLaborales.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_IdentityRole", x => x.Id);
-                });
+                }
+            );
 
             migrationBuilder.UpdateData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
                 keyValue: 1,
                 column: "NormalizedName",
-                value: "SUPPORT");
+                value: "SUPPORT"
+            );
 
             migrationBuilder.UpdateData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
                 keyValue: 2,
                 column: "NormalizedName",
-                value: "CUSTOMER");
+                value: "CUSTOMER"
+            );
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "IdentityRole");
+            migrationBuilder.DropTable(name: "IdentityRole");
 
             migrationBuilder.UpdateData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
                 keyValue: 1,
                 column: "NormalizedName",
-                value: "support");
+                value: "support"
+            );
 
             migrationBuilder.UpdateData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
                 keyValue: 2,
                 column: "NormalizedName",
-                value: "customer");
+                value: "customer"
+            );
         }
     }
 }

@@ -10,64 +10,69 @@ namespace DataAcces.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropIndex(
-                name: "IX_SurveyAsks_SurveyId",
-                table: "SurveyAsks");
+            migrationBuilder.DropIndex(name: "IX_SurveyAsks_SurveyId", table: "SurveyAsks");
 
             migrationBuilder.DropIndex(
                 name: "IX_ResponsePosibilities_SuveryAskId",
-                table: "ResponsePosibilities");
+                table: "ResponsePosibilities"
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_SurveyAsks_Description",
                 table: "SurveyAsks",
-                column: "Description");
+                column: "Description"
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_SurveyAsks_SurveyId",
                 table: "SurveyAsks",
-                column: "SurveyId");
+                column: "SurveyId"
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_ResponsePosibilities_ResponseValue",
                 table: "ResponsePosibilities",
-                column: "ResponseValue");
+                column: "ResponseValue"
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_ResponsePosibilities_SuveryAskId",
                 table: "ResponsePosibilities",
-                column: "SuveryAskId");
+                column: "SuveryAskId"
+            );
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropIndex(
-                name: "IX_SurveyAsks_Description",
-                table: "SurveyAsks");
+            migrationBuilder.DropIndex(name: "IX_SurveyAsks_Description", table: "SurveyAsks");
 
-            migrationBuilder.DropIndex(
-                name: "IX_SurveyAsks_SurveyId",
-                table: "SurveyAsks");
+            migrationBuilder.DropIndex(name: "IX_SurveyAsks_SurveyId", table: "SurveyAsks");
 
             migrationBuilder.DropIndex(
                 name: "IX_ResponsePosibilities_ResponseValue",
-                table: "ResponsePosibilities");
+                table: "ResponsePosibilities"
+            );
 
             migrationBuilder.DropIndex(
                 name: "IX_ResponsePosibilities_SuveryAskId",
-                table: "ResponsePosibilities");
+                table: "ResponsePosibilities"
+            );
 
-            migrationBuilder.CreateIndex(
-                name: "IX_SurveyAsks_SurveyId",
-                table: "SurveyAsks",
-                column: "SurveyId")
+            migrationBuilder
+                .CreateIndex(
+                    name: "IX_SurveyAsks_SurveyId",
+                    table: "SurveyAsks",
+                    column: "SurveyId"
+                )
                 .Annotation("Npgsql:IndexMethod", "hash");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_ResponsePosibilities_SuveryAskId",
-                table: "ResponsePosibilities",
-                column: "SuveryAskId")
+            migrationBuilder
+                .CreateIndex(
+                    name: "IX_ResponsePosibilities_SuveryAskId",
+                    table: "ResponsePosibilities",
+                    column: "SuveryAskId"
+                )
                 .Annotation("Npgsql:IndexMethod", "hash");
         }
     }

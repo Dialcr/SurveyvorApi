@@ -5,29 +5,32 @@ namespace Services.Dtos.Output;
 
 public class SurveyAskOutputDto
 {
-    public int Id { get; set; } 
-    
+    public int Id { get; set; }
+
     public string Description { get; set; } = "";
     public IEnumerable<ResponsePosibilityDto>? ResponsePosibilitys { get; set; }
 }
 
 public static class SurveyAskExtention
 {
-    public static SurveyAskOutputDto ToSurveyAskOutputDtoWithResponsesPosibilities(this SurveyAsk surveyAsk)
+    public static SurveyAskOutputDto ToSurveyAskOutputDtoWithResponsesPosibilities(
+        this SurveyAsk surveyAsk
+    )
     {
         return new SurveyAskOutputDto()
         {
             Id = surveyAsk.Id,
             Description = surveyAsk.Description,
-            ResponsePosibilitys = surveyAsk.ResponsePosibilities!.Select(x=>x.ToResponsePosibilityDto())
+            ResponsePosibilitys = surveyAsk.ResponsePosibilities!.Select(x =>
+                x.ToResponsePosibilityDto()
+            )
         };
     }
-    public static SurveyAskOutputDto ToSurveyAskOutputDtoWithOutResponsesPosibilities(this SurveyAsk surveyAsk)
+
+    public static SurveyAskOutputDto ToSurveyAskOutputDtoWithOutResponsesPosibilities(
+        this SurveyAsk surveyAsk
+    )
     {
-        return new SurveyAskOutputDto()
-        {
-            Id = surveyAsk.Id,
-            Description = surveyAsk.Description,
-        };
+        return new SurveyAskOutputDto() { Id = surveyAsk.Id, Description = surveyAsk.Description, };
     }
 }

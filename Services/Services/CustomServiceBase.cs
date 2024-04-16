@@ -2,7 +2,6 @@
 
 namespace Services.Services;
 
-
 public abstract class CustomServiceBase
 {
     protected readonly EntityDbContext _context;

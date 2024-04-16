@@ -5,7 +5,7 @@ using Services.Settings;
 
 namespace Services.Services.EmailServices;
 
-public class EmailService 
+public class EmailService
 {
     private readonly SmtpClient _smtpClient;
     private readonly MailSettings _mailSettings;
@@ -14,11 +14,13 @@ public class EmailService
     {
         _mailSettings = mailSettings.Value;
         _smtpClient = new SmtpClient(mailSettings.Value.Smtp, mailSettings.Value.Port);
-        _smtpClient.Credentials = new NetworkCredential(mailSettings.Value.From, mailSettings.Value.Password);
+        _smtpClient.Credentials = new NetworkCredential(
+            mailSettings.Value.From,
+            mailSettings.Value.Password
+        );
         _smtpClient.EnableSsl = true;
     }
 
-    
     public void SendEmail(MailMessage mailMessage, string userToken)
     {
         _smtpClient.SendAsync(mailMessage, userToken);

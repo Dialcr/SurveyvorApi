@@ -9,11 +9,9 @@ public class ApplicationOutputDto
     public int Id { get; set; }
 
     public SurveyOutputDto Survey { get; set; }
-    
+
     public ApplicationState ApplicationState { get; set; }
-
 }
-
 
 public static class ApplicationExtention
 {
@@ -25,6 +23,5 @@ public static class ApplicationExtention
             ApplicationState = application.ApplicationState,
             Survey = application.Survey!.ToSurveyOutputDto()
         };
-
     }
 }

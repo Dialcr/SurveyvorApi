@@ -15,7 +15,8 @@ namespace DataAcces.Migrations
                 table: "University",
                 type: "bytea",
                 nullable: false,
-                defaultValue: new byte[0]);
+                defaultValue: new byte[0]
+            );
 
             migrationBuilder.AddColumn<string>(
                 name: "Email",
@@ -23,52 +24,46 @@ namespace DataAcces.Migrations
                 type: "character varying(25)",
                 maxLength: 25,
                 nullable: false,
-                defaultValue: "");
+                defaultValue: ""
+            );
 
             migrationBuilder.AddColumn<byte[]>(
                 name: "ProfileImage",
                 table: "University",
                 type: "bytea",
                 nullable: false,
-                defaultValue: new byte[0]);
+                defaultValue: new byte[0]
+            );
 
             migrationBuilder.AddColumn<int>(
                 name: "facultiesNumber",
                 table: "University",
                 type: "integer",
                 nullable: false,
-                defaultValue: 0);
+                defaultValue: 0
+            );
 
             migrationBuilder.AddColumn<byte[]>(
                 name: "Image",
                 table: "AspNetUsers",
                 type: "bytea",
                 nullable: false,
-                defaultValue: new byte[0]);
+                defaultValue: new byte[0]
+            );
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "BgImage",
-                table: "University");
+            migrationBuilder.DropColumn(name: "BgImage", table: "University");
 
-            migrationBuilder.DropColumn(
-                name: "Email",
-                table: "University");
+            migrationBuilder.DropColumn(name: "Email", table: "University");
 
-            migrationBuilder.DropColumn(
-                name: "ProfileImage",
-                table: "University");
+            migrationBuilder.DropColumn(name: "ProfileImage", table: "University");
 
-            migrationBuilder.DropColumn(
-                name: "facultiesNumber",
-                table: "University");
+            migrationBuilder.DropColumn(name: "facultiesNumber", table: "University");
 
-            migrationBuilder.DropColumn(
-                name: "Image",
-                table: "AspNetUsers");
+            migrationBuilder.DropColumn(name: "Image", table: "AspNetUsers");
         }
     }
 }

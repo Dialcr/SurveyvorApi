@@ -1,26 +1,28 @@
 ﻿using DataAcces.Entities;
 
-namespace Services.Dtos.Output;
+namespace Services.Dtos;
 
 public class SurveyResponseOutputDto
 {
     public int Id { get; set; }
-    public int SurveyId { get; set; }
-    //public IEnumerable<SurveyAskResponseDto> SurveyAskResponseDto { get; set; }
-    public IEnumerable<SurveyAskResponseOutputDto> SurveyAskResponseDto { get; set; }
+
+    public int ResponsePosibilityId { get; set; }
+    public string ResponsePosibility { get; set; }
+    public int SuveryAskId { get; set; }
+    public string SurveyAsk { get; set; }
 }
 
 public static class SurveyResponseExtention
 {
-    public static SurveyResponseOutputDto ToSurveyResponseDto(this SurveyResponse surveyResponse)
+    public static SurveyResponseOutputDto ToSurveyOutputtDto(this SurveyResponse surveyResponse)
     {
         return new SurveyResponseOutputDto()
         {
             Id = surveyResponse.Id,
-            SurveyId = surveyResponse.SurveyId,
-            SurveyAskResponseDto = surveyResponse.SurveyAskResponses!.Select(x=>x.ToSurveyOutputtDto())
-            
+            ResponsePosibility = surveyResponse.ResponsePosibility!.ResponseValue,
+            ResponsePosibilityId = surveyResponse.ResponsePosibilityId,
+            SurveyAsk = surveyResponse.SurveyAsk!.Description,
+            SuveryAskId = surveyResponse.SuveryAskId
         };
-    } 
+    }
 }
-

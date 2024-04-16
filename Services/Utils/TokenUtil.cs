@@ -12,7 +12,6 @@ namespace Services.Utils;
 
 public class TokenUtil
 {
-
     readonly UserManager<User> _userManager;
     readonly JwtSettings _jwtSettings;
 
@@ -28,12 +27,10 @@ public class TokenUtil
 
         var userRoles = await _userManager.GetRolesAsync(user) ?? new List<string>();
 
-    
         if (userRoles.ToList().Count == 0)
             role = RoleNames.Organization;
         else
             role = userRoles.ToList().First().ToUpper();
-        
 
         var claims = new List<Claim>
         {
@@ -44,7 +41,6 @@ public class TokenUtil
             new Claim(ClaimTypes.Email, user.Email ?? string.Empty),
             new Claim(ClaimTypes.Role, role ?? RoleNames.Organization),
         };
-
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -59,7 +55,7 @@ public class TokenUtil
         var jwtToken = new JwtSecurityTokenHandler().WriteToken(token);
         return jwtToken;
     }
-    
+
     public int GetUserIdFromToken(string token)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
@@ -67,18 +63,23 @@ public class TokenUtil
 
         try
         {
-            tokenHandler.ValidateToken(token, new TokenValidationParameters
-            {
-                IssuerSigningKey = new SymmetricSecurityKey(key),
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidIssuer = _jwtSettings.Issuer,
-                ValidAudience = _jwtSettings.Audience,
-                LifetimeValidator = (notBefore, expires, securityToken, validationParameters) =>  {
-                    return expires > DateTime.UtcNow;
+            tokenHandler.ValidateToken(
+                token,
+                new TokenValidationParameters
+                {
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidIssuer = _jwtSettings.Issuer,
+                    ValidAudience = _jwtSettings.Audience,
+                    LifetimeValidator = (notBefore, expires, securityToken, validationParameters) =>
+                    {
+                        return expires > DateTime.UtcNow;
+                    },
+                    ValidateLifetime = true,
                 },
-                ValidateLifetime = true,
-            }, out var validatedToken);
+                out var validatedToken
+            );
 
             var jwtToken = (JwtSecurityToken)validatedToken;
             var userId = jwtToken.Claims.First(x => x.Type == JwtRegisteredClaimNames.Sub).Value;
@@ -91,8 +92,5 @@ public class TokenUtil
         {
             return 0;
         }
-
     }
-    
-    
 }

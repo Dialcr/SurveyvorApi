@@ -16,13 +16,23 @@ namespace BePrácticasLaborales.Migrations
                 name: "Surveys",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table
+                        .Column<int>(type: "integer", nullable: false)
+                        .Annotation(
+                            "Npgsql:ValueGenerationStrategy",
+                            NpgsqlValueGenerationStrategy.IdentityByDefaultColumn
+                        ),
                     Description = table.Column<string>(type: "text", nullable: false),
                     SatiscationState = table.Column<string>(type: "text", nullable: false),
                     OrganizationId = table.Column<int>(type: "integer", nullable: false),
-                    StartDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    EndDate = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
+                    StartDate = table.Column<DateTimeOffset>(
+                        type: "timestamp with time zone",
+                        nullable: false
+                    ),
+                    EndDate = table.Column<DateTimeOffset>(
+                        type: "timestamp with time zone",
+                        nullable: false
+                    )
                 },
                 constraints: table =>
                 {
@@ -32,17 +42,27 @@ namespace BePrácticasLaborales.Migrations
                         column: x => x.OrganizationId,
                         principalTable: "Organization",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
+                        onDelete: ReferentialAction.Cascade
+                    );
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "SurveyAsks",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table
+                        .Column<int>(type: "integer", nullable: false)
+                        .Annotation(
+                            "Npgsql:ValueGenerationStrategy",
+                            NpgsqlValueGenerationStrategy.IdentityByDefaultColumn
+                        ),
                     SurveyId = table.Column<int>(type: "integer", nullable: false),
-                    Description = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false)
+                    Description = table.Column<string>(
+                        type: "character varying(150)",
+                        maxLength: 150,
+                        nullable: false
+                    )
                 },
                 constraints: table =>
                 {
@@ -52,8 +72,10 @@ namespace BePrácticasLaborales.Migrations
                         column: x => x.SurveyId,
                         principalTable: "Surveys",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
+                        onDelete: ReferentialAction.Cascade
+                    );
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "ResponsePosibilities",
@@ -61,7 +83,11 @@ namespace BePrácticasLaborales.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false),
                     SuveryAskId = table.Column<int>(type: "integer", nullable: false),
-                    ResponseValue = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false)
+                    ResponseValue = table.Column<string>(
+                        type: "character varying(50)",
+                        maxLength: 50,
+                        nullable: false
+                    )
                 },
                 constraints: table =>
                 {
@@ -71,15 +97,21 @@ namespace BePrácticasLaborales.Migrations
                         column: x => x.SuveryAskId,
                         principalTable: "SurveyAsks",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
+                        onDelete: ReferentialAction.Cascade
+                    );
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "SurveyResponses",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table
+                        .Column<int>(type: "integer", nullable: false)
+                        .Annotation(
+                            "Npgsql:ValueGenerationStrategy",
+                            NpgsqlValueGenerationStrategy.IdentityByDefaultColumn
+                        ),
                     ResponsePosibilityId = table.Column<int>(type: "integer", nullable: false),
                     SuveryAskId = table.Column<int>(type: "integer", nullable: false)
                 },
@@ -91,49 +123,52 @@ namespace BePrácticasLaborales.Migrations
                         columns: x => new { x.ResponsePosibilityId, x.SuveryAskId },
                         principalTable: "ResponsePosibilities",
                         principalColumns: new[] { "Id", "SuveryAskId" },
-                        onDelete: ReferentialAction.Cascade);
-                });
+                        onDelete: ReferentialAction.Cascade
+                    );
+                }
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_ResponsePosibilities_Id_SuveryAskId",
                 table: "ResponsePosibilities",
-                columns: new[] { "Id", "SuveryAskId" });
+                columns: new[] { "Id", "SuveryAskId" }
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_ResponsePosibilities_SuveryAskId",
                 table: "ResponsePosibilities",
-                column: "SuveryAskId");
+                column: "SuveryAskId"
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_SurveyAsks_SurveyId",
                 table: "SurveyAsks",
-                column: "SurveyId");
+                column: "SurveyId"
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_SurveyResponses_ResponsePosibilityId_SuveryAskId",
                 table: "SurveyResponses",
-                columns: new[] { "ResponsePosibilityId", "SuveryAskId" });
+                columns: new[] { "ResponsePosibilityId", "SuveryAskId" }
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_Surveys_OrganizationId",
                 table: "Surveys",
-                column: "OrganizationId");
+                column: "OrganizationId"
+            );
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "SurveyResponses");
+            migrationBuilder.DropTable(name: "SurveyResponses");
 
-            migrationBuilder.DropTable(
-                name: "ResponsePosibilities");
+            migrationBuilder.DropTable(name: "ResponsePosibilities");
 
-            migrationBuilder.DropTable(
-                name: "SurveyAsks");
+            migrationBuilder.DropTable(name: "SurveyAsks");
 
-            migrationBuilder.DropTable(
-                name: "Surveys");
+            migrationBuilder.DropTable(name: "Surveys");
         }
     }
 }

@@ -2,5 +2,5 @@
 
 public class ResponsePosibilityInputDto
 {
-    public string ResponseValue{ get; set; } ="";    
+    public string ResponseValue { get; set; } = "";
 }

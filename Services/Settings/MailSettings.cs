@@ -16,8 +16,7 @@ public class MailSettings
     public string Smtp { get; set; }
     public int Port { get; set; }
     public string Password { get; set; }
-    
+
     public string UrlWEB { get; set; }
     public string UrlWEBFront { get; set; }
-    
 }

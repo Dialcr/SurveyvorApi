@@ -12,11 +12,6 @@ public static class UniversityExtention
 {
     public static OrganizationOutputDto ToOrganizationOutputDto(this University university)
     {
-        return new OrganizationOutputDto()
-        {
-            Id = university.Id,
-            Name = university.Name
-        };
-
+        return new OrganizationOutputDto() { Id = university.Id, Name = university.Name };
     }
 }

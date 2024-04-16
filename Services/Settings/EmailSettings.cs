@@ -10,6 +10,3 @@ public record EmailSettings(
     bool EnableSSL,
     string EnvironmentSubjectPrefix
 );
-
-
-

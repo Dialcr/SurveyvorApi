@@ -1,4 +1,3 @@
-
 using BePrácticasLaborales;
 using BePrácticasLaborales.DataAcces;
 using HibernatingRhinos.Profiler.Appender.EntityFramework;
@@ -12,17 +11,14 @@ var builder = WebApplication.CreateBuilder(args);
 var conectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 var loggingLevel = builder.Configuration.GetSection("Logging");
 
-
 builder.Services.AddControllers();
 builder.Services.SetCors(builder.Configuration, corsPolicyName);
-builder.Services.AddSwaggerGen();   
+builder.Services.AddSwaggerGen();
 builder.Services.AddEndpointsApiExplorer();
 
-//todo: add logging at database?
-builder.Services.AddDbContext<EntityDbContext>(options => 
-    options.UseNpgsql(conectionString)
-        .EnableDetailedErrors()
-        .EnableSensitiveDataLogging());
+builder.Services.AddDbContext<EntityDbContext>(options =>
+    options.UseNpgsql(conectionString).EnableDetailedErrors().EnableSensitiveDataLogging()
+);
 builder.Services.SetAuthentication(builder.Configuration);
 builder.Services.SetServices(builder.Configuration);
 builder.Services.SetSwagger();
@@ -37,8 +33,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseCors(corsPolicyName);
-app.MapControllers()    
-    .RequireAuthorization();
+app.MapControllers().RequireAuthorization();
 
 app.Run();
-

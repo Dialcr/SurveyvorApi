@@ -12,7 +12,8 @@ namespace DataAcces.Migrations
         {
             migrationBuilder.DropForeignKey(
                 name: "FK_ResponsePosibilities_SurveyAsks_SuveryAskId",
-                table: "ResponsePosibilities");
+                table: "ResponsePosibilities"
+            );
 
             migrationBuilder.AlterColumn<string>(
                 name: "Tittle",
@@ -22,7 +23,8 @@ namespace DataAcces.Migrations
                 nullable: false,
                 oldClrType: typeof(string),
                 oldType: "character varying(25)",
-                oldMaxLength: 25);
+                oldMaxLength: 25
+            );
 
             migrationBuilder.AlterColumn<string>(
                 name: "Description",
@@ -32,7 +34,8 @@ namespace DataAcces.Migrations
                 nullable: false,
                 oldClrType: typeof(string),
                 oldType: "character varying(100)",
-                oldMaxLength: 100);
+                oldMaxLength: 100
+            );
 
             migrationBuilder.AlterColumn<int>(
                 name: "SuveryAskId",
@@ -40,14 +43,16 @@ namespace DataAcces.Migrations
                 type: "integer",
                 nullable: true,
                 oldClrType: typeof(int),
-                oldType: "integer");
+                oldType: "integer"
+            );
 
             migrationBuilder.AddForeignKey(
                 name: "FK_ResponsePosibilities_SurveyAsks_SuveryAskId",
                 table: "ResponsePosibilities",
                 column: "SuveryAskId",
                 principalTable: "SurveyAsks",
-                principalColumn: "Id");
+                principalColumn: "Id"
+            );
         }
 
         /// <inheritdoc />
@@ -55,7 +60,8 @@ namespace DataAcces.Migrations
         {
             migrationBuilder.DropForeignKey(
                 name: "FK_ResponsePosibilities_SurveyAsks_SuveryAskId",
-                table: "ResponsePosibilities");
+                table: "ResponsePosibilities"
+            );
 
             migrationBuilder.AlterColumn<string>(
                 name: "Tittle",
@@ -65,7 +71,8 @@ namespace DataAcces.Migrations
                 nullable: false,
                 oldClrType: typeof(string),
                 oldType: "character varying(150)",
-                oldMaxLength: 150);
+                oldMaxLength: 150
+            );
 
             migrationBuilder.AlterColumn<string>(
                 name: "Description",
@@ -75,7 +82,8 @@ namespace DataAcces.Migrations
                 nullable: false,
                 oldClrType: typeof(string),
                 oldType: "character varying(300)",
-                oldMaxLength: 300);
+                oldMaxLength: 300
+            );
 
             migrationBuilder.AlterColumn<int>(
                 name: "SuveryAskId",
@@ -85,7 +93,8 @@ namespace DataAcces.Migrations
                 defaultValue: 0,
                 oldClrType: typeof(int),
                 oldType: "integer",
-                oldNullable: true);
+                oldNullable: true
+            );
 
             migrationBuilder.AddForeignKey(
                 name: "FK_ResponsePosibilities_SurveyAsks_SuveryAskId",
@@ -93,7 +102,8 @@ namespace DataAcces.Migrations
                 column: "SuveryAskId",
                 principalTable: "SurveyAsks",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Cascade
+            );
         }
     }
 }

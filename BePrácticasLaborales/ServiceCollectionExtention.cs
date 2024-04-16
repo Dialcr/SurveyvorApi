@@ -17,76 +17,96 @@ namespace BePrácticasLaborales;
 public static class ServiceCollectionExtention
 {
     public static IServiceCollection SetAuthentication(
-    this IServiceCollection services,
-    IConfiguration configuration)
-{
-    var a  = configuration.GetSection("Authentication").GetSection("Password").GetValue<int>("RequiredLength");
-    services.AddIdentity<User, IdentityRole<int>>(options =>
-    { 
-        
-        options.Password.RequiredLength =
-            configuration.GetSection("Authentication").GetSection("Password").GetValue<int>("RequiredLength");
-        options.Password.RequireNonAlphanumeric = configuration.GetSection("Authentication").GetSection("Password")
-            .GetValue<bool>("RequireNonAlphanumeric");
-        options.Password.RequireDigit =
-            configuration.GetSection("Authentication").GetSection("Password").GetValue<bool>("RequireDigit");
-        options.Password.RequireLowercase =
-            configuration.GetSection("Authentication").GetSection("Password").GetValue<bool>("RequireLowercase");
-        options.Password.RequireUppercase =
-            configuration.GetSection("Authentication").GetSection("Password").GetValue<bool>("RequireUppercase");
-            
-        options.ClaimsIdentity = new ClaimsIdentityOptions
-        {
-            EmailClaimType = ClaimTypes.Email,
-            RoleClaimType = ClaimTypes.Role,
-            UserIdClaimType = ClaimTypes.NameIdentifier,
-            UserNameClaimType = ClaimTypes.Name 
-        };
-        //change this emailconfirm
-        options.SignIn.RequireConfirmedEmail = false;
-    })
-        .AddEntityFrameworkStores<EntityDbContext>()
-        .AddDefaultTokenProviders()
-        .AddApiEndpoints();
-
-    services.AddAuthentication(options =>
-        {
-            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-        })
-        .AddJwtBearer(options =>
-        {
-            options.SaveToken = true;
-            options.RequireHttpsMetadata = false;
-            options.TokenValidationParameters = new TokenValidationParameters()
-            {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                
-                ValidAudience = configuration["JwtSettings:Audience"],
-                ValidIssuer = configuration["JwtSettings:Issuer"],
-                ValidateLifetime = true,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSettings:Key"])),
-                
-            };
-        });
-    
-    /*
-     services.AddAuthorization(options =>
+        this IServiceCollection services,
+        IConfiguration configuration
+    )
     {
-        options.AddPolicy("IsAdmin", policy => policy.RequireClaim(ClaimTypes.Role, 
-            RoleNames.Admin.ToUpper()));
-    });
-    */
-    
-    
-    return services;
-}
+        var a = configuration
+            .GetSection("Authentication")
+            .GetSection("Password")
+            .GetValue<int>("RequiredLength");
+        services
+            .AddIdentity<User, IdentityRole<int>>(options =>
+            {
+                options.Password.RequiredLength = configuration
+                    .GetSection("Authentication")
+                    .GetSection("Password")
+                    .GetValue<int>("RequiredLength");
+                options.Password.RequireNonAlphanumeric = configuration
+                    .GetSection("Authentication")
+                    .GetSection("Password")
+                    .GetValue<bool>("RequireNonAlphanumeric");
+                options.Password.RequireDigit = configuration
+                    .GetSection("Authentication")
+                    .GetSection("Password")
+                    .GetValue<bool>("RequireDigit");
+                options.Password.RequireLowercase = configuration
+                    .GetSection("Authentication")
+                    .GetSection("Password")
+                    .GetValue<bool>("RequireLowercase");
+                options.Password.RequireUppercase = configuration
+                    .GetSection("Authentication")
+                    .GetSection("Password")
+                    .GetValue<bool>("RequireUppercase");
+
+                options.ClaimsIdentity = new ClaimsIdentityOptions
+                {
+                    EmailClaimType = ClaimTypes.Email,
+                    RoleClaimType = ClaimTypes.Role,
+                    UserIdClaimType = ClaimTypes.NameIdentifier,
+                    UserNameClaimType = ClaimTypes.Name
+                };
+                //change this emailconfirm
+                options.SignIn.RequireConfirmedEmail = false;
+            })
+            .AddEntityFrameworkStores<EntityDbContext>()
+            .AddDefaultTokenProviders()
+            .AddApiEndpoints();
+
+        services
+            .AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.SaveToken = true;
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    LifetimeValidator = (notBefore, expires, securityToken, validationParameters) =>
+                    {
+                        return expires > DateTime.UtcNow;
+                    },
+                    ValidAudience = configuration["JwtSettings:Audience"],
+                    ValidIssuer = configuration["JwtSettings:Issuer"],
+                    ValidateLifetime = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(configuration["JwtSettings:Key"])
+                    ),
+                };
+            });
+
+        /*
+         services.AddAuthorization(options =>
+        {
+            options.AddPolicy("IsAdmin", policy => policy.RequireClaim(ClaimTypes.Role,
+                RoleNames.Admin.ToUpper()));
+        });
+        */
+
+
+        return services;
+    }
 
     public static IServiceCollection SetServices(
         this IServiceCollection services,
-        IConfiguration configuration)   
+        IConfiguration configuration
+    )
     {
         services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
 
@@ -99,71 +119,72 @@ public static class ServiceCollectionExtention
         services.Configure<MailSettings>(configuration.GetSection("MailSettings"));
         return services;
     }
-    
+
     public static IServiceCollection SetCors(
         this IServiceCollection services,
         IConfiguration configuration,
-        string policyName)
+        string policyName
+    )
     {
-        var origins = configuration
-            .GetSection("CorsAllowedOrigins")
-            .Get<string[]>();
+        var origins = configuration.GetSection("CorsAllowedOrigins").Get<string[]>();
 
         if (origins is null)
             throw new NullReferenceException(nameof(origins));
 
         services.AddCors(options =>
         {
-            options.AddPolicy(name: policyName, builder =>
-            {
-                builder
-                    .WithOrigins(origins)
-                    .AllowAnyMethod()
-                    .AllowAnyHeader()
-                    .AllowCredentials();
-            });
+            options.AddPolicy(
+                name: policyName,
+                builder =>
+                {
+                    builder
+                        .WithOrigins(origins)
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials();
+                }
+            );
         });
 
         return services;
     }
-    
-    
-    
+
     public static IServiceCollection SetSwagger(this IServiceCollection services)
     {
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(option =>
         {
-            option.SwaggerDoc("v1", new OpenApiInfo
-            {
-                Title = "Practices",
-                Version = "1",
-            });
+            option.SwaggerDoc("v1", new OpenApiInfo { Title = "Practices", Version = "1", });
 
-            option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-            {
-                In = ParameterLocation.Header,
-                Description = "",
-                Name = "Authorization",
-                Type = SecuritySchemeType.Http,
-                BearerFormat = "JWT",
-                Scheme = "Bearer"
-            });
-
-            option.AddSecurityRequirement(new OpenApiSecurityRequirement
-            {
+            option.AddSecurityDefinition(
+                "Bearer",
+                new OpenApiSecurityScheme
                 {
-                    new OpenApiSecurityScheme
-                    {
-                        Reference = new OpenApiReference
-                        {
-                            Type=ReferenceType.SecurityScheme,
-                            Id="Bearer"
-                        }
-                    },
-                    Array.Empty<string>()
+                    In = ParameterLocation.Header,
+                    Description = "",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http,
+                    BearerFormat = "JWT",
+                    Scheme = "Bearer"
                 }
-            });
+            );
+
+            option.AddSecurityRequirement(
+                new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        Array.Empty<string>()
+                    }
+                }
+            );
         });
 
         return services;

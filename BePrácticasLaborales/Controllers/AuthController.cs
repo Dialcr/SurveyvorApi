@@ -29,43 +29,7 @@ public class AuthController : ControllerBase
     }
    
 
-    /*
-    [HttpGet]
-    [Route("/test")]
-    [Authorize(Roles = "ADMIN")]
-    public IActionResult Testenpoint(string token, string userName )
-    { 
-        
-        return Ok("good response");
-        
-    }
-    [HttpGet]
-    [Route("/test2")]
-    public IActionResult Testenpoint2(string token, string userName )
-    {
-        return Ok("good response");
-        
-    }
-    [HttpGet]
-    [Route("/test3")]
-    [AllowAnonymous]
-    public IActionResult Testenpoint3(string token, string userName )
-    {
-        return Ok("good response");
-        
-    }
-    [HttpGet("  obtener-id-usuario")]
-    public IActionResult ObtenerIdUsuario()
-    {
-        // Obtiene el ClaimsPrincipal actual
-        ClaimsPrincipal user = _httpContextAccessor.HttpContext.User;
-
-        // Obtiene el ID del usuario del Claim "sub" (sujeto)
-        string userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-        return Ok(new { UserId = userId });
-    }
-    */
+   
     [HttpPost]
     [Route("signin")]
     [ProducesResponseType(typeof(AuthResponseDtoOutput), StatusCodes.Status200OK)]

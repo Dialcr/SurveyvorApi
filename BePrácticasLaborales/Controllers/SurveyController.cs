@@ -248,7 +248,6 @@ public class SurveyController(SurveyServices surveyServices, ImportDbServices im
     [Authorize(Roles = "ORGANIZATION")]
     public async Task<IActionResult> ApplicateSurveyAsync(SurveyInputDto surveyInput)
     { 
-        //todo: arreglar el terror este 
         string? accessToken = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
         accessToken = accessToken!.Replace("Bearer", "");
         var userId = tokenUtil.GetUserIdFromToken(accessToken);

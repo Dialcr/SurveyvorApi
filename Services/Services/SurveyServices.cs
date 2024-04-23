@@ -146,7 +146,7 @@ public class SurveyServices(EntityDbContext context) : CustomServiceBase(context
             .Include(x => x.SurveyAsks)!
             .ThenInclude(x=>x.ResponsePosibilities)
             .Include(x=>x.SurveyResponses)
-            .Where(x=>x.OrganizationId == universityId );
+            .Where(x=>x.OrganizationId == universityId && x.Available);
         if (!surveys.Any())
         {
             return new ResponseErrorDto()

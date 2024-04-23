@@ -1,4 +1,5 @@
-﻿using DataAcces.Entities;
+﻿using BePrácticasLaborales.Middleware;
+using DataAcces.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Services;
@@ -178,6 +179,7 @@ public class SurveyController(SurveyServices surveyServices, ImportDbServices im
     [ProducesResponseType(typeof(ICollection<SurveyOutputDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResponseErrorDto), StatusCodes.Status400BadRequest)]
     [Authorize(Roles = "ORGANIZATION")]
+    [CheckSurveyDate]
     public async Task<IActionResult> SurveyByUniversityName(string organizationName)
     { 
         var result =  await surveyServices.SurveyByUniversityName(organizationName);
@@ -193,6 +195,7 @@ public class SurveyController(SurveyServices surveyServices, ImportDbServices im
     [ProducesResponseType(typeof(SurveyOutputDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResponseErrorDto), StatusCodes.Status400BadRequest)]
     [AllowAnonymous]
+    [CheckSurveyDate]
     public IActionResult GetSurveyInfo(int surveyId)
     { 
         var result =  surveyServices.GetSurveyInfo(surveyId);

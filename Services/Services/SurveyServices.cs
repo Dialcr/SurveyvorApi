@@ -41,7 +41,7 @@ public class SurveyServices(EntityDbContext context) : CustomServiceBase(context
                 ErrorMessage = "Organization list not found"
             };
         }
-            var processed = organizations
+        var processed = organizations
             .Select(organization => new
             {
                 Organization = organization,
@@ -53,7 +53,7 @@ public class SurveyServices(EntityDbContext context) : CustomServiceBase(context
                         SurveyId = group.Key,
                         TotalResponses = group.Count()
                     })
-                    .Select(survey => (double)survey.TotalResponses / organization.Surveys.Count) 
+                    .Select(survey => ((double)survey.TotalResponses / organizations.Sum(y=>y.Surveys.Sum(x=>x.SurveyResponses.Count())) * 100)) 
                     .DefaultIfEmpty(0) 
                     .Average() 
             })
@@ -262,13 +262,13 @@ public class SurveyServices(EntityDbContext context) : CustomServiceBase(context
     {
         var cant =
             _context.SurveyAskResponses.Count(x => x.SurveyAsk!.SurveyId ==  surveyId 
-                                                //todo: no se si esto sea realmente necesario
-                                                && x.SurveyAsk.Survey.Available
+                                                   //todo: no se si esto sea realmente necesario
+                                                   && x.SurveyAsk.Survey.Available
                                                 
-                                                && x.SurveyAsk.Description == surveyAskDescription
-                                                && x.ResponsePosibility!.ResponseValue == reponse);
+                                                   && x.SurveyAsk.Description == surveyAskDescription
+                                                   && x.ResponsePosibility!.ResponseValue == reponse);
         var total = _context.SurveyAskResponses.Count(x => x.SurveyAsk!.SurveyId ==  surveyId
-                                                        && x.SurveyAsk.Description == surveyAskDescription);
+                                                           && x.SurveyAsk.Description == surveyAskDescription);
         if (cant ==0)
         {
             return new ResponseErrorDto()

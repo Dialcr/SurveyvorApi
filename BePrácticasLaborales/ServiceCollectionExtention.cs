@@ -63,9 +63,7 @@ public static class ServiceCollectionExtention
             {
                 ValidateIssuer = true,
                 ValidateAudience = true,
-                LifetimeValidator = (notBefore, expires, securityToken, validationParameters) =>  {
-                    return expires > DateTime.UtcNow;
-                },
+                
                 ValidAudience = configuration["JwtSettings:Audience"],
                 ValidIssuer = configuration["JwtSettings:Issuer"],
                 ValidateLifetime = true,

@@ -94,7 +94,8 @@ public class SurveyController(SurveyServices surveyServices, ImportDbServices im
         accessToken = accessToken!.Replace("Bearer", "");
         var userId = tokenUtil.GetUserIdFromToken(accessToken);
         var organization = await organizationServices.GetUniversityByUserAsync(userId);
-        var result = await surveyServices.SurveyByUniversityId(organization.AsT1.Id);
+        //var result = await surveyServices.SurveyByUniversityId(organization.AsT1.Id);
+        var result = await surveyServices.SurveyActiveByUniversityId(organization.AsT1.Id);
         if (result.TryPickT0(out var error, out var response))
         {
             return BadRequest(error);

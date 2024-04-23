@@ -11,18 +11,13 @@ namespace Services.Services;
 
 public class SurveyServices(EntityDbContext context) : CustomServiceBase(context)
 {
-    public OneOf<ResponseErrorDto, ICollection<SurveyOutputDto>> OrganizatinoWithMoreSurvey()
+    public OneOf<ResponseErrorDto, ICollection<UniversityOutputDto>> OrganizationWithMoreSurvey()
     {
-        var surveys = _context.Surveys
-            .Include(x=>x.SurveyAsks)!
-            .ThenInclude(x=>x.SurveyAskResponses)
-            .Include(x=>x.SurveyAsks)!
-            .ThenInclude(x=>x.ResponsePosibilities)
-            .Include(x=>x.SurveyResponses)
-            .Include(x=>x.Organization)
-            //.OrderByDescending(x => x.SurveyAsks.Sum(z => z.SurveyResponses!.Count())).ToList();
-            .OrderByDescending(x => x.SurveyResponses!.Count()).ToList();
-        if (!surveys.Any())
+        var organizations = _context.University
+            .Include(x => x.Surveys)
+            .OrderByDescending(x => x.Surveys.Count);
+            
+        if (!organizations.Any())
         {
             return new ResponseErrorDto()
             {
@@ -30,8 +25,74 @@ public class SurveyServices(EntityDbContext context) : CustomServiceBase(context
                 ErrorMessage = "Organization list not found"
             };
         }
-        return surveys.Select(x=> x.ToSurveyOutputDtoWithResponses()).ToList();
+
+        return organizations.Select(x=>x.ToOrganizationOutputDtoSurveyCount()).Take(5).ToList();
     }
+    public OneOf<ResponseErrorDto, ICollection<UniversityOutputDto>> OrganizationWithMoreSurveyResponses()
+    {
+        var organizations = _context.University
+            .Include(x => x.Surveys)
+            .ThenInclude(x => x.SurveyResponses).ToList();
+        if ( !organizations.Any())
+        {
+            return new ResponseErrorDto()
+            {
+                ErrorCode = 404,
+                ErrorMessage = "Organization list not found"
+            };
+        }
+            var processed = organizations
+            .Select(organization => new
+            {
+                Organization = organization,
+                Percentage = organization.Surveys
+                    .SelectMany(survey => survey.SurveyResponses ?? null) 
+                    .GroupBy(response => response.SurveyId) 
+                    .Select(group => new
+                    {
+                        SurveyId = group.Key,
+                        TotalResponses = group.Count()
+                    })
+                    .Select(survey => (double)survey.TotalResponses / organization.Surveys.Count) 
+                    .DefaultIfEmpty(0) 
+                    .Average() 
+            })
+            .OrderByDescending(item => item.Percentage).ToList();
+        
+
+        return processed.Select(x=> new UniversityOutputDto()
+        {
+            Id = x.Organization.Id,
+            Enable = x.Organization.Enable,
+            Name = x.Organization.Name,
+            FacultiesNumber = x.Organization.FacultiesNumber,
+            Email = x.Organization.Email,
+            Description = x.Organization.Description,
+            ProfileImage = x.Organization.ProfileImage,
+            BgImage = x.Organization.BgImage,
+            Percentage = x.Percentage
+        }).Take(5).ToList();
+    }
+    public OneOf<ResponseErrorDto, ICollection<SurveyOutputDto>> SurveyWithMoreResponses(int universityId)
+    {
+        var surveys = _context.Surveys.Include(x => x.SurveyAsks!)
+            .ThenInclude(x => x.ResponsePosibilities)
+            .Include(x=>x.SurveyResponses)
+            .Where(x=>x.OrganizationId == universityId)
+            .OrderBy(x => x.SurveyResponses!.Count());
+        
+        if (!surveys.Any())
+        {
+            return new ResponseErrorDto()
+            {
+                ErrorCode = 404,
+                ErrorMessage = "Surveys list not found"
+            };
+        }
+
+        return surveys.Select(x=>x.ToSurveyOutputDto()).Take(5).ToList();
+    }
+    
     public async Task<OneOf<ResponseErrorDto, ICollection<SurveyOutputDto>>> SurveyByUniversityId(int universityId)
     {
         var organization = await _context.University.SingleOrDefaultAsync(x=>x.Id == universityId);

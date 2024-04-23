@@ -17,6 +17,8 @@ public class UniversityOutputDto
     public string? BgImage { get; set; } = Convert.ToBase64String(File.ReadAllBytes("./../DataAcces/Images/university2.jpg"));
     
     public int FacultiesNumber { get; set; }
+    public int? SurveyCount { get; set; }
+    public double? Percentage { get; set; }
 }
 
 
@@ -54,6 +56,21 @@ public static class UniversityExtention
             
         };
 
+    }
+    public static UniversityOutputDto ToOrganizationOutputDtoSurveyCount(this University university)
+    {
+        return new UniversityOutputDto()
+        {
+            Id = university.Id,
+            Enable = university.Enable,
+            Name = university.Name,
+            FacultiesNumber = university.FacultiesNumber,
+            Email = university.Email,
+            Description = university.Description,
+            ProfileImage = university.ProfileImage,
+            BgImage = university.BgImage,
+            SurveyCount = university.Surveys.Count
+        };
     }
 }
 

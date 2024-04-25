@@ -139,12 +139,12 @@ public class ImportDbServices : CustomServiceBase
                     var surveyResponse = _context.ResponsePosibilities.FirstOrDefault(x =>
                         x.SuveryAskId == findSurveyAsk!.Id && x.ResponseValue == suerveyAskResponse
                     );
-                    var newSurveyResponse = new SurveyResponse()
+                    var newSurveyResponse = new SurveyAskResponse()
                     {
                         SuveryAskId = 0,
                         ResponsePosibilityId = surveyResponse!.Id
                     };
-                    _context.SurveyResponses.Add(newSurveyResponse);
+                    _context.SurveyAskResponses.Add(newSurveyResponse);
                     await _context.SaveChangesAsync();
                     surveyAsk = string.Empty;
                     responsePosibilities = new List<string>();
@@ -384,7 +384,7 @@ public class ImportDbServices : CustomServiceBase
                     Description = surveyAsk,
                     Survey = newSurvey,
                     ResponsePosibilities = new List<ResponsePosibility>(),
-                    SurveyResponses = new List<SurveyResponse>()
+                    SurveyAskResponses = new List<SurveyAskResponse>()
                 };
                 newSurvey.SurveyAsks.ToList().Add(newSurveyAsk);
 
@@ -462,13 +462,13 @@ public class ImportDbServices : CustomServiceBase
                     var responseValue = ask.ResponsePosibilities.FirstOrDefault(x =>
                         x.ResponseValue.Equals(suerveyAskResponse)
                     );
-                    var response = new SurveyResponse()
+                    var response = new SurveyAskResponse()
                     {
                         SurveyAsk = ask,
                         ResponsePosibility = responseValue,
                         ResponsePosibilityId = responseValue.Id
                     };
-                    _context.SurveyResponses.Add(response);
+                    _context.SurveyAskResponses.Add(response);
                 }
 
                 surveyAsk = null;

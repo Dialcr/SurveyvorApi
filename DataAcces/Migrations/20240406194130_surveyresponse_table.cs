@@ -12,29 +12,32 @@ namespace DataAcces.Migrations
         {
             migrationBuilder.DropForeignKey(
                 name: "FK_SurveyResponses_ResponsePosibilities_ResponsePosibilityId",
-                table: "SurveyResponses");
+                table: "SurveyResponses"
+            );
 
             migrationBuilder.DropForeignKey(
                 name: "FK_SurveyResponses_SurveyAsks_SuveryAskId",
-                table: "SurveyResponses");
+                table: "SurveyResponses"
+            );
 
             migrationBuilder.DropIndex(
                 name: "IX_SurveyResponses_ResponsePosibilityId",
-                table: "SurveyResponses");
+                table: "SurveyResponses"
+            );
 
-            migrationBuilder.DropColumn(
-                name: "ResponsePosibilityId",
-                table: "SurveyResponses");
+            migrationBuilder.DropColumn(name: "ResponsePosibilityId", table: "SurveyResponses");
 
             migrationBuilder.RenameColumn(
                 name: "SuveryAskId",
                 table: "SurveyResponses",
-                newName: "SurveyId");
+                newName: "SurveyId"
+            );
 
             migrationBuilder.RenameIndex(
                 name: "IX_SurveyResponses_SuveryAskId",
                 table: "SurveyResponses",
-                newName: "IX_SurveyResponses_SurveyId");
+                newName: "IX_SurveyResponses_SurveyId"
+            );
 
             migrationBuilder.CreateTable(
                 name: "SurveyAskResponses",
@@ -46,36 +49,50 @@ namespace DataAcces.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SurveyAskResponses", x => new { x.SurveyResponseId, x.SuveryAskId, x.ResponsePosibilityId });
+                    table.PrimaryKey(
+                        "PK_SurveyAskResponses",
+                        x => new
+                        {
+                            x.SurveyResponseId,
+                            x.SuveryAskId,
+                            x.ResponsePosibilityId
+                        }
+                    );
                     table.ForeignKey(
                         name: "FK_SurveyAskResponses_ResponsePosibilities_ResponsePosibilityId",
                         column: x => x.ResponsePosibilityId,
                         principalTable: "ResponsePosibilities",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Cascade
+                    );
                     table.ForeignKey(
                         name: "FK_SurveyAskResponses_SurveyAsks_SuveryAskId",
                         column: x => x.SuveryAskId,
                         principalTable: "SurveyAsks",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Cascade
+                    );
                     table.ForeignKey(
                         name: "FK_SurveyAskResponses_SurveyResponses_SurveyResponseId",
                         column: x => x.SurveyResponseId,
                         principalTable: "SurveyResponses",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
+                        onDelete: ReferentialAction.Cascade
+                    );
+                }
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_SurveyAskResponses_ResponsePosibilityId",
                 table: "SurveyAskResponses",
-                column: "ResponsePosibilityId");
+                column: "ResponsePosibilityId"
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_SurveyAskResponses_SuveryAskId",
                 table: "SurveyAskResponses",
-                column: "SuveryAskId");
+                column: "SuveryAskId"
+            );
 
             migrationBuilder.AddForeignKey(
                 name: "FK_SurveyResponses_Surveys_SurveyId",
@@ -83,7 +100,8 @@ namespace DataAcces.Migrations
                 column: "SurveyId",
                 principalTable: "Surveys",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Cascade
+            );
         }
 
         /// <inheritdoc />
@@ -91,32 +109,36 @@ namespace DataAcces.Migrations
         {
             migrationBuilder.DropForeignKey(
                 name: "FK_SurveyResponses_Surveys_SurveyId",
-                table: "SurveyResponses");
+                table: "SurveyResponses"
+            );
 
-            migrationBuilder.DropTable(
-                name: "SurveyAskResponses");
+            migrationBuilder.DropTable(name: "SurveyAskResponses");
 
             migrationBuilder.RenameColumn(
                 name: "SurveyId",
                 table: "SurveyResponses",
-                newName: "SuveryAskId");
+                newName: "SuveryAskId"
+            );
 
             migrationBuilder.RenameIndex(
                 name: "IX_SurveyResponses_SurveyId",
                 table: "SurveyResponses",
-                newName: "IX_SurveyResponses_SuveryAskId");
+                newName: "IX_SurveyResponses_SuveryAskId"
+            );
 
             migrationBuilder.AddColumn<int>(
                 name: "ResponsePosibilityId",
                 table: "SurveyResponses",
                 type: "integer",
                 nullable: false,
-                defaultValue: 0);
+                defaultValue: 0
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_SurveyResponses_ResponsePosibilityId",
                 table: "SurveyResponses",
-                column: "ResponsePosibilityId");
+                column: "ResponsePosibilityId"
+            );
 
             migrationBuilder.AddForeignKey(
                 name: "FK_SurveyResponses_ResponsePosibilities_ResponsePosibilityId",
@@ -124,7 +146,8 @@ namespace DataAcces.Migrations
                 column: "ResponsePosibilityId",
                 principalTable: "ResponsePosibilities",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Cascade
+            );
 
             migrationBuilder.AddForeignKey(
                 name: "FK_SurveyResponses_SurveyAsks_SuveryAskId",
@@ -132,7 +155,8 @@ namespace DataAcces.Migrations
                 column: "SuveryAskId",
                 principalTable: "SurveyAsks",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Cascade
+            );
         }
     }
 }

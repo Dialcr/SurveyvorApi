@@ -16,9 +16,10 @@ public class EntityDbContext : IdentityDbContext<User, IdentityRole<int>, int> /
     public DbSet<University> University { get; set; }
     public DbSet<Survey> Surveys { get; set; }
     public DbSet<SurveyAsk> SurveyAsks { get; set; }
-    public DbSet<SurveyResponse> SurveyResponses { get; set; }
+    public DbSet<SurveyAskResponse> SurveyAskResponses { get; set; }
     public DbSet<ResponsePosibility> ResponsePosibilities { get; set; }
     public DbSet<Application> Applications { get; set; }
+    public DbSet<SurveyResponse> SurveyResponses { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -46,25 +47,22 @@ public class EntityDbContext : IdentityDbContext<User, IdentityRole<int>, int> /
 
         modelBuilder.Entity<User>().HasOne(x => x.Organization).WithMany(x => x.Users);
 
-        modelBuilder.Entity<Survey>().HasOne(x => x.Organization).WithMany(x => x.Surveys);
-        modelBuilder.Entity<Survey>().HasMany(x => x.SurveyAsks).WithOne(x => x.Survey);
         modelBuilder
-            .Entity<SurveyAsk>()
-            .HasMany(x => x.ResponsePosibilities)
-            .WithOne(x => x.SurveyAsk);
-
-        modelBuilder
-            .Entity<SurveyResponse>()
+            .Entity<SurveyAskResponse>()
             .HasOne(sr => sr.ResponsePosibility)
             .WithMany(rp => rp.SurveyResponses);
+        modelBuilder
+            .Entity<SurveyAskResponse>()
+            .HasKey(x => new
+            {
+                x.SurveyResponseId,
+                x.SuveryAskId,
+                x.ResponsePosibilityId
+            });
 
         modelBuilder.Entity<SurveyAsk>().HasIndex(x => x.SurveyId);
 
         modelBuilder.Entity<ResponsePosibility>().HasIndex(x => x.SuveryAskId);
-
-        modelBuilder.Entity<SurveyAsk>().HasIndex(x => x.Description);
-
-        modelBuilder.Entity<ResponsePosibility>().HasIndex(x => x.ResponseValue);
 
         modelBuilder.Entity<University>().HasIndex(x => x.Name).IsUnique();
     }

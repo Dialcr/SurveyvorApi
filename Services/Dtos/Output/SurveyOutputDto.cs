@@ -57,7 +57,7 @@ public static class SurveyExtention
             ),
             StartDate = survey.StartDate,
             EndDate = survey.EndDate,
-//            SurveyParticipants = survey.SurveyAsks!.ToList()[0].SurveyResponses!.Count(),
+            //            SurveyParticipants = survey.SurveyAsks!.ToList()[0].SurveyResponses!.Count(),
             SurveyParticipants = participant,
             Tittle = survey.Tittle
         };

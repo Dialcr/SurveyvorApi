@@ -14,8 +14,7 @@ public class Survey
     [MaxLength(300)]
     public string Description { get; set; }
 
-    //todo: hacer trigger para cambiar el esatdo de aviable si ha sido rechazada la solicitud asociada
-    //esto se debe ir con un middleware
+    //todo: hacer trigger para cambiar el esatdo de aviable si ha sido rechazada la solicitud asociada [middleware]
     public bool Available { get; set; }
     public int OrganizationId { get; set; }
 
@@ -29,4 +28,6 @@ public class Survey
 
     [Required]
     public IEnumerable<SurveyAsk>? SurveyAsks { get; set; }
+
+    public IEnumerable<SurveyResponse>? SurveyResponses { get; set; }
 }

@@ -34,14 +34,51 @@ public class SurveyController(
     }
 
     [HttpGet]
-    [Route("/OrganizatinoWithMoreSurvey")]
+    [Route("/OrganizationWithMoreSurvey")]
+    [ProducesResponseType(typeof(ICollection<UniversityOutputDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ResponseErrorDto), StatusCodes.Status400BadRequest)]
+    [Authorize(Roles = "ADMIN")]
+    public IActionResult OrganizationWithMoreSurvey()
+    {
+        var result = surveyServices.OrganizationWithMoreSurvey();
+        if (result.TryPickT0(out var error, out var response))
+        {
+            return BadRequest(error);
+        }
+        return Ok(response);
+    }
+
+    [HttpGet]
+    [Route("/OrganizationWithMoreSurveyResponses")]
+    [ProducesResponseType(typeof(ICollection<UniversityOutputDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ResponseErrorDto), StatusCodes.Status400BadRequest)]
+    [Authorize(Roles = "ADMIN")]
+    public IActionResult OrganizationWithMoreSurveyResponses()
+    {
+        var result = surveyServices.OrganizationWithMoreSurveyResponses();
+        if (result.TryPickT0(out var error, out var response))
+        {
+            return BadRequest(error);
+        }
+        return Ok(response);
+    }
+
+    [HttpGet]
+    [Route("/SurveyWithMoreResponses")]
     [ProducesResponseType(typeof(ICollection<SurveyOutputDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResponseErrorDto), StatusCodes.Status400BadRequest)]
     [Authorize(Roles = "ORGANIZATION")]
-    //todo: arreglar este metodo
-    public IActionResult OrganizatinoWithMoreSurvey(int ministeryId)
+    public async Task<IActionResult> SurveyWithMoreResponses()
     {
-        var result = surveyServices.OrganizatinoWithMoreSurvey();
+        string? accessToken = HttpContext
+            .Request.Headers["Authorization"]
+            .FirstOrDefault()
+            ?.Split(" ")
+            .Last();
+        accessToken = accessToken!.Replace("Bearer", "");
+        var userId = tokenUtil.GetUserIdFromToken(accessToken);
+        var organization = await organizationServices.GetUniversityByUserAsync(userId);
+        var result = surveyServices.SurveyWithMoreResponses(organization.AsT1.Id);
         if (result.TryPickT0(out var error, out var response))
         {
             return BadRequest(error);
@@ -64,7 +101,8 @@ public class SurveyController(
         accessToken = accessToken!.Replace("Bearer", "");
         var userId = tokenUtil.GetUserIdFromToken(accessToken);
         var organization = await organizationServices.GetUniversityByUserAsync(userId);
-        var result = await surveyServices.SurveyByUniversityId(organization.AsT1.Id);
+        //var result = await surveyServices.SurveyByUniversityId(organization.AsT1.Id);
+        var result = await surveyServices.SurveyActiveByUniversityId(organization.AsT1.Id);
         if (result.TryPickT0(out var error, out var response))
         {
             return BadRequest(error);
@@ -174,7 +212,7 @@ public class SurveyController(
 
     [HttpGet]
     [Route("/GetAllResponseBySurveyAskDescription")]
-    [ProducesResponseType(typeof(ICollection<SurveyResponseOutputDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ICollection<SurveyAskResponseOutputDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResponseErrorDto), StatusCodes.Status400BadRequest)]
     [Authorize(Roles = "ORGANIZATION")]
     public IActionResult GetAllResponseBySurveyAskDescription(
@@ -213,7 +251,7 @@ public class SurveyController(
     [Route("/GetSurveyInfo")]
     [ProducesResponseType(typeof(SurveyOutputDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResponseErrorDto), StatusCodes.Status400BadRequest)]
-    [Authorize(Roles = "ORGANIZATION")]
+    [AllowAnonymous]
     [CheckSurveyDate]
     public IActionResult GetSurveyInfo(int surveyId)
     {
@@ -232,7 +270,6 @@ public class SurveyController(
     [Authorize(Roles = "ORGANIZATION")]
     public async Task<IActionResult> ApplicateSurveyAsync(SurveyInputDto surveyInput)
     {
-        //todo: arreglar el terror este
         string? accessToken = HttpContext
             .Request.Headers["Authorization"]
             .FirstOrDefault()
@@ -354,5 +391,18 @@ public class SurveyController(
             return BadRequest(error);
         }
         return Ok(responses);
+    }
+
+    [HttpGet]
+    [Route("/GetResponseFromSurvey")]
+    [AllowAnonymous]
+    public IActionResult GetResponseFromSurvey(int surveyId)
+    {
+        var resutl = surveyServices.GetResponseFromSurvey(surveyId);
+        if (!resutl.Any())
+        {
+            return BadRequest(resutl);
+        }
+        return Ok(resutl);
     }
 }

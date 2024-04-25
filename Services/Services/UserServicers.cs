@@ -102,15 +102,20 @@ public class UserServicers : CustomServiceBase
                 var httpContext = new HttpContextAccessor().HttpContext;
                 if (httpContext != null)
                 {
-                    var confirmationLink = urlHelper.Action(
-                        accountController,
+                    /*var confirmationLink = urlHelper.Action(accountController,
                         "Account",
-                        new { token, userName = user.UserName },
-                        httpContext.Request.Scheme,
-                        _mailSettings.UrlWEB
-                    );
+                        new { token, userName  = user.UserName },
+                        httpContext.Request.Scheme, _mailSettings.UrlWEB);
                     var content = File.ReadAllText(templatePath);
-                    var resultMessage = content.Replace("{{ConfirmationLink}}", confirmationLink);
+                    var resultMessage = content.Replace("{{ConfirmationLink}}",confirmationLink);
+                    */
+                    var content = File.ReadAllText(templatePath);
+                    var userName = content.Replace("{{UserName}}", user.UserName);
+                    var resultMessage = userName.Replace(
+                        "{{SupportEmailAddress}}",
+                        _mailSettings.From
+                    );
+
                     mailMessage.Body = resultMessage;
                 }
                 _emailServices.SendEmail(mailMessage, token);
@@ -312,7 +317,6 @@ public class UserServicers : CustomServiceBase
 
     public async Task<OneOf<ResponseErrorDto, string>> RecoveryPassword(string email)
     {
-        //todo: no se si esto funciona
         try
         {
             var user = await _userManager.FindByEmailAsync(email);

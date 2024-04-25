@@ -5,22 +5,19 @@ using OneOf;
 using Services.Dtos;
 using Services.Dtos.Input;
 using Services.Dtos.Intput;
+using Services.Dtos.Output;
 
 namespace Services.Services;
 
 public class SurveyServices(EntityDbContext context) : CustomServiceBase(context)
 {
-    public OneOf<ResponseErrorDto, ICollection<SurveyOutputDto>> OrganizatinoWithMoreSurvey()
+    public OneOf<ResponseErrorDto, ICollection<UniversityOutputDto>> OrganizationWithMoreSurvey()
     {
-        var surveys = _context
-            .Surveys.Include(x => x.SurveyAsks)!
-            .ThenInclude(x => x.SurveyResponses)
-            .Include(x => x.SurveyAsks)!
-            .ThenInclude(x => x.ResponsePosibilities)
-            .Include(x => x.Organization)
-            .OrderByDescending(x => x.SurveyAsks.Sum(z => z.SurveyResponses!.Count()))
-            .ToList();
-        if (!surveys.Any())
+        var organizations = _context
+            .University.Include(x => x.Surveys)
+            .OrderByDescending(x => x.Surveys.Count);
+
+        if (!organizations.Any())
         {
             return new ResponseErrorDto()
             {
@@ -28,7 +25,86 @@ public class SurveyServices(EntityDbContext context) : CustomServiceBase(context
                 ErrorMessage = "Organization list not found"
             };
         }
-        return surveys.Select(x => x.ToSurveyOutputDtoWithResponses()).ToList();
+
+        return organizations.Select(x => x.ToOrganizationOutputDtoSurveyCount()).Take(5).ToList();
+    }
+
+    public OneOf<
+        ResponseErrorDto,
+        ICollection<UniversityOutputDto>
+    > OrganizationWithMoreSurveyResponses()
+    {
+        var organizations = _context
+            .University.Include(x => x.Surveys)
+            .ThenInclude(x => x.SurveyResponses)
+            .ToList();
+        if (!organizations.Any())
+        {
+            return new ResponseErrorDto()
+            {
+                ErrorCode = 404,
+                ErrorMessage = "Organization list not found"
+            };
+        }
+        var processed = organizations
+            .Select(organization => new
+            {
+                Organization = organization,
+                Percentage = organization
+                    .Surveys.SelectMany(survey => survey.SurveyResponses ?? null)
+                    .GroupBy(response => response.SurveyId)
+                    .Select(group => new { SurveyId = group.Key, TotalResponses = group.Count() })
+                    .Select(survey =>
+                        (
+                            (double)survey.TotalResponses
+                            / organizations.Sum(y => y.Surveys.Sum(x => x.SurveyResponses.Count()))
+                            * 100
+                        )
+                    )
+                    .DefaultIfEmpty(0)
+                    .Average()
+            })
+            .OrderByDescending(item => item.Percentage)
+            .ToList();
+
+        return processed
+            .Select(x => new UniversityOutputDto()
+            {
+                Id = x.Organization.Id,
+                Enable = x.Organization.Enable,
+                Name = x.Organization.Name,
+                FacultiesNumber = x.Organization.FacultiesNumber,
+                Email = x.Organization.Email,
+                Description = x.Organization.Description,
+                ProfileImage = x.Organization.ProfileImage,
+                BgImage = x.Organization.BgImage,
+                Percentage = x.Percentage
+            })
+            .Take(5)
+            .ToList();
+    }
+
+    public OneOf<ResponseErrorDto, ICollection<SurveyOutputDto>> SurveyWithMoreResponses(
+        int universityId
+    )
+    {
+        var surveys = _context
+            .Surveys.Include(x => x.SurveyAsks!)
+            .ThenInclude(x => x.ResponsePosibilities)
+            .Include(x => x.SurveyResponses)
+            .Where(x => x.OrganizationId == universityId)
+            .OrderBy(x => x.SurveyResponses!.Count());
+
+        if (!surveys.Any())
+        {
+            return new ResponseErrorDto()
+            {
+                ErrorCode = 404,
+                ErrorMessage = "Surveys list not found"
+            };
+        }
+
+        return surveys.Select(x => x.ToSurveyOutputDto()).Take(5).ToList();
     }
 
     public async Task<OneOf<ResponseErrorDto, ICollection<SurveyOutputDto>>> SurveyByUniversityId(
@@ -49,10 +125,11 @@ public class SurveyServices(EntityDbContext context) : CustomServiceBase(context
 
         var surveys = _context
             .Surveys.Include(x => x.Organization)
-            .Include(x => x.SurveyAsks)!
-            .ThenInclude(x => x.SurveyResponses)
+            //.Include(x => x.SurveyAsks)!
+            //.ThenInclude(x=>x.SurveyResponses)
             .Include(x => x.SurveyAsks)!
             .ThenInclude(x => x.ResponsePosibilities)
+            .Include(x => x.SurveyResponses)
             .Where(x => x.OrganizationId == universityId);
         if (!surveys.Any())
         {
@@ -84,11 +161,12 @@ public class SurveyServices(EntityDbContext context) : CustomServiceBase(context
 
         var surveys = _context
             .Surveys.Include(x => x.Organization)
-            .Include(x => x.SurveyAsks)!
-            .ThenInclude(x => x.SurveyResponses)
+            //.Include(x => x.SurveyAsks)!
+            //.ThenInclude(x=>x.SurveyAskResponses)
             .Include(x => x.SurveyAsks)!
             .ThenInclude(x => x.ResponsePosibilities)
-            .Where(x => x.OrganizationId == universityId);
+            .Include(x => x.SurveyResponses)
+            .Where(x => x.OrganizationId == universityId && x.Available);
         if (!surveys.Any())
         {
             return new ResponseErrorDto()
@@ -140,7 +218,7 @@ public class SurveyServices(EntityDbContext context) : CustomServiceBase(context
         int reponse
     )
     {
-        var cant = _context.SurveyResponses.Count(x =>
+        var cant = _context.SurveyAskResponses.Count(x =>
             x.SuveryAskId == surveyAskId && x.ResponsePosibilityId == reponse
         );
         if (cant == 0)
@@ -160,10 +238,10 @@ public class SurveyServices(EntityDbContext context) : CustomServiceBase(context
         int reponse
     )
     {
-        var cant = _context.SurveyResponses.Count(x =>
+        var cant = _context.SurveyAskResponses.Count(x =>
             x.SuveryAskId == surveyAskId && x.ResponsePosibilityId == reponse
         );
-        var total = _context.SurveyResponses.Count(x => x.SuveryAskId == surveyAskId);
+        var total = _context.SurveyAskResponses.Count(x => x.SuveryAskId == surveyAskId);
         if (cant == 0)
         {
             return new ResponseErrorDto()
@@ -179,10 +257,10 @@ public class SurveyServices(EntityDbContext context) : CustomServiceBase(context
 
     public OneOf<ResponseErrorDto, double> AllSurvey(int surveyAskId, int reponse)
     {
-        var cant = _context.SurveyResponses.Count(x =>
+        var cant = _context.SurveyAskResponses.Count(x =>
             x.SuveryAskId == surveyAskId && x.ResponsePosibilityId == reponse
         );
-        var total = _context.SurveyResponses.Count();
+        var total = _context.SurveyAskResponses.Count();
         if (cant == 0)
         {
             return new ResponseErrorDto()
@@ -198,11 +276,11 @@ public class SurveyServices(EntityDbContext context) : CustomServiceBase(context
 
     public OneOf<
         ResponseErrorDto,
-        ICollection<SurveyResponseOutputDto>
+        ICollection<SurveyAskResponseOutputDto>
     > GetAllResponseBySurveyAskDescription(int surveyId, string surveyAskDescription)
     {
         var surveyResponses = _context
-            .SurveyResponses.Include(x => x.ResponsePosibility)
+            .SurveyAskResponses.Include(x => x.ResponsePosibility)
             .Include(x => x.SurveyAsk)
             .Where(x =>
                 x.SurveyAsk!.SurveyId == surveyId && x.SurveyAsk.Description == surveyAskDescription
@@ -227,13 +305,13 @@ public class SurveyServices(EntityDbContext context) : CustomServiceBase(context
         string reponse
     )
     {
-        var cant = _context.SurveyResponses.Count(x =>
+        var cant = _context.SurveyAskResponses.Count(x =>
             x.SurveyAsk!.SurveyId == surveyId
             && x.SurveyAsk.Survey.Available
             && x.SurveyAsk.Description == surveyAskDescription
             && x.ResponsePosibility!.ResponseValue == reponse
         );
-        var total = _context.SurveyResponses.Count(x =>
+        var total = _context.SurveyAskResponses.Count(x =>
             x.SurveyAsk!.SurveyId == surveyId && x.SurveyAsk.Description == surveyAskDescription
         );
         if (cant == 0)
@@ -267,7 +345,8 @@ public class SurveyServices(EntityDbContext context) : CustomServiceBase(context
         var surveys = _context
             .Surveys.Include(x => x.Organization)
             .Include(x => x.SurveyAsks)!
-            .ThenInclude(x => x.SurveyResponses)
+            .ThenInclude(x => x.ResponsePosibilities)
+            .Include(x => x.SurveyResponses)
             .Where(x => x.Organization!.Name == universityName && x.Available);
         if (!surveys.Any())
         {
@@ -284,12 +363,12 @@ public class SurveyServices(EntityDbContext context) : CustomServiceBase(context
     {
         var survey = _context
             .Surveys.Include(x => x.Organization)
-            .Include(x => x.SurveyAsks)!
-            .ThenInclude(x => x.SurveyResponses)
+            //.Include(x => x.SurveyAsks)!
+            //.ThenInclude(x=>x.SurveyAskResponses)
             .Include(x => x.SurveyAsks)!
             .ThenInclude(x => x.ResponsePosibilities)
+            .Include(x => x.SurveyResponses)
             .SingleOrDefault(x => x.Id == surveyId);
-        //.SingleOrDefault(x => x.Id == surveyId && x.Available);
         if (survey is null)
         {
             return new ResponseErrorDto()
@@ -485,30 +564,37 @@ public class SurveyServices(EntityDbContext context) : CustomServiceBase(context
                     "The number of responses does not match the number of survey questions"
             };
         }
-        var newResponses = new List<SurveyResponse>();
+        var surveyResponse = new SurveyResponse()
+        {
+            SurveyId = surveyResponsesDto.SurveyId,
+            SurveyAskResponses = new List<SurveyAskResponse>()
+        };
+        var newResponses = new List<SurveyAskResponse>();
         foreach (var response in surveyResponsesDto.Responses)
         {
             if (response.ResponsePosibilityId is null)
             {
                 newResponses.Add(
-                    new SurveyResponse()
+                    new SurveyAskResponse()
                     {
                         SuveryAskId = response.AskId,
                         ResponsePosibility = new ResponsePosibility()
                         {
-                            SuveryAskId = response.AskId,
-                            ResponseValue = response.ResponseValue
+                            //SuveryAskId  = response.AskId,
+                            ResponseValue = response.ResponseValue,
                         },
+                        SurveyResponse = surveyResponse
                     }
                 );
             }
             else
             {
                 newResponses.Add(
-                    new SurveyResponse()
+                    new SurveyAskResponse()
                     {
                         SuveryAskId = response.AskId,
-                        ResponsePosibilityId = response.ResponsePosibilityId.Value
+                        ResponsePosibilityId = response.ResponsePosibilityId.Value,
+                        SurveyResponse = surveyResponse
                     }
                 );
             }
@@ -516,7 +602,10 @@ public class SurveyServices(EntityDbContext context) : CustomServiceBase(context
 
         try
         {
-            await context.SurveyResponses.AddRangeAsync(newResponses);
+            //surveyResponse.SurveyId = surveyResponse.SurveyId;
+            //surveyResponse.SurveyAskResponses = newResponses;
+            //await context.SurveyResponses.AddAsync(surveyResponse);
+            await context.SurveyAskResponses.AddRangeAsync(newResponses);
             await context.SaveChangesAsync();
         }
         catch (Exception e)
@@ -525,5 +614,18 @@ public class SurveyServices(EntityDbContext context) : CustomServiceBase(context
         }
 
         return surveyResponsesDto;
+    }
+
+    public IEnumerable<SurveyResponseOutputDto> GetResponseFromSurvey(int surveyId)
+    {
+        var result = context
+            .SurveyResponses!.Include(x => x.SurveyAskResponses!)
+            .ThenInclude(x => x.SurveyAsk!)
+            .Include(x => x.SurveyAskResponses!)
+            .ThenInclude(x => x.ResponsePosibility)
+            .Where(x => x.SurveyId == surveyId)
+            .Select(x => x.ToSurveyResponseDto());
+
+        return result;
     }
 }

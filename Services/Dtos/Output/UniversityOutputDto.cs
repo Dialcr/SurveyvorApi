@@ -57,6 +57,7 @@ public static class UniversityExtention
             SurveyAviableCount = university.Surveys.Count(x => x.Available)
         };
     }
+
     public static UniversityOutputDto ToOrganizationOutputDtoSurveyCount(this University university)
     {
         return new UniversityOutputDto()

@@ -156,12 +156,13 @@ public class OrganizationServices(EntityDbContext context) : CustomServiceBase(c
         _context.SaveChanges();
         return university.ToUniversityOutputDto();
     }
-
-    public OneOf<ResponseErrorDto, ICollection<University>> UniersitiesWithMoreSurvey()
+    
+    public OneOf<ResponseErrorDto, ICollection<UniversityOutputDto>> OrganizationWithMoreSurvey()
     {
         var organizations = _context
             .University.Include(x => x.Surveys)
             .OrderByDescending(x => x.Surveys.Count);
+
         if (!organizations.Any())
         {
             return new ResponseErrorDto()
@@ -171,17 +172,18 @@ public class OrganizationServices(EntityDbContext context) : CustomServiceBase(c
             };
         }
 
-        var cant = organizations.First().Surveys.Count();
-        var organizationsMax = organizations.Where(x => x.Surveys.Count() == cant).ToList();
-
-        return organizationsMax;
+        return organizations.Select(x => x.ToOrganizationOutputDtoSurveyCount()).Take(5).ToList();
     }
 
-    public OneOf<ResponseErrorDto, ICollection<University>> OrganizatinoWithFewerSurvey()
+    public OneOf<
+        ResponseErrorDto,
+        ICollection<UniversityOutputDto>
+    > OrganizationWithMoreSurveyResponses()
     {
         var organizations = _context
             .University.Include(x => x.Surveys)
-            .OrderBy(x => x.Surveys.Count);
+            .ThenInclude(x => x.SurveyResponses)
+            .ToList();
         if (!organizations.Any())
         {
             return new ResponseErrorDto()
@@ -190,16 +192,41 @@ public class OrganizationServices(EntityDbContext context) : CustomServiceBase(c
                 ErrorMessage = "Organization list not found"
             };
         }
+        var processed = organizations
+            .Select(organization => new
+            {
+                Organization = organization,
+                Percentage = organization
+                    .Surveys.SelectMany(survey => survey.SurveyResponses ?? null)
+                    .GroupBy(response => response.SurveyId)
+                    .Select(group => new { SurveyId = group.Key, TotalResponses = group.Count() })
+                    .Select(survey =>
+                        (
+                            (double)survey.TotalResponses
+                            / organizations.Sum(y => y.Surveys.Sum(x => x.SurveyResponses.Count()))
+                            * 100
+                        )
+                    )
+                    .DefaultIfEmpty(0)
+                    .Average()
+            })
+            .OrderByDescending(item => item.Percentage)
+            .ToList();
 
-        var cant = organizations.First().Surveys.Count();
-        var organizationsMax = organizations.Where(x => x.Surveys.Count() == cant).ToList();
-
-        return organizationsMax;
-    }
-
-    public IEnumerable<UniversityOutputDto> AllUniversity()
-    {
-        var universities = _context.University.Select(x => x.ToUniversityOutputDto());
-        return universities;
+        return processed
+            .Select(x => new UniversityOutputDto()
+            {
+                Id = x.Organization.Id,
+                Enable = x.Organization.Enable,
+                Name = x.Organization.Name,
+                FacultiesNumber = x.Organization.FacultiesNumber,
+                Email = x.Organization.Email,
+                Description = x.Organization.Description,
+                ProfileImage = x.Organization.ProfileImage,
+                BgImage = x.Organization.BgImage,
+                Percentage = x.Percentage
+            })
+            .Take(5)
+            .ToList();
     }
 }

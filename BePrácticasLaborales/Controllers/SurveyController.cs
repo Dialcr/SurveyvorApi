@@ -40,7 +40,8 @@ public class SurveyController(
     [Authorize(Roles = "ADMIN")]
     public IActionResult OrganizationWithMoreSurvey()
     {
-        var result = surveyServices.OrganizationWithMoreSurvey();
+        //this endpoint must be into organization controller
+        var result = organizationServices.OrganizationWithMoreSurvey();
         if (result.TryPickT0(out var error, out var response))
         {
             return BadRequest(error);
@@ -55,7 +56,8 @@ public class SurveyController(
     [Authorize(Roles = "ADMIN")]
     public IActionResult OrganizationWithMoreSurveyResponses()
     {
-        var result = surveyServices.OrganizationWithMoreSurveyResponses();
+        //this endpoint must be into organization controller
+        var result = organizationServices.OrganizationWithMoreSurveyResponses();
         if (result.TryPickT0(out var error, out var response))
         {
             return BadRequest(error);

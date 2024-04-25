@@ -11,78 +11,7 @@ namespace Services.Services;
 
 public class SurveyServices(EntityDbContext context) : CustomServiceBase(context)
 {
-    public OneOf<ResponseErrorDto, ICollection<UniversityOutputDto>> OrganizationWithMoreSurvey()
-    {
-        var organizations = _context
-            .University.Include(x => x.Surveys)
-            .OrderByDescending(x => x.Surveys.Count);
-
-        if (!organizations.Any())
-        {
-            return new ResponseErrorDto()
-            {
-                ErrorCode = 404,
-                ErrorMessage = "Organization list not found"
-            };
-        }
-
-        return organizations.Select(x => x.ToOrganizationOutputDtoSurveyCount()).Take(5).ToList();
-    }
-
-    public OneOf<
-        ResponseErrorDto,
-        ICollection<UniversityOutputDto>
-    > OrganizationWithMoreSurveyResponses()
-    {
-        var organizations = _context
-            .University.Include(x => x.Surveys)
-            .ThenInclude(x => x.SurveyResponses)
-            .ToList();
-        if (!organizations.Any())
-        {
-            return new ResponseErrorDto()
-            {
-                ErrorCode = 404,
-                ErrorMessage = "Organization list not found"
-            };
-        }
-        var processed = organizations
-            .Select(organization => new
-            {
-                Organization = organization,
-                Percentage = organization
-                    .Surveys.SelectMany(survey => survey.SurveyResponses ?? null)
-                    .GroupBy(response => response.SurveyId)
-                    .Select(group => new { SurveyId = group.Key, TotalResponses = group.Count() })
-                    .Select(survey =>
-                        (
-                            (double)survey.TotalResponses
-                            / organizations.Sum(y => y.Surveys.Sum(x => x.SurveyResponses.Count()))
-                            * 100
-                        )
-                    )
-                    .DefaultIfEmpty(0)
-                    .Average()
-            })
-            .OrderByDescending(item => item.Percentage)
-            .ToList();
-
-        return processed
-            .Select(x => new UniversityOutputDto()
-            {
-                Id = x.Organization.Id,
-                Enable = x.Organization.Enable,
-                Name = x.Organization.Name,
-                FacultiesNumber = x.Organization.FacultiesNumber,
-                Email = x.Organization.Email,
-                Description = x.Organization.Description,
-                ProfileImage = x.Organization.ProfileImage,
-                BgImage = x.Organization.BgImage,
-                Percentage = x.Percentage
-            })
-            .Take(5)
-            .ToList();
-    }
+    
 
     public OneOf<ResponseErrorDto, ICollection<SurveyOutputDto>> SurveyWithMoreResponses(
         int universityId
@@ -125,8 +54,6 @@ public class SurveyServices(EntityDbContext context) : CustomServiceBase(context
 
         var surveys = _context
             .Surveys.Include(x => x.Organization)
-            //.Include(x => x.SurveyAsks)!
-            //.ThenInclude(x=>x.SurveyResponses)
             .Include(x => x.SurveyAsks)!
             .ThenInclude(x => x.ResponsePosibilities)
             .Include(x => x.SurveyResponses)
@@ -392,11 +319,10 @@ public class SurveyServices(EntityDbContext context) : CustomServiceBase(context
             StartDate = surveyInputDto.StartDate,
             EndDate = surveyInputDto.EndDate,
             Available = false,
-            SurveyAsks = new List<SurveyAsk>() // Inicializa la colección
+            SurveyAsks = new List<SurveyAsk>() 
         };
 
-        var SurveyAsks = new List<SurveyAsk>(); // Inicializa la colección
-        // Agrega cada SurveyAsk individualmente
+        var SurveyAsks = new List<SurveyAsk>(); 
         foreach (var question in surveyInputDto.Questions!)
         {
             var surveyAsk = new SurveyAsk
@@ -602,9 +528,6 @@ public class SurveyServices(EntityDbContext context) : CustomServiceBase(context
 
         try
         {
-            //surveyResponse.SurveyId = surveyResponse.SurveyId;
-            //surveyResponse.SurveyAskResponses = newResponses;
-            //await context.SurveyResponses.AddAsync(surveyResponse);
             await context.SurveyAskResponses.AddRangeAsync(newResponses);
             await context.SaveChangesAsync();
         }

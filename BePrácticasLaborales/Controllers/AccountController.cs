@@ -40,7 +40,6 @@ public class AccountController : ControllerBase
         string token
     )
     {
-        //return _userServices.ConfirmEmailToken(token, userName) ? Ok("confirmation success") : BadRequest("confirmation failed");
         var result = await _userServices.ResetPassword(userEmail, newPassword, token);
         if (result.TryPickT0(out var error, out var response))
         {

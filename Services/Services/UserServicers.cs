@@ -93,12 +93,9 @@ public class UserServicers : CustomServiceBase
                     "./ConfirmEmailTemplate.html"
                 );
 #endif
-                //SendEmailConfrim(user,urlHelper,token);
                 var mailMessage = new MailMessage(_mailSettings.From, user.Email!);
                 mailMessage.Subject = "Confirmation email account";
-                //esto es nuevo
                 mailMessage.IsBodyHtml = true;
-                //hasta aqui
                 var httpContext = new HttpContextAccessor().HttpContext;
                 if (httpContext != null)
                 {
@@ -335,7 +332,7 @@ public class UserServicers : CustomServiceBase
             string urlConToken = $"{_mailSettings.UrlWEBFront}?token={token}";
 
 #if DEBUG
-            var templatePath = "./../Services/Services/Template/RecoveryPasswordTemplate.html";
+            var templatePath = "./../Services/Services/Template/RecoveryPasswordTemplate.html"; 
 #else
             templatePath = Path.Combine(
                 Directory.GetCurrentDirectory(),
